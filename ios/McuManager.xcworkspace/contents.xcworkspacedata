@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:McuManager.h">
+   </FileRef>
+   <FileRef
+      location = "group:DeviceUpdate.swift">
+   </FileRef>
+   <FileRef
+      location = "group:McuManager.swift">
+   </FileRef>
+   <FileRef
+      location = "group:McuManager.m">
+   </FileRef>
+   <FileRef
+      location = "absolute:McuManager.xcodeproj">
+   </FileRef>
+</Workspace>
