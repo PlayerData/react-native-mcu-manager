@@ -4,14 +4,13 @@ class DeviceUpdate{
     let resolve: RCTPromiseResolveBlock
     let reject: RCTPromiseRejectBlock
     let deviceUUID: UUID
-    let file : NSData
+    let file : Data
 
-    init(deviceUUID: UUID, fileURI: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) throws {
+    init(deviceUUID: UUID, fileURI: URL, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) throws {
         self.resolve = resolve
         self.reject = reject
         self.deviceUUID = deviceUUID
-        try self.file = NSData(contentsOfFile: fileURI)
-
+        try self.file = Data(contentsOf: fileURI)
     }
 
     func startUpdate() {
@@ -26,7 +25,7 @@ class DeviceUpdate{
             try dfuManager.start(data: self.file as Data)
         } catch is Error {
             let error = NSError(domain: "", code: 200, userInfo: nil)
-            self.reject("sad", "sad", error);
+            self.reject("sad5", "failed to start upgrade", error);
         }
     }
 }
@@ -60,8 +59,8 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
     /// - parameter error: The error.
     func upgradeDidFail(inState state: FirmwareUpgradeState, with error: Error){
 
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            self.reject("sad", "sad", error);
+            //let error = NSError(domain: "", code: 200, userInfo: nil)
+            self.reject("sad7", "upgrade failed", error);
     }
 
     /// Called when the firmware upgrade has been cancelled using cancel()
@@ -71,7 +70,7 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
     func upgradeDidCancel(state: FirmwareUpgradeState){
 
             let error = NSError(domain: "", code: 200, userInfo: nil)
-            self.reject("sad", "sad", error);
+            self.reject("sad9", "upgrade canceled", error);
     }
 
     /// Called whnen the upload progress has changed.
