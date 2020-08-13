@@ -5,11 +5,13 @@ class DeviceUpdate{
     let reject: RCTPromiseRejectBlock
     let deviceUUID: UUID
     let file : Data
+    let eventEmitter : RCTEventEmitter
 
-    init(deviceUUID: UUID, fileURI: URL, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) throws {
+    init(deviceUUID: UUID, fileURI: URL, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock, eventEmitter: RCTEventEmitter) throws {
         self.resolve = resolve
         self.reject = reject
         self.deviceUUID = deviceUUID
+        self.eventEmitter = eventEmitter
         try self.file = Data(contentsOf: fileURI)
     }
 
@@ -80,6 +82,10 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
     /// - parameter timestamp: The time that the successful response packet for
     ///   the progress was received.
     func uploadProgressDidChange(bytesSent: Int, imageSize: Int, timestamp: Date){
-
+        if(self.eventEmitter.bridge != nil) {
+            self.eventEmitter.sendEvent(
+                withName: "uploadProgress", body: bytesSent/imageSize
+            )
+        }
     }
 }

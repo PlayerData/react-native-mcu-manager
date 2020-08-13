@@ -3,9 +3,15 @@ import CoreBluetooth
 
 
 @objc(RNMcuManager)
-class RNMcuManager: NSObject {
+class RNMcuManager: RCTEventEmitter {
 
     override init() {
+    }
+
+    @objc override func supportedEvents() -> [String] {
+        return [
+            "uploadProgress",
+        ]
     }
 
     @objc
@@ -19,7 +25,7 @@ class RNMcuManager: NSObject {
             return reject("sad1", "failed to parse file uri as url", error);
         }
         do {
-            let updater = try DeviceUpdate(deviceUUID: uuid, fileURI: url, resolver: resolve, rejecter: reject)
+            let updater = try DeviceUpdate(deviceUUID: uuid, fileURI: url, resolver: resolve, rejecter: reject, eventEmitter: self)
             updater.startUpdate()
         } catch is Error {
             let error = NSError(domain: "", code: 200, userInfo: nil)

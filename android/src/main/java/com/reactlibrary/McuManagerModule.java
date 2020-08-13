@@ -9,6 +9,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
 public class McuManagerModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
@@ -31,7 +33,13 @@ public class McuManagerModule extends ReactContextBaseJavaModule {
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(macAddress);
         Uri updateFileUri = Uri.parse(updateFileUriString);
 
-        DeviceUpdate update = new DeviceUpdate(device, promise, reactContext, updateFileUri);
+        DeviceUpdate update = new DeviceUpdate(device, promise, reactContext, updateFileUri, this);
         update.startUpdate();
+    }
+
+    public void updateProgressCB(String progress) {
+        this.reactContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit("uploadProgress", progress);
     }
 }

@@ -25,12 +25,14 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
     private final Promise promise;
     private final ReactApplicationContext context;
     private final Uri updateFileUri;
+    private final McuManagerModule manager;
 
-    public DeviceUpdate(BluetoothDevice device, Promise promise, ReactApplicationContext context, Uri updateFileUri) {
+    public DeviceUpdate(BluetoothDevice device, Promise promise, ReactApplicationContext context, Uri updateFileUri, McuManagerModule manager) {
         this.device = device;
         this.promise = promise;
         this.context = context;
         this.updateFileUri = updateFileUri;
+        this.manager = manager;
     }
 
     public void startUpdate() {
@@ -87,6 +89,6 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
 
     @Override
     public void onUploadProgressChanged(int bytesSent, int imageSize, long timestamp) {
-
+        this.manager.updateProgressCB(String.format("%.2f", bytesSent/imageSize, 2));
     }
 }

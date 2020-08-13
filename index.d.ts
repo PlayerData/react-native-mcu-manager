@@ -1,3 +1,4 @@
+import { NativeEventEmitter } from "react-native";
 import McuManager from ".";
 
 declare module McuManager {
@@ -6,4 +7,6 @@ declare module McuManager {
     updateFileUriString: String,
   ) => Promise<null>;
 }
+
+export const UploadEvents: NativeEventEmitter;
 export default McuManager;
