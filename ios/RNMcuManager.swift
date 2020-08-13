@@ -11,6 +11,7 @@ class RNMcuManager: RCTEventEmitter {
     @objc override func supportedEvents() -> [String] {
         return [
             "uploadProgress",
+            "uploadStateChanged"
         ]
     }
 

@@ -42,4 +42,10 @@ public class McuManagerModule extends ReactContextBaseJavaModule {
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
             .emit("uploadProgress", progress);
     }
+
+    public void updateStateCB(String state) {
+        this.reactContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit("uploadStateChanged", state);
+    }
 }

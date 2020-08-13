@@ -43,7 +43,6 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
         McuMgrTransport transport = new McuMgrBleTransport(this.context, device);
         FirmwareUpgradeManager dfuManager = new FirmwareUpgradeManager(transport, this);
 
-
         try {
             InputStream stream = context.getContentResolver().openInputStream(updateBundleUri);
 
@@ -69,7 +68,7 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
 
     @Override
     public void onStateChanged(FirmwareUpgradeManager.State prevState, FirmwareUpgradeManager.State newState) {
-
+        this.manager.updateStateCB(newState.name());
     }
 
     @Override
@@ -89,6 +88,6 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
 
     @Override
     public void onUploadProgressChanged(int bytesSent, int imageSize, long timestamp) {
-        this.manager.updateProgressCB(String.format("%.2f", bytesSent/imageSize, 2));
+        this.manager.updateProgressCB(String.format("%.2f", (float)bytesSent/(float)imageSize, 2));
     }
 }

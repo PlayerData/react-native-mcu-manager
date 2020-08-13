@@ -47,7 +47,30 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
     /// - parameter previousState: The state before the change.
     /// - parameter newState: The new state.
     func upgradeStateDidChange(from previousState: FirmwareUpgradeState, to newState: FirmwareUpgradeState){
+        if(self.eventEmitter.bridge != nil) {
+            self.eventEmitter.sendEvent(
+                withName: "uploadStateChanged", body: firmwareEnumToString(e: newState)
+            )
+        }
+    }
 
+    func firmwareEnumToString(e: FirmwareUpgradeState) -> String{
+            switch e {
+            case .none:
+                return "none"
+            case .validate:
+                return "validate"
+            case .upload:
+                return "upload"
+            case .test:
+                return "test"
+            case .reset:
+                return "resetting"
+            case .confirm:
+                return "confirming"
+            case .success:
+                return "success"
+        }
     }
 
     /// Called when the firmware upgrade has succeeded.
