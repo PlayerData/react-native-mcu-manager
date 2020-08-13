@@ -1,11 +1,17 @@
 #import <React/RCTBridgeModule.h>
 
-@implementation RCT_EXTERN_REMAP_MODULE(McuManager, RNMcuManager, NSObject)
+@interface RCT_EXTERN_REMAP_MODULE(McuManager, RNMcuManager, NSObject)
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 
 RCT_EXTERN_METHOD(
-    updateDevice: (NSString)macAddress
-    updateFileUriString: (NSString)updateFileUriString
-    resolver: (RCTPromiseResolveBlock)resolve
+    updateDevice:
+    String
+    updateFileUriString: String
+    resolver:(RCTPromiseResolveBlock)resolve
     rejecter:(RCTPromiseRejectBlock)reject
 )
 

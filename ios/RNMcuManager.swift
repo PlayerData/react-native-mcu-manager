@@ -9,7 +9,7 @@ class RNMcuManager: NSObject {
     }
 
     @objc
-    func updateDevice(macAddress: String, updateFileUriString: String, _ resolve: @escaping RCTPromiseResolveBlock, _ reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func updateDevice(_ macAddress: String, updateFileUriString: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         guard let uuid = UUID(uuidString: macAddress) else {
             let error = NSError(domain: "", code: 200, userInfo: nil)
             return reject("sad", "sad", error);
