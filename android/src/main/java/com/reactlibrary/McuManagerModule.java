@@ -8,6 +8,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
 
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
@@ -37,13 +38,13 @@ public class McuManagerModule extends ReactContextBaseJavaModule {
         update.startUpdate();
     }
 
-    public void updateProgressCB(String progress) {
+    public void updateProgressCB(WritableMap progress) {
         this.reactContext
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
             .emit("uploadProgress", progress);
     }
 
-    public void updateStateCB(String state) {
+    public void updateStateCB(WritableMap state) {
         this.reactContext
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
             .emit("uploadStateChanged", state);

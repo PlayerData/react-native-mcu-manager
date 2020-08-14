@@ -49,7 +49,10 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
     func upgradeStateDidChange(from previousState: FirmwareUpgradeState, to newState: FirmwareUpgradeState){
         if(self.eventEmitter.bridge != nil) {
             self.eventEmitter.sendEvent(
-                withName: "uploadStateChanged", body: firmwareEnumToString(e: newState)
+                withName: "uploadStateChanged", body: [
+                    "bleId": self.deviceUUID.description,
+                    "state": firmwareEnumToString(e: newState)
+                ]
             )
         }
     }
@@ -107,7 +110,10 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
     func uploadProgressDidChange(bytesSent: Int, imageSize: Int, timestamp: Date){
         if(self.eventEmitter.bridge != nil) {
             self.eventEmitter.sendEvent(
-                withName: "uploadProgress", body: bytesSent/imageSize
+                withName: "uploadProgress", body: [
+                    "bleId": self.deviceUUID.description,
+                    "progress": bytesSent/imageSize
+                ]
             )
         }
     }

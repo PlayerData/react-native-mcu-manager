@@ -9,6 +9,8 @@ import android.os.Bundle;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableMap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +28,7 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
     private final ReactApplicationContext context;
     private final Uri updateFileUri;
     private final McuManagerModule manager;
+    private int LastNotification = -1;
 
     public DeviceUpdate(BluetoothDevice device, Promise promise, ReactApplicationContext context, Uri updateFileUri, McuManagerModule manager) {
         this.device = device;
@@ -68,7 +71,11 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
 
     @Override
     public void onStateChanged(FirmwareUpgradeManager.State prevState, FirmwareUpgradeManager.State newState) {
-        this.manager.updateStateCB(newState.name());
+        WritableMap stateMap = Arguments.createMap();
+
+        stateMap.putString("bleId", this.device.getAddress());
+        stateMap.putString("state", newState.name());
+        this.manager.updateStateCB(stateMap);
     }
 
     @Override
@@ -88,6 +95,14 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
 
     @Override
     public void onUploadProgressChanged(int bytesSent, int imageSize, long timestamp) {
-        this.manager.updateProgressCB(String.format("%.2f", (float)bytesSent/(float)imageSize, 2));
+        int progress_percent = bytesSent *100/imageSize;
+        if (progress_percent != this.LastNotification) {
+            this.LastNotification = progress_percent;
+            WritableMap progressMap = Arguments.createMap();
+
+            progressMap.putString("bleId", this.device.getAddress());
+            progressMap.putString("progress", String.format("%d", progress_percent, 2));
+            this.manager.updateProgressCB(progressMap);
+        }
     }
 }
