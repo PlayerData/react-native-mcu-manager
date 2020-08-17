@@ -9,7 +9,7 @@
 }
 
 RCT_EXTERN_METHOD(
-                  supportedEvents
+    supportedEvents
 )
 
 RCT_EXTERN_METHOD(
@@ -18,6 +18,10 @@ RCT_EXTERN_METHOD(
     updateFileUriString: String
     resolver:(RCTPromiseResolveBlock)resolve
     rejecter:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+    cancel
 )
 
 @end

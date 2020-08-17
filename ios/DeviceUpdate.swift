@@ -1,18 +1,22 @@
 import McuManager
 
 class DeviceUpdate{
-    let resolve: RCTPromiseResolveBlock
-    let reject: RCTPromiseRejectBlock
     let deviceUUID: UUID
     let file : Data
+    var lastNotification : Int
+    let logDelegate : McuMgrLogDelegate
     let eventEmitter : RCTEventEmitter
+    let manager: RNMcuManager
+    var dfuManager: FirmwareUpgradeManager?
 
-    init(deviceUUID: UUID, fileURI: URL, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock, eventEmitter: RCTEventEmitter) throws {
-        self.resolve = resolve
-        self.reject = reject
+    init(deviceUUID: UUID, fileURI: URL, eventEmitter: RCTEventEmitter, manager: RNMcuManager) throws {
         self.deviceUUID = deviceUUID
-        self.eventEmitter = eventEmitter
+        self.lastNotification = -1
+        self.eventEmitter = eventEmitter;
+        self.manager = manager;
         try self.file = Data(contentsOf: fileURI)
+
+        self.logDelegate = UpdateLogDelegate();
     }
 
     func startUpdate() {
@@ -20,26 +24,44 @@ class DeviceUpdate{
         let bleTransport = McuMgrBleTransport(self.deviceUUID)
 
         // Initialize the FirmwareUpgradeManager using the transport and a delegate
-        let dfuManager = FirmwareUpgradeManager(transporter: bleTransport, delegate: self)
+        self.dfuManager = FirmwareUpgradeManager(transporter: bleTransport, delegate: self)
 
+        self.dfuManager!.logDelegate = self.logDelegate;
         // Start the firmware upgrade with the image data
         do {
-            try dfuManager.start(data: self.file as Data)
-        } catch is Error {
+            try self.dfuManager!.start(data: self.file as Data)
+        } catch {
             let error = NSError(domain: "", code: 200, userInfo: nil)
-            self.reject("sad5", "failed to start upgrade", error);
+            self.manager.reject("error", "failed to start upgrade", error);
         }
+    }
+
+    func cancel() {
+        self.dfuManager!.cancel()
     }
 }
 
+class UpdateLogDelegate : McuMgrLogDelegate {
+    func log(_ msg: String, ofCategory category: McuMgrLogCategory, atLevel level: McuMgrLogLevel) {
+        print(msg);
+    }
+}
 
 extension DeviceUpdate: FirmwareUpgradeDelegate {
+
     /// Called when the upgrade has started.
     ///
     /// - parameter controller: The controller that may be used to pause,
     ///   resume or cancel the upgrade.
     func upgradeDidStart(controller: FirmwareUpgradeController) {
-
+        if(self.eventEmitter.bridge != nil) {
+            self.eventEmitter.sendEvent(
+                withName: "uploadStateChanged", body: [
+                    "bleId": self.deviceUUID.description,
+                    "state": "started"
+                ]
+            )
+        }
     }
 
     /// Called when the firmware upgrade state has changed.
@@ -78,30 +100,28 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
 
     /// Called when the firmware upgrade has succeeded.
     func upgradeDidComplete(){
-        self.resolve(true)
+       self.manager.resolve(true)
     }
-
-    /// Called when the firmware upgrade has failed.
-    ///
-    /// - parameter state: The state in which the upgrade has failed.
-    /// - parameter error: The error.
+//
+//    /// Called when the firmware upgrade has failed.
+//    ///
+//    /// - parameter state: The state in which the upgrade has failed.
+//    /// - parameter error: The error.
     func upgradeDidFail(inState state: FirmwareUpgradeState, with error: Error){
-
-            //let error = NSError(domain: "", code: 200, userInfo: nil)
-            self.reject("sad7", "upgrade failed", error);
+        let error = NSError(domain: "", code: 200, userInfo: nil)
+        self.manager.reject("error", "upgrade failed",  error);
     }
-
-    /// Called when the firmware upgrade has been cancelled using cancel()
-    /// method. The upgrade may be cancelled only during uploading the image.
-    /// When the image is uploaded, the test and/or confirm commands will be
-    /// sent depending on the mode.
+//
+//    /// Called when the firmware upgrade has been cancelled using cancel()
+//    /// method. The upgrade may be cancelled only during uploading the image.
+//    /// When the image is uploaded, the test and/or confirm commands will be
+//    /// sent depending on the mode.
     func upgradeDidCancel(state: FirmwareUpgradeState){
-
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            self.reject("sad9", "upgrade canceled", error);
+        let error = NSError(domain: "", code: 200, userInfo: nil)
+        self.manager.reject("error", "upgrade cancelled", error);
     }
 
-    /// Called whnen the upload progress has changed.
+    /// Called when the upload progress has changed.
     ///
     /// - parameter bytesSent: Number of bytes sent so far.
     /// - parameter imageSize: Total number of bytes to be sent.
@@ -109,12 +129,16 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
     ///   the progress was received.
     func uploadProgressDidChange(bytesSent: Int, imageSize: Int, timestamp: Date){
         if(self.eventEmitter.bridge != nil) {
-            self.eventEmitter.sendEvent(
-                withName: "uploadProgress", body: [
-                    "bleId": self.deviceUUID.description,
-                    "progress": bytesSent/imageSize
-                ]
-            )
+            let progress = bytesSent*100/imageSize;
+            if (self.lastNotification != progress) {
+                self.lastNotification = progress;
+                self.eventEmitter.sendEvent(
+                    withName: "uploadProgress", body: [
+                        "bleId": self.deviceUUID.description,
+                        "progress": progress
+                    ]
+                )
+            }
         }
     }
 }

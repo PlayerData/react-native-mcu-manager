@@ -6,6 +6,7 @@ declare module McuManager {
     macAddress: String,
     updateFileUriString: String,
   ) => Promise<null>;
+  export const cancel: () => void;
 }
 
 export const UploadEvents: NativeEventEmitter;

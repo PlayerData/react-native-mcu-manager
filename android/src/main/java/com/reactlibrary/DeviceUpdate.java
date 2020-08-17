@@ -28,6 +28,7 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
     private final ReactApplicationContext context;
     private final Uri updateFileUri;
     private final McuManagerModule manager;
+    private FirmwareUpgradeManager dfuManager
     private int LastNotification = -1;
 
     public DeviceUpdate(BluetoothDevice device, Promise promise, ReactApplicationContext context, Uri updateFileUri, McuManagerModule manager) {
@@ -42,9 +43,15 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
         doUpdate(updateFileUri);
     }
 
+    public void cancel() {
+        this.dfuManager.cancel();
+        this.promise.reject("Update cancelled")
+        this.manager.unsetUpdate();
+    }
+
     private void doUpdate(Uri updateBundleUri) {
         McuMgrTransport transport = new McuMgrBleTransport(this.context, device);
-        FirmwareUpgradeManager dfuManager = new FirmwareUpgradeManager(transport, this);
+        this.dfuManager = new FirmwareUpgradeManager(transport, this);
 
         try {
             InputStream stream = context.getContentResolver().openInputStream(updateBundleUri);
@@ -52,13 +59,15 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
             byte[] imageData = new byte[(int) stream.available()];
             stream.read(imageData);
 
-            dfuManager.setMode(FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM);
-            dfuManager.start(imageData);
+            this.dfuManager.setMode(FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM);
+            this.dfuManager.start(imageData);
         } catch (IOException e) {
             e.printStackTrace();
+            this.manager.unsetUpdate();
             this.promise.reject(e);
         } catch (McuMgrException e) {
             e.printStackTrace();
+            this.manager.unsetUpdate();
             this.promise.reject(e);
         }
     }
@@ -80,17 +89,20 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
 
     @Override
     public void onUpgradeCompleted() {
+        this.manager.unsetUpdate();
         this.promise.resolve(null);
     }
 
     @Override
     public void onUpgradeFailed(FirmwareUpgradeManager.State state, McuMgrException error) {
+        this.manager.unsetUpdate();
         this.promise.reject(error);
     }
 
     @Override
     public void onUpgradeCanceled(FirmwareUpgradeManager.State state) {
-
+        this.manager.unsetUpdate();
+        this.promise.reject("Update cancelled");
     }
 
     @Override

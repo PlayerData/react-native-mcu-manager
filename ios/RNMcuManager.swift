@@ -4,7 +4,9 @@ import CoreBluetooth
 
 @objc(RNMcuManager)
 class RNMcuManager: RCTEventEmitter {
-
+    var resolver: RCTPromiseResolveBlock?
+    var rejecter: RCTPromiseRejectBlock?
+    var updater : DeviceUpdate?
     override init() {
     }
 
@@ -17,21 +19,48 @@ class RNMcuManager: RCTEventEmitter {
 
     @objc
     func updateDevice(_ macAddress: String, updateFileUriString: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        guard let uuid = UUID(uuidString: macAddress) else {
+        if self.updater != nil {
             let error = NSError(domain: "", code: 200, userInfo: nil)
-            return reject("sad1", "failed to parse uuid", error);
+            return reject("error", "an update is already running", error);
+        }
+        self.resolver = resolve;
+        self.rejecter = reject;
+        guard let uuid = UUID(uuidString: macAddress) else {
+            self.updater = nil;
+            let error = NSError(domain: "", code: 200, userInfo: nil)
+            return reject("error", "failed to parse uuid", error);
         }
         guard let url = URL(string: updateFileUriString) else {
+            self.updater = nil;
             let error = NSError(domain: "", code: 200, userInfo: nil)
-            return reject("sad1", "failed to parse file uri as url", error);
+            return reject("error", "failed to parse file uri as url", error);
         }
         do {
-            let updater = try DeviceUpdate(deviceUUID: uuid, fileURI: url, resolver: resolve, rejecter: reject, eventEmitter: self)
-            updater.startUpdate()
-        } catch is Error {
+            self.updater = try DeviceUpdate(deviceUUID: uuid, fileURI: url, eventEmitter: self, manager: self)
+            self.updater!.startUpdate()
+        } catch {
+            self.updater = nil;
             let error = NSError(domain: "", code: 200, userInfo: nil)
-            reject("sad3", "failed to open file", error);
+            reject("error", "failed to open file", error);
             return
         }
+    }
+
+    @objc
+    func cancel() {
+        if let unwrappedUpdater = self.updater {
+            unwrappedUpdater.cancel();
+        }
+        self.updater = nil;
+    }
+
+    func reject(_ code: String, _ message: String, _ error: NSError) {
+        self.updater = nil;
+        self.rejecter!(code, message, error);
+    }
+
+    func resolve(_ outcome: Bool) {
+        self.updater = nil;
+        self.resolver!(outcome);
     }
 }

@@ -16,6 +16,7 @@ public class McuManagerModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private final BluetoothAdapter bluetoothAdapter;
+    DeviceUpdate update;
 
     public McuManagerModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -31,11 +32,21 @@ public class McuManagerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void updateDevice(String macAddress, String updateFileUriString, Promise promise) {
+        if this.update == null {
+            promise.reject("an update is already running");
+        }
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(macAddress);
         Uri updateFileUri = Uri.parse(updateFileUriString);
 
-        DeviceUpdate update = new DeviceUpdate(device, promise, reactContext, updateFileUri, this);
-        update.startUpdate();
+        this.update = new DeviceUpdate(device, promise, reactContext, updateFileUri, this);
+        this.update.startUpdate();
+    }
+
+    @ReactMethod
+    public void cancelRunningUpdates() {
+        if this.update != null {
+            this.update.cancel();
+        }
     }
 
     public void updateProgressCB(WritableMap progress) {
@@ -48,5 +59,9 @@ public class McuManagerModule extends ReactContextBaseJavaModule {
         this.reactContext
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
             .emit("uploadStateChanged", state);
+    }
+
+    public void unsetUpdate() {
+        this.update = null;
     }
 }
