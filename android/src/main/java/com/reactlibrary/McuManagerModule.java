@@ -32,8 +32,9 @@ public class McuManagerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void updateDevice(String macAddress, String updateFileUriString, Promise promise) {
-        if this.update == null {
+        if (this.update != null) {
             promise.reject("an update is already running");
+            return;
         }
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(macAddress);
         Uri updateFileUri = Uri.parse(updateFileUriString);
@@ -43,10 +44,11 @@ public class McuManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void cancelRunningUpdates() {
-        if this.update != null {
+    public void cancel() {
+        if (this.update != null) {
             this.update.cancel();
         }
+        this.update = null;
     }
 
     public void updateProgressCB(WritableMap progress) {

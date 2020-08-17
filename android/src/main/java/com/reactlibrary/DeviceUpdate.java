@@ -28,7 +28,7 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
     private final ReactApplicationContext context;
     private final Uri updateFileUri;
     private final McuManagerModule manager;
-    private FirmwareUpgradeManager dfuManager
+    private FirmwareUpgradeManager dfuManager;
     private int LastNotification = -1;
 
     public DeviceUpdate(BluetoothDevice device, Promise promise, ReactApplicationContext context, Uri updateFileUri, McuManagerModule manager) {
@@ -45,7 +45,7 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
 
     public void cancel() {
         this.dfuManager.cancel();
-        this.promise.reject("Update cancelled")
+        this.promise.reject("Update cancelled");
         this.manager.unsetUpdate();
     }
 
