@@ -55,11 +55,13 @@ class RNMcuManager: RCTEventEmitter {
     }
 
     func reject(_ code: String, _ message: String, _ error: NSError) {
+        self.updater!.releaseFileAndConnection();
         self.updater = nil;
         self.rejecter!(code, message, error);
     }
 
     func resolve(_ outcome: Bool) {
+        self.updater!.releaseFileAndConnection();
         self.updater = nil;
         self.resolver!(outcome);
     }

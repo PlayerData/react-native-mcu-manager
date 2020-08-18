@@ -2,12 +2,13 @@ import McuManager
 
 class DeviceUpdate{
     let deviceUUID: UUID
-    let file : Data
+    var file : Data?
     var lastNotification : Int
     let logDelegate : McuMgrLogDelegate
     let eventEmitter : RCTEventEmitter
     let manager: RNMcuManager
     var dfuManager: FirmwareUpgradeManager?
+    var bleTransport: McuMgrBleTransport?
 
     init(deviceUUID: UUID, fileURI: URL, eventEmitter: RCTEventEmitter, manager: RNMcuManager) throws {
         self.deviceUUID = deviceUUID
@@ -21,15 +22,16 @@ class DeviceUpdate{
 
     func startUpdate() {
         // Initialize the BLE transporter using a scanned peripheral
-        let bleTransport = McuMgrBleTransport(self.deviceUUID)
+        self.bleTransport = McuMgrBleTransport(self.deviceUUID)
 
         // Initialize the FirmwareUpgradeManager using the transport and a delegate
-        self.dfuManager = FirmwareUpgradeManager(transporter: bleTransport, delegate: self)
+        self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
 
         self.dfuManager!.logDelegate = self.logDelegate;
+        self.dfuManager!.estimatedSwapTime = 20.0;
         // Start the firmware upgrade with the image data
         do {
-            try self.dfuManager!.start(data: self.file as Data)
+            try self.dfuManager!.start(data: self.file! as Data)
         } catch {
             let error = NSError(domain: "", code: 200, userInfo: nil)
             self.manager.reject("error", "failed to start upgrade", error);
@@ -38,6 +40,13 @@ class DeviceUpdate{
 
     func cancel() {
         self.dfuManager!.cancel()
+    }
+
+    func releaseFileAndConnection() {
+        self.file = nil;
+        if let transport = self.bleTransport {
+            transport.close();
+        }
     }
 }
 
