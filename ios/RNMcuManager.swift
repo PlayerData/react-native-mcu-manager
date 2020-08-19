@@ -40,8 +40,8 @@ class RNMcuManager: RCTEventEmitter {
             self.updater!.startUpdate()
         } catch {
             self.updater = nil;
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            reject("error", "failed to open file", error);
+//            let error = NSError(domain: "", code: 200, userInfo: nil)
+            reject("error", error.localizedDescription, error);
             return
         }
     }
