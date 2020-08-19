@@ -15,8 +15,13 @@ class DeviceUpdate{
         self.lastNotification = -1
         self.eventEmitter = eventEmitter;
         self.manager = manager;
-        try self.file = Data(contentsOf: fileURI)
-
+        let filehandle: FileHandle? = try FileHandle(forReadingFrom: fileURI)
+            if filehandle == nil {
+                throw NSError(domain: "", code: 200, userInfo: nil)
+            } else {
+                self.file = Data(filehandle!.availableData)
+                filehandle?.closeFile()
+        }
         self.logDelegate = UpdateLogDelegate();
     }
 
