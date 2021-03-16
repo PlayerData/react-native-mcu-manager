@@ -1,8 +1,8 @@
 {
   "name": "react-native-mcu-manager",
   "title": "React Native Mcu Manager",
-  "version": "1.0.0",
-  "description": "TODO",
+  "version": "0.0.1",
+  "description": "React Native Wrappers for MCUMgr's Android / iOS client libraries",
   "main": "index.js",
   "files": [
     "README.md",
@@ -23,8 +23,8 @@
     "react-native"
   ],
   "author": {
-    "name": "Your Name",
-    "email": "yourname@email.com"
+    "name": "PlayerData",
+    "email": "dev@playerdata.co.uk"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",
