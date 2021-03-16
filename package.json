@@ -1,7 +1,7 @@
 {
-  "name": "react-native-mcu-manager",
+  "name": "@playerdata/react-native-mcu-manager",
   "title": "React Native Mcu Manager",
-  "version": "0.0.1",
+  "version": "0.0.0-development",
   "description": "React Native Wrappers for MCUMgr's Android / iOS client libraries",
   "main": "index.js",
   "files": [
@@ -12,12 +12,14 @@
     "react-native-mcu-manager.podspec"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-mcu-manager.git",
-    "baseUrl": "https://github.com/github_account/react-native-mcu-manager"
+    "url": "https://github.com/PlayerData/react-native-mcu-manager.git",
+    "baseUrl": "https://github.com/PlayerData/react-native-mcu-manager"
   },
   "keywords": [
     "react-native"
@@ -34,7 +36,11 @@
     "react-native": ">=0.60.0-rc.0 <1.0.x"
   },
   "devDependencies": {
+    "@commitlint/cli": "^12.0.1",
+    "@commitlint/config-conventional": "^12.0.1",
+    "husky": "^5.1.3",
     "react": "^16.13.1",
-    "react-native": "0.63.3"
+    "react-native": "0.63.3",
+    "semantic-release": "^17.4.2"
   }
 }
