@@ -4,10 +4,10 @@ MCUMgr DFU from React Native.
 
 ## Getting started
 
-`$ npm install react-native-mcu-manager --save`
+`$ npm install @playerdata/react-native-mcu-manager --save`
 ## Usage
 ```ts
-import McuManager, { ProgressEvent, UploadEvents } from 'react-native-mcu-manager';
+import McuManager, { ProgressEvent, UploadEvents } from '@playerdata/react-native-mcu-manager';
 
 const onUploadProgress = (progress: ProgressEvent) => {
   console.log("Upload progress: ", progress.bleId, progress.progress);
