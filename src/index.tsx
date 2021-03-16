@@ -4,7 +4,7 @@ type McuManagerType = {
   updateDevice: (
     macAddress: String,
     updateFileUriString: String
-  ) => Promise<null>;
+  ) => Promise<void>;
   cancel: () => void;
 };
 
