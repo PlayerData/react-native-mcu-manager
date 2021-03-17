@@ -6,25 +6,16 @@ Pod::Spec.new do |s|
   s.name         = "react-native-mcu-manager"
   s.version      = package["version"]
   s.summary      = package["description"]
-  s.description  = <<-DESC
-                  react-native-mcu-manager
-                   DESC
-  s.homepage     = "https://github.com/github_account/react-native-mcu-manager"
-  # brief license entry:
-  s.license      = "MIT"
-  # optional - use expanded license entry instead:
-  # s.license    = { :type => "MIT", :file => "LICENSE" }
-  s.authors      = { "Your Name" => "yourname@email.com" }
-  s.platforms    = { :ios => "9.0" }
-  s.source       = { :file => "https://github.com/github_account/react-native-mcu-manager.git", :tag => "#{s.version}" }
+  s.homepage     = package["homepage"]
+  s.license      = package["license"]
+  s.authors      = package["author"]
 
-  s.source_files = "ios/**/*.{h,c,m,swift}"
-  s.requires_arc = true
+  s.source_files = "ios/**/*.{h,m,mm,swift}"
 
-  s.dependency "React"
-  s.dependency 'McuManager', '~> 0.10.0'
-  # ...
-  # s.dependency "..."
+  s.platforms    = { :ios => "10.0" }
+  s.source       = { :git => "https://github.com/PlayerData/react-native-mcu-manager.git", :tag => "#{s.version}" }
 
-  s.static_framework = true
+  s.dependency "React-Core"
+  s.dependency "McuManager", "~> 0.10.0"
+
 end
