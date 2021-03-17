@@ -75,7 +75,7 @@ export default function App() {
         </Text>
 
         <Button
-          disabled={!selectedFile}
+          disabled={!selectedFile || !bleId}
           onPress={() => selectedFile && startUpdate(selectedFile.uri)}
           title="Start Update"
         />
