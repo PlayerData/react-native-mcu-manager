@@ -1,0 +1,35 @@
+name: Build
+on:
+  - pull_request
+jobs:
+  ios-build:
+    name: iOS Build
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - uses: actions/cache@v2
+        id: dependency-cache
+        with:
+          path: |
+            **/node_modules
+            example/ios/Pods
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        if: steps.dependency-cache.outputs.cache-hit != 'true'
+        run: |
+          yarn install
+          yarn example install
+          yarn pods
+
+      - name: Build Example App
+        working-directory: example
+        run: |
+          xcodebuild -workspace ios/McuManagerExample.xcworkspace -scheme McuManagerExample -configuration Debug -sdk iphonesimulator | xcpretty
