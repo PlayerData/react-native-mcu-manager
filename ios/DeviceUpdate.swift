@@ -10,6 +10,7 @@ class DeviceUpdate{
     var dfuManager: FirmwareUpgradeManager?
     var bleTransport: McuMgrBleTransport?
     var noFailures = true
+    var state: FirmwareUpgradeState = FirmwareUpgradeState.none
 
     init(deviceUUID: UUID, fileURI: URL, eventEmitter: RCTEventEmitter, manager: RNMcuManager) throws {
         self.deviceUUID = deviceUUID
@@ -88,6 +89,7 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
     /// - parameter previousState: The state before the change.
     /// - parameter newState: The new state.
     func upgradeStateDidChange(from previousState: FirmwareUpgradeState, to newState: FirmwareUpgradeState){
+        self.state = newState;
         if(self.eventEmitter.bridge != nil) {
             self.eventEmitter.sendEvent(
                 withName: "uploadStateChanged", body: [
@@ -127,7 +129,7 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
 //    /// - parameter state: The state in which the upgrade has failed.
 //    /// - parameter error: The error.
     func upgradeDidFail(inState state: FirmwareUpgradeState, with error: Error){
-        if (state == FirmwareUpgradeState.reset && noFailures) {
+        if (self.state == FirmwareUpgradeState.reset && noFailures) {
             //assume the device has taken slightly longer to come back up and has dropped bluetooth connection the first time this happens
             noFailures = false;
             releaseTransport();
