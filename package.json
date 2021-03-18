@@ -43,6 +43,7 @@
   },
   "homepage": "https://github.com/PlayerData/react-native-mcu-manager#readme",
   "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
