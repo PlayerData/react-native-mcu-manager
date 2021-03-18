@@ -16,6 +16,7 @@ RCT_EXTERN_METHOD(
     updateDevice:
     String
     updateFileUriString: String
+    updateOptions:(NSDictionary)updateOptions
     resolver:(RCTPromiseResolveBlock)resolve
     rejecter:(RCTPromiseRejectBlock)reject
 )

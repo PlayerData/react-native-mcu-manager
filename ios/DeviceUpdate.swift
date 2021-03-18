@@ -5,14 +5,16 @@ class DeviceUpdate{
     var file : Data?
     var lastNotification : Int
     let logDelegate : McuMgrLogDelegate
+    let options : Dictionary<String, Any>
     let eventEmitter : RCTEventEmitter
     let manager: RNMcuManager
     var dfuManager: FirmwareUpgradeManager?
     var bleTransport: McuMgrBleTransport?
 
-    init(deviceUUID: UUID, fileURI: URL, eventEmitter: RCTEventEmitter, manager: RNMcuManager) throws {
+    init(deviceUUID: UUID, fileURI: URL, options: Dictionary<String, Any>, eventEmitter: RCTEventEmitter, manager: RNMcuManager) throws {
         self.deviceUUID = deviceUUID
         self.lastNotification = -1
+        self.options = options
         self.eventEmitter = eventEmitter;
         self.manager = manager;
         let filehandle: FileHandle? = try FileHandle(forReadingFrom: fileURI)
@@ -32,8 +34,11 @@ class DeviceUpdate{
         // Initialize the FirmwareUpgradeManager using the transport and a delegate
         self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
 
-        self.dfuManager!.logDelegate = self.logDelegate;
-        self.dfuManager!.estimatedSwapTime = 20.0;
+        let estimatedSwapTime: TimeInterval = options["estimatedSwapTime"] as! TimeInterval
+
+        self.dfuManager!.logDelegate = self.logDelegate
+        self.dfuManager!.estimatedSwapTime = estimatedSwapTime
+
         // Start the firmware upgrade with the image data
         do {
             try self.dfuManager!.start(data: self.file! as Data)

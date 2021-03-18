@@ -16,7 +16,7 @@ class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContext
     }
 
     @ReactMethod
-    fun updateDevice(macAddress: String?, updateFileUriString: String?, promise: Promise) {
+    fun updateDevice(macAddress: String?, updateFileUriString: String?, updateOptions: ReadableMap, promise: Promise) {
         if (this.update != null) {
             promise.reject("an update is already running")
             return
@@ -25,7 +25,7 @@ class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContext
         val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)
         val updateFileUri = Uri.parse(updateFileUriString)
 
-        var update = DeviceUpdate(device, promise, reactContext, updateFileUri, this)
+        var update = DeviceUpdate(device, promise, reactContext, updateFileUri, updateOptions, this)
         this.update = update
 
         update.startUpdate()
