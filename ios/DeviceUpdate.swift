@@ -9,6 +9,7 @@ class DeviceUpdate{
     let manager: RNMcuManager
     var dfuManager: FirmwareUpgradeManager?
     var bleTransport: McuMgrBleTransport?
+    var noFailures = true
 
     init(deviceUUID: UUID, fileURI: URL, eventEmitter: RCTEventEmitter, manager: RNMcuManager) throws {
         self.deviceUUID = deviceUUID
@@ -49,6 +50,10 @@ class DeviceUpdate{
 
     func releaseFileAndConnection() {
         self.file = nil;
+        releaseTransport();
+    }
+
+    func releaseTransport(){
         if let transport = self.bleTransport {
             transport.close();
         }
@@ -122,6 +127,14 @@ extension DeviceUpdate: FirmwareUpgradeDelegate {
 //    /// - parameter state: The state in which the upgrade has failed.
 //    /// - parameter error: The error.
     func upgradeDidFail(inState state: FirmwareUpgradeState, with error: Error){
+        if (state == FirmwareUpgradeState.reset && noFailures) {
+            //assume the device has taken slightly longer to come back up and has dropped bluetooth connection the first time this happens
+            noFailures = false;
+            releaseTransport();
+            sleep(4);
+            startUpdate();
+            return;
+        }
         let error = NSError(domain: "", code: 200, userInfo: nil)
         self.manager.reject("error", "upgrade failed",  error);
     }
