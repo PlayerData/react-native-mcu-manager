@@ -2,6 +2,7 @@ package uk.co.playerdata.reactnativemcumanager;
 
 import android.bluetooth.BluetoothDevice;
 import android.net.Uri;
+import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -19,6 +20,7 @@ import io.runtime.mcumgr.dfu.FirmwareUpgradeManager;
 import io.runtime.mcumgr.exception.McuMgrException;
 
 public class DeviceUpdate implements FirmwareUpgradeCallback {
+    private final String TAG = "DeviceUpdate";
     private final BluetoothDevice device;
     private final Promise promise;
     private final ReactApplicationContext context;
@@ -27,6 +29,7 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
     private FirmwareUpgradeManager dfuManager;
     private int LastNotification = -1;
     private McuMgrTransport transport;
+    private Boolean noFailures = true;
 
     public DeviceUpdate(BluetoothDevice device, Promise promise, ReactApplicationContext context, Uri updateFileUri, McuManagerModule manager) {
         this.device = device;
@@ -86,6 +89,8 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
 
     @Override
     public void onStateChanged(FirmwareUpgradeManager.State prevState, FirmwareUpgradeManager.State newState) {
+        Log.i(TAG, "Leaving state: " + prevState);
+        Log.i(TAG, "Entering state: " + newState);
         WritableMap stateMap = Arguments.createMap();
 
         stateMap.putString("bleId", this.device.getAddress());
@@ -102,6 +107,21 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
 
     @Override
     public void onUpgradeFailed(FirmwareUpgradeManager.State state, McuMgrException error) {
+        if (state == FirmwareUpgradeManager.State.RESET && noFailures) {
+            Log.w(TAG, "experienced first time failure in reset state");
+            //assume the device has taken slightly longer to come back up and has dropped bluetooth connection the first time this happens
+            noFailures = false;
+            this.disconnectDevice();
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            doUpdate(updateFileUri);
+            return;
+        }
+        Log.e(TAG,"failed while in state: " + state);
+        Log.e(TAG,"with error: " + error);
         this.manager.unsetUpdate();
         this.disconnectDevice();
         this.promise.reject(error);
