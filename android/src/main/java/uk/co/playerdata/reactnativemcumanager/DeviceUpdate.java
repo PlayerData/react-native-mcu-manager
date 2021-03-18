@@ -6,10 +6,12 @@ import android.net.Uri;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 import io.runtime.mcumgr.McuMgrTransport;
 import io.runtime.mcumgr.ble.McuMgrBleTransport;
@@ -23,16 +25,18 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
     private final Promise promise;
     private final ReactApplicationContext context;
     private final Uri updateFileUri;
+    private final ReadableMap updateOptions;
     private final McuManagerModule manager;
     private FirmwareUpgradeManager dfuManager;
     private int LastNotification = -1;
     private McuMgrTransport transport;
 
-    public DeviceUpdate(BluetoothDevice device, Promise promise, ReactApplicationContext context, Uri updateFileUri, McuManagerModule manager) {
+    public DeviceUpdate(BluetoothDevice device, Promise promise, ReactApplicationContext context, Uri updateFileUri, ReadableMap updateOptions, McuManagerModule manager) {
         this.device = device;
         this.promise = promise;
         this.context = context;
         this.updateFileUri = updateFileUri;
+        this.updateOptions = updateOptions;
         this.manager = manager;
     }
 
@@ -56,6 +60,9 @@ public class DeviceUpdate implements FirmwareUpgradeCallback {
     private void doUpdate(Uri updateBundleUri) {
         this.transport = new McuMgrBleTransport(this.context, device);
         this.dfuManager = new FirmwareUpgradeManager(this.transport, this);
+
+        int estimatedSwapTime = this.updateOptions.getInt("estimatedSwapTime") * 1000;
+        this.dfuManager.setEstimatedSwapTime(estimatedSwapTime);
 
         try {
             InputStream stream = context.getContentResolver().openInputStream(updateBundleUri);

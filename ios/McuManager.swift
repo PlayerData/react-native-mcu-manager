@@ -18,7 +18,7 @@ class RNMcuManager: RCTEventEmitter {
     }
 
     @objc
-    func updateDevice(_ macAddress: String, updateFileUriString: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func updateDevice(_ macAddress: String, updateFileUriString: String, updateOptions: Dictionary<String, Any>, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         if self.updater != nil {
             let error = NSError(domain: "", code: 200, userInfo: nil)
             return reject("error", "an update is already running", error);
@@ -36,7 +36,7 @@ class RNMcuManager: RCTEventEmitter {
             return reject("error", "failed to parse file uri as url", error);
         }
         do {
-            self.updater = try DeviceUpdate(deviceUUID: uuid, fileURI: url, eventEmitter: self, manager: self)
+            self.updater = try DeviceUpdate(deviceUUID: uuid, fileURI: url, options: updateOptions, eventEmitter: self, manager: self)
             self.updater!.startUpdate()
         } catch {
             self.updater = nil;

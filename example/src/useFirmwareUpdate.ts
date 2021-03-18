@@ -32,7 +32,9 @@ const useFirmwareUpdate = () => {
   }, []);
 
   const startUpdate = (updateFileUri: string): Promise<void> =>
-    McuManager.updateDevice(bleId!, updateFileUri).catch((e: Error) => {
+    McuManager.updateDevice(bleId!, updateFileUri, {
+      estimatedSwapTime: 60,
+    }).catch((e: Error) => {
       setState(e.message);
     });
 
