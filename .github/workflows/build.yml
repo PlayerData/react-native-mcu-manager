@@ -57,7 +57,20 @@ jobs:
           yarn example install
           yarn pods
 
+      - uses: actions/cache@v2
+        id: derived-data-cache
+        with:
+          path: derivedData
+          key: ${{ runner.os }}-build-derived-data-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-build-derived-data-
+
       - name: Build Example App
         working-directory: example
         run: |
-          xcodebuild -workspace ios/McuManagerExample.xcworkspace -scheme McuManagerExample -configuration Debug -sdk iphonesimulator | xcpretty
+          xcodebuild -workspace ios/McuManagerExample.xcworkspace \
+            -scheme McuManagerExample \
+            -configuration Debug \
+            -IgnoreFileSystemDeviceInodeChanges=YES \
+            -derivedDataPath derivedData \
+            -sdk iphonesimulator | xcpretty
