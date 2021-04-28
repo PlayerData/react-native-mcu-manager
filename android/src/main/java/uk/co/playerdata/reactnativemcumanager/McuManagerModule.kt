@@ -7,7 +7,7 @@ import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 
 class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-    private val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
     var update: DeviceUpdate? = null
 
@@ -19,6 +19,11 @@ class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContext
     fun updateDevice(macAddress: String?, updateFileUriString: String?, updateOptions: ReadableMap, promise: Promise) {
         if (this.update != null) {
             promise.reject("an update is already running")
+            return
+        }
+
+        if (this.bluetoothAdapter == null) {
+            promise.reject("no bluetooth adapter")
             return
         }
 
