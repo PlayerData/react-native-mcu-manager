@@ -8,6 +8,7 @@ class RNMcuManager: RCTEventEmitter {
     var rejecter: RCTPromiseRejectBlock?
     var updater : DeviceUpdate?
     override init() {
+        super.init()
     }
 
     @objc override func supportedEvents() -> [String] {
