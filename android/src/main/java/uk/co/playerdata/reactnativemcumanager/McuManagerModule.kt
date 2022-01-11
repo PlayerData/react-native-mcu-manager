@@ -57,4 +57,14 @@ class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContext
     fun unsetUpdate() {
         this.update = null
     }
+
+    @ReactMethod
+    fun addListener(eventName: String) {
+        // Keep: Required for RN built in Event Emitter Calls.
+    }
+
+    @ReactMethod
+    fun removeListeners(count: Integer) {
+        // Keep: Required for RN built in Event Emitter Calls.
+    }
 }
