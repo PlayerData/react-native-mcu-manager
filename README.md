@@ -33,7 +33,7 @@ To get started with the project, run `yarn` in the root directory to install the
 ```sh
 yarn install
 yarn example install
-yarn pods
+yarn example pods
 ```
 
 While developing, you can run the [example app](/example/) to test your changes.
