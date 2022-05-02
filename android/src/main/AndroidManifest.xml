@@ -2,11 +2,8 @@
           package="uk.co.playerdata.reactnativemcumanager">
 
     <uses-permission
-        android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="28"/>
-    <uses-permission
         android:name="android.permission.BLUETOOTH_ADMIN"
-        android:maxSdkVersion="28"/>
+        android:maxSdkVersion="30"/>
 
     <uses-permission
         android:name="android.permission.ACCESS_COARSE_LOCATION"
