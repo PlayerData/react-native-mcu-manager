@@ -21,12 +21,18 @@ const useFirmwareUpdate = () => {
       setState(evt.state);
     };
 
-    UploadEvents.addListener('uploadProgress', onUploadProgress);
-    UploadEvents.addListener('uploadStateChanged', onUploadStateChanged);
+    const uploadProgressListener = UploadEvents.addListener(
+      'uploadProgress',
+      onUploadProgress
+    );
+    const uploadStateChangedListener = UploadEvents.addListener(
+      'uploadStateChanged',
+      onUploadStateChanged
+    );
 
     return function cleanup() {
-      UploadEvents.removeListener('uploadStateChanged', onUploadStateChanged);
-      UploadEvents.removeListener('uploadProgress', onUploadProgress);
+      uploadProgressListener.remove();
+      uploadStateChangedListener.remove();
       McuManager.cancel();
     };
   }, []);

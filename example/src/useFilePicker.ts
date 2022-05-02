@@ -22,7 +22,7 @@ const useFilePicker = (): {
     fileDelimiter: string
   ) => {
     try {
-      const res = await DocumentPicker.pick(pickerArgs);
+      const res = await DocumentPicker.pickSingle(pickerArgs);
       const uri = res.fileCopyUri ? res.fileCopyUri : res.uri;
       setSelectedFile({ uri, name: uri.split(fileDelimiter).slice(-1)[0] });
     } catch (err) {

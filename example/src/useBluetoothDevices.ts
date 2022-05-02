@@ -13,7 +13,7 @@ const useBluetoothDevices = () => {
       { allowDuplicates: false },
       (e, scannedDevice) => {
         if (e) {
-          setError(e.message);
+          setError(`${e.message} - ${e.reason}`);
         }
 
         if (!scannedDevice) return;
