@@ -5,6 +5,7 @@ import {
   FlatList,
   Modal,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -18,13 +19,11 @@ import useFirmwareUpdate from './useFirmwareUpdate';
 
 const styles = StyleSheet.create({
   root: {
-    paddingTop: 16,
+    padding: 16,
   },
 
   block: {
-    marginRight: 16,
     marginBottom: 16,
-    marginLeft: 16,
   },
 
   list: {
@@ -49,7 +48,7 @@ export default function App() {
 
   return (
     <SafeAreaView>
-      <View style={styles.root}>
+      <ScrollView contentContainerStyle={styles.root}>
         <Text style={styles.block}>Step 1 - Select Device to Update</Text>
 
         <View style={styles.block}>
@@ -136,7 +135,7 @@ export default function App() {
             title="Start Update"
           />
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
