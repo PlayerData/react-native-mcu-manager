@@ -125,6 +125,6 @@ dependencies {
   // noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
 
-  implementation 'io.runtime.mcumgr:mcumgr-ble:0.11.0'
+  implementation 'no.nordicsemi.android:mcumgr-ble:1.2.0'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
