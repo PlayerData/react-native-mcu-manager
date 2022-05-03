@@ -1,14 +1,12 @@
-name: Build and Release
+name: Lint
 
 on:
-  push:
-    branches: [main]
   pull_request:
     types: [opened, synchronize]
 
 jobs:
-  build:
-    name: Build and Release
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,11 +20,5 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Build
-        run: yarn build
-
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+      - name: Lint
+        run: yarn lint
