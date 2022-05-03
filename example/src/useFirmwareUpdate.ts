@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 import McuManager, {
   ProgressEvent,
   UploadEvents,
+  UpgradeMode,
 } from '@playerdata/react-native-mcu-manager';
 
-const useFirmwareUpdate = () => {
+const useFirmwareUpdate = (upgradeMode?: UpgradeMode) => {
   const [bleId, setBleId] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [state, setState] = useState('');
@@ -40,6 +41,7 @@ const useFirmwareUpdate = () => {
   const startUpdate = (updateFileUri: string): Promise<void> =>
     McuManager.updateDevice(bleId!, updateFileUri, {
       estimatedSwapTime: 60,
+      upgradeMode,
     }).catch((e: Error) => {
       setState(e.message);
     });
