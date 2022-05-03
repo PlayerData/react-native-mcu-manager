@@ -34,7 +34,7 @@
     "android",
     "mcumgr"
   ],
-  "repository": "https://github.com/PlayerData/react-native-mcu-manager",
+  "repository": "https://github.com/PlayerData/react-native-mcu-manager.git",
   "author": "PlayerData <dev@playerdata.co.uk> (https://github.com/PlayerData)",
   "license": "MIT",
   "bugs": {
