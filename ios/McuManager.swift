@@ -4,65 +4,52 @@ import CoreBluetooth
 
 @objc(RNMcuManager)
 class RNMcuManager: RCTEventEmitter {
-    var resolver: RCTPromiseResolveBlock?
-    var rejecter: RCTPromiseRejectBlock?
-    var updater : DeviceUpdate?
+    var upgrades: Dictionary<String, DeviceUpgrade>
+
     override init() {
+        self.upgrades = [:]
+
         super.init()
     }
 
     @objc override func supportedEvents() -> [String] {
         return [
             "uploadProgress",
-            "uploadStateChanged"
+            "upgradeStateChanged"
         ]
     }
 
     @objc
-    func updateDevice(_ macAddress: String, updateFileUriString: String, updateOptions: Dictionary<String, Any>, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        if self.updater != nil {
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            return reject("error", "an update is already running", error);
-        }
-        self.resolver = resolve;
-        self.rejecter = reject;
-        guard let uuid = UUID(uuidString: macAddress) else {
-            self.updater = nil;
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            return reject("error", "failed to parse uuid", error);
-        }
-        guard let url = URL(string: updateFileUriString) else {
-            self.updater = nil;
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            return reject("error", "failed to parse file uri as url", error);
-        }
-        do {
-            self.updater = try DeviceUpdate(deviceUUID: uuid, fileURI: url, options: updateOptions, eventEmitter: self, manager: self)
-            self.updater!.startUpdate()
-        } catch {
-            self.updater = nil;
-            reject("error", "failed to open file", error);
-            return
-        }
+    func createUpgrade(_ id: String, bleId: String, updateFileUriString: String, updateOptions: Dictionary<String, Any>) -> Void {
+        upgrades[id] = DeviceUpgrade(id: id, bleId: bleId, fileURI: updateFileUriString, options: updateOptions, eventEmitter: self)
     }
 
     @objc
-    func cancel() {
-        if let unwrappedUpdater = self.updater {
-            unwrappedUpdater.cancel();
+    func runUpgrade(_ id: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        guard let upgrade = self.upgrades[id] else {
+            reject("ID_NOT_FOUND", "Upgrade object not found", nil)
+            return
         }
-        self.updater = nil;
+
+        upgrade.startUpgrade(resolver: resolve, rejecter: reject)
     }
 
-    func reject(_ code: String, _ message: String, _ error: NSError) {
-        self.updater!.releaseFileAndConnection();
-        self.updater = nil;
-        self.rejecter!(code, message, error);
+    @objc
+    func cancelUpgrade(_ id: String) -> Void {
+        guard let upgrade = self.upgrades[id] else {
+            return
+        }
+
+        upgrade.cancel();
     }
 
-    func resolve(_ outcome: Bool) {
-        self.updater!.releaseFileAndConnection();
-        self.updater = nil;
-        self.resolver!(outcome);
+    @objc
+    func destroyUpgrade(_ id: String) -> Void {
+        guard let upgrade = self.upgrades[id] else {
+            return
+        }
+
+        upgrade.cancel();
+        self.upgrades[id] = nil
     }
 }
