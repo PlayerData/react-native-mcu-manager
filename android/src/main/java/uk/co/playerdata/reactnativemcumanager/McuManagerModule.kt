@@ -8,38 +8,56 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 
 class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-
-    var update: DeviceUpdate? = null
+    private val upgrades: MutableMap<String, DeviceUpgrade> = mutableMapOf()
 
     override fun getName(): String {
         return "McuManager"
     }
 
     @ReactMethod
-    fun updateDevice(macAddress: String?, updateFileUriString: String?, updateOptions: ReadableMap, promise: Promise) {
-        if (this.update != null) {
-            promise.reject("an update is already running")
-            return
-        }
-
+    fun createUpgrade(id: String, macAddress: String?, updateFileUriString: String?, updateOptions: ReadableMap) {
         if (this.bluetoothAdapter == null) {
-            promise.reject("no bluetooth adapter")
-            return
+            throw Exception("no bluetooth adapter")
+        }
+        if (upgrades.contains(id)){
+            throw Exception("update ID already present")
         }
 
         val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)
         val updateFileUri = Uri.parse(updateFileUriString)
 
-        var update = DeviceUpdate(device, promise, reactContext, updateFileUri, updateOptions, this)
-        this.update = update
-
-        update.startUpdate()
+        val upgrade = DeviceUpgrade(id, device, reactContext, updateFileUri, updateOptions, this)
+        this.upgrades[id] = upgrade
     }
 
     @ReactMethod
-    fun cancel() {
-        this.update?.cancel()
-        this.update = null
+    fun runUpgrade(id: String, promise: Promise) {
+        if (!upgrades.contains(id)){
+            promise.reject(Exception("update ID not present"))
+        }
+
+        upgrades[id]!!.startUpgrade(promise)
+    }
+
+    @ReactMethod
+    fun cancel(id: String) {
+        if (!upgrades.contains(id)){
+            Log.w(this.TAG,"can't cancel update ID ($id} not present")
+            return
+        }
+
+        upgrades[id]!!.cancel()
+    }
+
+    @ReactMethod
+    fun destroyUpgrade(id: String) {
+        if (!upgrades.contains(id)){
+            Log.w(this.TAG,"can't destroy update ID ($id} not present")
+            return
+        }
+
+        upgrades[id]!!.cancel()
+        upgrades.remove(id)
     }
 
     fun updateProgressCB(progress: WritableMap?) {
@@ -48,14 +66,10 @@ class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContext
                 .emit("uploadProgress", progress)
     }
 
-    fun updateStateCB(state: WritableMap?) {
+    fun upgradeStateCB(state: WritableMap?) {
         reactContext
                 .getJSModule(RCTDeviceEventEmitter::class.java)
-                .emit("uploadStateChanged", state)
-    }
-
-    fun unsetUpdate() {
-        this.update = null
+                .emit("upgradeStateChanged", state)
     }
 
     @ReactMethod
