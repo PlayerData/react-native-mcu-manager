@@ -1941,6 +1941,11 @@ extglob@^2.0.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+fast-base64-decode@^1.0.0:
+  version "1.0.0"
+  resolved "https://npm.playerdata.co.uk/fast-base64-decode/-/fast-base64-decode-1.0.0.tgz#b434a0dd7d92b12b43f26819300d2dafb83ee418"
+  integrity sha512-qwaScUgUGBYeDNRnbc/KyllVU88Jk1pRHPStuF/lO7B0/RTRLj7U0lkdTAutlBblY08rwZDff6tNU9cjv6j//Q==
+
 fb-watchman@^2.0.0:
   version "2.0.1"
   resolved "https://npm.playerdata.co.uk/fb-watchman/-/fb-watchman-2.0.1.tgz#fc84fb39d2709cf3ff6d743706157bb5708a8a85"
@@ -3462,6 +3467,11 @@ plist@^3.0.2, plist@^3.0.5:
     base64-js "^1.5.1"
     xmlbuilder "^9.0.7"
 
+pod-install@^0.1.35:
+  version "0.1.35"
+  resolved "https://npm.playerdata.co.uk/pod-install/-/pod-install-0.1.35.tgz#afb1f8265cd958b661f23f8524ea20d8541d354a"
+  integrity sha512-FR/s1CYcbaGOFN2/fR405FtErJ1VyVrL0s83w8AEJ2kEwrr65pPKHPeX8hXb79UJgraKKxruZM7IiUyj1G9MUw==
+
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://npm.playerdata.co.uk/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
@@ -3558,6 +3568,13 @@ react-native-document-picker@^5.0.2:
   integrity sha512-vFw9pHJywEY+xeMGM8LgfZYMw12bXQNi8vf2DblFLh11lSLf6J99nZweAGVDB8Va+Fg6CP+nLfWG2bWgL4XmMw==
   dependencies:
     invariant "^2.2.4"
+
+react-native-get-random-values@^1.8.0:
+  version "1.8.0"
+  resolved "https://npm.playerdata.co.uk/react-native-get-random-values/-/react-native-get-random-values-1.8.0.tgz#1cb4bd4bd3966a356e59697b8f372999fe97cb16"
+  integrity sha512-H/zghhun0T+UIJLmig3+ZuBCvF66rdbiWUfRSNS6kv5oDSpa1ZiVyvRWtuPesQpT8dXj+Bv7WJRQOUP+5TB1sA==
+  dependencies:
+    fast-base64-decode "^1.0.0"
 
 react-native-gradle-plugin@^0.0.6:
   version "0.0.6"
