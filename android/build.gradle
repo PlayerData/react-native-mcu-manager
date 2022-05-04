@@ -5,6 +5,7 @@ buildscript {
   repositories {
     google()
     jcenter()
+    maven { url 'https://jitpack.io' }
   }
 
   dependencies {
@@ -125,6 +126,6 @@ dependencies {
   // noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
 
-  implementation 'no.nordicsemi.android:mcumgr-ble:1.2.0'
+  implementation 'com.github.PlayerData:Android-nRF-Connect-Device-Manager:51832e4e48d6bd7c102ae66e705a8433b9bb7312'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
