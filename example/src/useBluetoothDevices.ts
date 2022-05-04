@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BleManager, Device } from 'react-native-ble-plx';
 import { sortBy, uniqBy } from 'lodash';
 
@@ -6,6 +6,7 @@ const useBluetoothDevices = () => {
   const [bleManager] = useState(() => new BleManager());
   const [error, setError] = useState<string | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
+  const deviceIdRef = useRef<string[]>([]);
 
   useEffect(() => {
     bleManager.startDeviceScan(
@@ -17,6 +18,9 @@ const useBluetoothDevices = () => {
         }
 
         if (!scannedDevice) return;
+
+        if (deviceIdRef.current.includes(scannedDevice.id)) return;
+        deviceIdRef.current.push(scannedDevice.id);
 
         setDevices((oldDevices) =>
           sortBy(uniqBy([...oldDevices, scannedDevice], 'id'), 'name')
