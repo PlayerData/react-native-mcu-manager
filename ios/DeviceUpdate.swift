@@ -1,5 +1,11 @@
 import McuManager
 
+enum JSUpgradeMode: Int {
+    case TEST_AND_CONFIRM = 1
+    case CONFIRM_ONLY = 2
+    case TEST_ONLY = 3
+}
+
 class DeviceUpdate{
     let deviceUUID: UUID
     var file : Data?
@@ -38,6 +44,7 @@ class DeviceUpdate{
 
         self.dfuManager!.logDelegate = self.logDelegate
         self.dfuManager!.estimatedSwapTime = estimatedSwapTime
+        self.dfuManager!.mode = self.getMode();
 
         // Start the firmware upgrade with the image data
         do {
@@ -56,6 +63,25 @@ class DeviceUpdate{
         self.file = nil;
         if let transport = self.bleTransport {
             transport.close();
+        }
+    }
+
+    private func getMode() -> FirmwareUpgradeMode {
+        if self.options["upgradeMode"] == nil {
+            return FirmwareUpgradeMode.testAndConfirm
+        }
+
+        guard let jsMode = JSUpgradeMode(rawValue: self.options["upgradeMode"] as! Int) else {
+            return FirmwareUpgradeMode.testAndConfirm
+        }
+
+        switch jsMode {
+        case .TEST_AND_CONFIRM:
+            return FirmwareUpgradeMode.testAndConfirm
+        case .TEST_ONLY:
+            return FirmwareUpgradeMode.testOnly
+        case .CONFIRM_ONLY:
+            return FirmwareUpgradeMode.confirmOnly
         }
     }
 }

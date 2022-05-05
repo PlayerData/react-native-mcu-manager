@@ -13,6 +13,12 @@ import io.runtime.mcumgr.dfu.FirmwareUpgradeManager
 import io.runtime.mcumgr.exception.McuMgrException
 import java.io.IOException
 
+val UpgradeModes = mapOf(
+    1 to FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM,
+    2 to FirmwareUpgradeManager.Mode.CONFIRM_ONLY,
+    3 to FirmwareUpgradeManager.Mode.TEST_ONLY
+)
+
 class DeviceUpdate(
         private val device: BluetoothDevice, private val promise: Promise, private val context: ReactApplicationContext,
         private val updateFileUri: Uri, private val updateOptions: ReadableMap, private val manager: McuManagerModule
@@ -39,6 +45,9 @@ class DeviceUpdate(
 
     private fun doUpdate(updateBundleUri: Uri) {
         val estimatedSwapTime = updateOptions.getInt("estimatedSwapTime") * 1000
+        val modeInt = if (updateOptions.hasKey("upgradeMode"))  updateOptions.getInt("upgradeMode") else 1
+        val upgradeMode = UpgradeModes[modeInt] ?: FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM
+
         dfuManager.setEstimatedSwapTime(estimatedSwapTime)
 
         try {
@@ -47,7 +56,7 @@ class DeviceUpdate(
 
             stream.read(imageData)
 
-            dfuManager.setMode(FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM)
+            dfuManager.setMode(upgradeMode)
             dfuManager.start(imageData)
         } catch (e: IOException) {
             e.printStackTrace()

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BleManager, Device } from 'react-native-ble-plx';
-import { uniqBy } from 'lodash';
+import { sortBy, uniqBy } from 'lodash';
 
 const useBluetoothDevices = () => {
   const [bleManager] = useState(() => new BleManager());
@@ -19,7 +19,7 @@ const useBluetoothDevices = () => {
         if (!scannedDevice) return;
 
         setDevices((oldDevices) =>
-          uniqBy([...oldDevices, scannedDevice], 'id')
+          sortBy(uniqBy([...oldDevices, scannedDevice], 'id'), 'name')
         );
       }
     );

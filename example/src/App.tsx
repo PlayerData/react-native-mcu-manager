@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
-  StyleSheet,
-  View,
-  Text,
   Button,
   FlatList,
+  Modal,
   SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
+
+import { UpgradeMode } from '@playerdata/react-native-mcu-manager';
 
 import useBluetoothDevices from './useBluetoothDevices';
 import useFilePicker from './useFilePicker';
@@ -15,71 +19,123 @@ import useFirmwareUpdate from './useFirmwareUpdate';
 
 const styles = StyleSheet.create({
   root: {
-    height: '100%',
-    flex: 1,
+    padding: 16,
   },
 
   block: {
-    marginRight: 16,
     marginBottom: 16,
-    marginLeft: 16,
   },
 
   list: {
-    flexGrow: 1,
+    padding: 16,
   },
 });
 
 export default function App() {
+  const [devicesListVisible, setDevicesListVisible] = useState(false);
+  const [selectedDeviceName, setSelectedDeviceName] = useState<string | null>(
+    null
+  );
+  const [upgradeMode, setUpgradeMode] = useState<UpgradeMode | undefined>(
+    undefined
+  );
+
   const { devices, error: scanError } = useBluetoothDevices();
   const { selectedFile, filePickerError, pickFile } = useFilePicker();
-  const { bleId, progress, setBleId, startUpdate, state } = useFirmwareUpdate();
+  const { bleId, progress, setBleId, startUpdate, state } = useFirmwareUpdate(
+    upgradeMode
+  );
 
   return (
-    <SafeAreaView style={styles.root}>
-      <Text style={styles.block}>Step 1 - Select Device to Update</Text>
+    <SafeAreaView>
+      <ScrollView contentContainerStyle={styles.root}>
+        <Text style={styles.block}>Step 1 - Select Device to Update</Text>
 
-      <FlatList
-        data={devices}
-        keyExtractor={({ id }) => id}
-        renderItem={({ item }) => (
-          <View>
-            <Text>{item.name || item.id}</Text>
+        <View style={styles.block}>
+          {bleId && (
+            <>
+              <Text>Selected:</Text>
+              <Text>{selectedDeviceName}</Text>
+            </>
+          )}
+          <Button
+            onPress={() => setDevicesListVisible(true)}
+            title="Select Device"
+          />
+        </View>
 
-            <Button
-              disabled={bleId === item.id}
-              title="Select"
-              onPress={() => setBleId(item.id)}
-            />
-          </View>
-        )}
-        ListHeaderComponent={() => <Text>{scanError}</Text>}
-        style={[styles.block, styles.list]}
-      />
+        <Modal visible={devicesListVisible}>
+          <FlatList
+            contentContainerStyle={styles.list}
+            data={devices}
+            keyExtractor={({ id }) => id}
+            renderItem={({ item }) => (
+              <View>
+                <Text>{item.name || item.id}</Text>
 
-      <Text style={styles.block}>Step 2 - Select Update File</Text>
+                <Button
+                  title="Select"
+                  onPress={() => {
+                    setBleId(item.id);
+                    setSelectedDeviceName(item.name);
+                    setDevicesListVisible(false);
+                  }}
+                />
+              </View>
+            )}
+            ListHeaderComponent={() => <Text>{scanError}</Text>}
+          />
+        </Modal>
 
-      <View style={styles.block}>
-        <Text>
-          {selectedFile?.name} {filePickerError}
-        </Text>
-        <Button onPress={() => pickFile()} title="Pick File" />
-      </View>
+        <Text style={styles.block}>Step 2 - Select Update File</Text>
 
-      <Text style={styles.block}>Step 3 - Update</Text>
+        <View style={styles.block}>
+          <Text>
+            {selectedFile?.name} {filePickerError}
+          </Text>
+          <Button onPress={() => pickFile()} title="Pick File" />
+        </View>
 
-      <View style={styles.block}>
-        <Text>Update Progress / State:</Text>
-        <Text>
-          {state}: {progress}
-        </Text>
+        <Text style={styles.block}>Step 3 - Upgrade Mode</Text>
 
-        <Button
-          disabled={!selectedFile || !bleId}
-          onPress={() => selectedFile && startUpdate(selectedFile.uri)}
-          title="Start Update"
-        />
-      </View>
+        <View style={styles.block}>
+          <Button
+            disabled={upgradeMode === undefined}
+            title="undefined"
+            onPress={() => setUpgradeMode(undefined)}
+          />
+          <Button
+            disabled={upgradeMode === UpgradeMode.TEST_AND_CONFIRM}
+            title="TEST_AND_CONFIRM"
+            onPress={() => setUpgradeMode(UpgradeMode.TEST_AND_CONFIRM)}
+          />
+          <Button
+            disabled={upgradeMode === UpgradeMode.CONFIRM_ONLY}
+            title="CONFIRM_ONLY"
+            onPress={() => setUpgradeMode(UpgradeMode.CONFIRM_ONLY)}
+          />
+          <Button
+            disabled={upgradeMode === UpgradeMode.TEST_ONLY}
+            title="TEST_ONLY"
+            onPress={() => setUpgradeMode(UpgradeMode.TEST_ONLY)}
+          />
+        </View>
+
+        <Text style={styles.block}>Step 4 - Update</Text>
+
+        <View style={styles.block}>
+          <Text>Update Progress / State:</Text>
+          <Text>
+            {state}: {progress}
+          </Text>
+
+          <Button
+            disabled={!selectedFile || !bleId}
+            onPress={() => selectedFile && startUpdate(selectedFile.uri)}
+            title="Start Update"
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
