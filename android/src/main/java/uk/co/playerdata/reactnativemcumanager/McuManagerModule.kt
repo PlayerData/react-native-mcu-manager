@@ -3,10 +3,12 @@ package uk.co.playerdata.reactnativemcumanager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.net.Uri
+import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 
 class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+    private val TAG = "McuManagerModule"
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private val upgrades: MutableMap<String, DeviceUpgrade> = mutableMapOf()
 

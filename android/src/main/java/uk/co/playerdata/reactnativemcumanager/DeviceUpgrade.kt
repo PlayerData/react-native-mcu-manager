@@ -2,6 +2,7 @@ package uk.co.playerdata.reactnativemcumanager
 
 import android.bluetooth.BluetoothDevice
 import android.net.Uri
+import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -27,21 +28,31 @@ class DeviceUpgrade(
     private val updateOptions: ReadableMap,
     private val manager: McuManagerModule
 ) : FirmwareUpgradeCallback {
-
+    private val TAG = "DeviceUpdate"
     private var lastNotification = -1
     private var transport = McuMgrBleTransport(context, device)
     private var dfuManager = FirmwareUpgradeManager(transport, this)
-    private var promise: Promise? = null
+    private var unsafePromise: Promise? = null
+    private var promiseComplete = false
 
     fun startUpgrade(promise: Promise) {
-        this.promise = promise
+        unsafePromise = promise
         doUpdate(updateFileUri)
+    }
+
+    fun withSafePromise(block: (promise: Promise) -> Unit) {
+        val promise = unsafePromise
+        if (promise != null && !promiseComplete){
+            block(promise)
+            promiseComplete = true
+        }
     }
 
     fun cancel() {
         dfuManager.cancel()
         disconnectDevice()
-        promise?.reject(InterruptedException("Update cancelled"))
+        Log.v(this.TAG, "Cancel")
+        withSafePromise { promise -> promise.reject(InterruptedException("Update cancelled")) }
     }
 
     private fun disconnectDevice() {
@@ -66,11 +77,13 @@ class DeviceUpgrade(
         } catch (e: IOException) {
             e.printStackTrace()
             disconnectDevice()
-            promise?.reject(e)
+            Log.v(this.TAG, "IOException")
+            withSafePromise { promise -> promise.reject(e) }
         } catch (e: McuMgrException) {
             e.printStackTrace()
             disconnectDevice()
-            promise?.reject(e)
+            Log.v(this.TAG, "mcu exception")
+            withSafePromise { promise -> promise.reject(e) }
         }
     }
 
@@ -85,17 +98,17 @@ class DeviceUpgrade(
 
     override fun onUpgradeCompleted() {
         disconnectDevice()
-        promise?.resolve(null)
+        withSafePromise { promise -> promise.resolve(null) }
     }
 
     override fun onUpgradeFailed(state: FirmwareUpgradeManager.State, error: McuMgrException) {
         disconnectDevice()
-        promise?.reject(error)
+        withSafePromise { promise -> promise.reject(error) }
     }
 
     override fun onUpgradeCanceled(state: FirmwareUpgradeManager.State) {
         disconnectDevice()
-        promise?.reject(InterruptedException("Update cancelled"))
+        withSafePromise { promise -> promise.reject(InterruptedException("Update cancelled")) }
     }
 
     override fun onUploadProgressChanged(bytesSent: Int, imageSize: Int, timestamp: Long) {
