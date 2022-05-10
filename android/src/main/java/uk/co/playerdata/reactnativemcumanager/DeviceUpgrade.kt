@@ -2,6 +2,7 @@ package uk.co.playerdata.reactnativemcumanager
 
 import android.bluetooth.BluetoothDevice
 import android.net.Uri
+import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -19,24 +20,39 @@ val UpgradeModes = mapOf(
     3 to FirmwareUpgradeManager.Mode.TEST_ONLY
 )
 
-class DeviceUpdate(
-        private val device: BluetoothDevice, private val promise: Promise, private val context: ReactApplicationContext,
-        private val updateFileUri: Uri, private val updateOptions: ReadableMap, private val manager: McuManagerModule
-        ) : FirmwareUpgradeCallback {
-
+class DeviceUpgrade(
+    private val id: String,
+    device: BluetoothDevice,
+    private val context: ReactApplicationContext,
+    private val updateFileUri: Uri,
+    private val updateOptions: ReadableMap,
+    private val manager: McuManagerModule
+) : FirmwareUpgradeCallback {
+    private val TAG = "DeviceUpdate"
     private var lastNotification = -1
     private var transport = McuMgrBleTransport(context, device)
     private var dfuManager = FirmwareUpgradeManager(transport, this)
+    private var unsafePromise: Promise? = null
+    private var promiseComplete = false
 
-    fun startUpdate() {
+    fun startUpgrade(promise: Promise) {
+        unsafePromise = promise
         doUpdate(updateFileUri)
+    }
+
+    fun withSafePromise(block: (promise: Promise) -> Unit) {
+        val promise = unsafePromise
+        if (promise != null && !promiseComplete){
+            block(promise)
+            promiseComplete = true
+        }
     }
 
     fun cancel() {
         dfuManager.cancel()
         disconnectDevice()
-        promise.reject("Update cancelled")
-        manager.unsetUpdate()
+        Log.v(this.TAG, "Cancel")
+        withSafePromise { promise -> promise.reject(InterruptedException("Update cancelled")) }
     }
 
     private fun disconnectDevice() {
@@ -61,13 +77,13 @@ class DeviceUpdate(
         } catch (e: IOException) {
             e.printStackTrace()
             disconnectDevice()
-            manager.unsetUpdate()
-            promise.reject(e)
+            Log.v(this.TAG, "IOException")
+            withSafePromise { promise -> promise.reject(e) }
         } catch (e: McuMgrException) {
             e.printStackTrace()
             disconnectDevice()
-            manager.unsetUpdate()
-            promise.reject(e)
+            Log.v(this.TAG, "mcu exception")
+            withSafePromise { promise -> promise.reject(e) }
         }
     }
 
@@ -75,27 +91,24 @@ class DeviceUpdate(
 
     override fun onStateChanged(prevState: FirmwareUpgradeManager.State, newState: FirmwareUpgradeManager.State) {
         val stateMap = Arguments.createMap()
-        stateMap.putString("bleId", device.address)
+        stateMap.putString("id", id)
         stateMap.putString("state", newState.name)
-        manager.updateStateCB(stateMap)
+        manager.upgradeStateCB(stateMap)
     }
 
     override fun onUpgradeCompleted() {
-        manager.unsetUpdate()
         disconnectDevice()
-        promise.resolve(null)
+        withSafePromise { promise -> promise.resolve(null) }
     }
 
     override fun onUpgradeFailed(state: FirmwareUpgradeManager.State, error: McuMgrException) {
-        manager.unsetUpdate()
         disconnectDevice()
-        promise.reject(error)
+        withSafePromise { promise -> promise.reject(error) }
     }
 
     override fun onUpgradeCanceled(state: FirmwareUpgradeManager.State) {
-        manager.unsetUpdate()
         disconnectDevice()
-        promise.reject("Update cancelled")
+        withSafePromise { promise -> promise.reject(InterruptedException("Update cancelled")) }
     }
 
     override fun onUploadProgressChanged(bytesSent: Int, imageSize: Int, timestamp: Long) {
@@ -103,8 +116,8 @@ class DeviceUpdate(
         if (progressPercent != lastNotification) {
             lastNotification = progressPercent
             val progressMap = Arguments.createMap()
-            progressMap.putString("bleId", device.address)
-            progressMap.putString("progress", String.format("%d", progressPercent, 2))
+            progressMap.putString("id", id)
+            progressMap.putInt("progress", progressPercent)
             manager.updateProgressCB(progressMap)
         }
     }

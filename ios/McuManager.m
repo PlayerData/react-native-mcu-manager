@@ -9,20 +9,32 @@
 }
 
 RCT_EXTERN_METHOD(
-    supportedEvents
-)
+                  supportedEvents
+                  )
 
 RCT_EXTERN_METHOD(
-    updateDevice:
-    String
-    updateFileUriString: String
-    updateOptions:(NSDictionary)updateOptions
-    resolver:(RCTPromiseResolveBlock)resolve
-    rejecter:(RCTPromiseRejectBlock)reject
-)
+                  createUpgrade:
+                  NSString
+                  bleId: NSString
+                  updateFileUriString: NSString
+                  updateOptions: NSDictionary
+                  )
 
 RCT_EXTERN_METHOD(
-    cancel
-)
+                  runUpgrade:
+                  NSString
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+
+RCT_EXTERN_METHOD(
+                  cancelUpgrade:
+                  NSString
+                  )
+
+RCT_EXTERN_METHOD(
+                  destroyUpgrade:
+                  NSString
+                  )
 
 @end

@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
 
 export default function App() {
   const [devicesListVisible, setDevicesListVisible] = useState(false);
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const [selectedDeviceName, setSelectedDeviceName] = useState<string | null>(
     null
   );
@@ -42,7 +43,9 @@ export default function App() {
 
   const { devices, error: scanError } = useBluetoothDevices();
   const { selectedFile, filePickerError, pickFile } = useFilePicker();
-  const { bleId, progress, setBleId, startUpdate, state } = useFirmwareUpdate(
+  const { progress, runUpdate, state } = useFirmwareUpdate(
+    selectedDeviceId,
+    selectedFile?.uri || null,
     upgradeMode
   );
 
@@ -52,7 +55,7 @@ export default function App() {
         <Text style={styles.block}>Step 1 - Select Device to Update</Text>
 
         <View style={styles.block}>
-          {bleId && (
+          {selectedDeviceId && (
             <>
               <Text>Selected:</Text>
               <Text>{selectedDeviceName}</Text>
@@ -76,7 +79,7 @@ export default function App() {
                 <Button
                   title="Select"
                   onPress={() => {
-                    setBleId(item.id);
+                    setSelectedDeviceId(item.id);
                     setSelectedDeviceName(item.name);
                     setDevicesListVisible(false);
                   }}
@@ -130,8 +133,8 @@ export default function App() {
           </Text>
 
           <Button
-            disabled={!selectedFile || !bleId}
-            onPress={() => selectedFile && startUpdate(selectedFile.uri)}
+            disabled={!selectedFile || !selectedDeviceId}
+            onPress={() => selectedFile && runUpdate()}
             title="Start Update"
           />
         </View>

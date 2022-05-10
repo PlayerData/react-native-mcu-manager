@@ -1,58 +1,64 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-import McuManager, {
-  ProgressEvent,
-  UploadEvents,
-  UpgradeMode,
-} from '@playerdata/react-native-mcu-manager';
+import { Upgrade, UpgradeMode } from '@playerdata/react-native-mcu-manager';
 
-const useFirmwareUpdate = (upgradeMode?: UpgradeMode) => {
-  const [bleId, setBleId] = useState<string | null>(null);
+const useFirmwareUpdate = (
+  bleId: string | null,
+  updateFileUri: string | null,
+  upgradeMode?: UpgradeMode
+) => {
   const [progress, setProgress] = useState(0);
   const [state, setState] = useState('');
+  const upgradeRef = useRef<Upgrade>();
 
   useEffect(() => {
-    McuManager.cancel();
+    if (!bleId || !updateFileUri) {
+      return () => null;
+    }
 
-    const onUploadProgress = (evt: ProgressEvent) => {
-      setProgress(parseInt(evt.progress, 10));
-    };
+    const upgrade = new Upgrade(bleId, updateFileUri, {
+      estimatedSwapTime: 60,
+      upgradeMode,
+    });
 
-    const onUploadStateChanged = (evt: ProgressEvent) => {
-      setState(evt.state);
-    };
+    upgradeRef.current = upgrade;
 
-    const uploadProgressListener = UploadEvents.addListener(
+    const uploadProgressListener = upgrade.addListener(
       'uploadProgress',
-      onUploadProgress
+      ({ progress: newProgress }) => {
+        setProgress(newProgress);
+      }
     );
-    const uploadStateChangedListener = UploadEvents.addListener(
-      'uploadStateChanged',
-      onUploadStateChanged
+
+    const uploadStateChangedListener = upgrade.addListener(
+      'upgradeStateChanged',
+      ({ state: newState }) => {
+        setState(newState);
+      }
     );
 
     return function cleanup() {
       uploadProgressListener.remove();
       uploadStateChangedListener.remove();
-      McuManager.cancel();
+
+      upgrade.cancel();
+      upgrade.destroy();
     };
-  }, []);
+  }, [bleId, updateFileUri, upgradeMode]);
 
-  const startUpdate = (updateFileUri: string): Promise<void> =>
-    McuManager.updateDevice(bleId!, updateFileUri, {
-      estimatedSwapTime: 60,
-      upgradeMode,
-    }).catch((e: Error) => {
-      setState(e.message);
-    });
+  const runUpdate = async (): Promise<void> => {
+    try {
+      if (!upgradeRef.current) {
+        throw new Error('No upgrade class - missing BleId or updateFileUri?');
+      }
 
-  return {
-    bleId,
-    progress,
-    setBleId,
-    startUpdate,
-    state,
+      await upgradeRef.current.runUpgrade();
+    } catch (ex: any) {
+      setState(ex.message);
+    }
   };
+
+  return { progress, runUpdate, state };
 };
 
 export default useFirmwareUpdate;
