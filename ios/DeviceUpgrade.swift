@@ -1,4 +1,4 @@
-import McuManager
+import iOSMcuManagerLibrary
 
 enum JSUpgradeMode: Int {
     case TEST_AND_CONFIRM = 1
