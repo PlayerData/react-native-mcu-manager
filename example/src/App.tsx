@@ -43,7 +43,7 @@ export default function App() {
 
   const { devices, error: scanError } = useBluetoothDevices();
   const { selectedFile, filePickerError, pickFile } = useFilePicker();
-  const { progress, runUpdate, state } = useFirmwareUpdate(
+  const { cancelUpdate, runUpdate, progress, state } = useFirmwareUpdate(
     selectedDeviceId,
     selectedFile?.uri || null,
     upgradeMode
@@ -136,6 +136,12 @@ export default function App() {
             disabled={!selectedFile || !selectedDeviceId}
             onPress={() => selectedFile && runUpdate()}
             title="Start Update"
+          />
+
+          <Button
+            disabled={!selectedFile || !selectedDeviceId}
+            onPress={() => cancelUpdate()}
+            title="Cancel Update"
           />
         </View>
       </ScrollView>
