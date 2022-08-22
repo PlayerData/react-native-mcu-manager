@@ -58,7 +58,13 @@ const useFirmwareUpdate = (
     }
   };
 
-  return { progress, runUpdate, state };
+  const cancelUpdate = (): void => {
+    if (!upgradeRef.current) return;
+
+    upgradeRef.current.cancel();
+  };
+
+  return { progress, runUpdate, state, cancelUpdate };
 };
 
 export default useFirmwareUpdate;
