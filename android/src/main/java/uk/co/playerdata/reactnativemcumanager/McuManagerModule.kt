@@ -42,7 +42,7 @@ class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContext
     }
 
     @ReactMethod
-    fun cancel(id: String) {
+    fun cancelUpgrade(id: String) {
         if (!upgrades.contains(id)){
             Log.w(this.TAG,"can't cancel update ID ($id} not present")
             return
