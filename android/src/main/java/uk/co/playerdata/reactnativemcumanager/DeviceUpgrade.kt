@@ -40,11 +40,11 @@ class DeviceUpgrade(
         doUpdate(updateFileUri)
     }
 
-    fun withSafePromise(block: (promise: Promise) -> Unit) {
+    @Synchronized fun withSafePromise(block: (promise: Promise) -> Unit) {
         val promise = unsafePromise
         if (promise != null && !promiseComplete){
-            block(promise)
             promiseComplete = true
+            block(promise)
         }
     }
 
