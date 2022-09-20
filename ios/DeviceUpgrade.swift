@@ -48,23 +48,27 @@ class DeviceUpgrade {
             return reject("error", "failed to parse file uri as url", error);
         }
 
-        do {
-            let filehandle = try FileHandle(forReadingFrom: fileUrl)
-            let file = Data(filehandle.availableData)
-            filehandle.closeFile()
+        DispatchQueue.main.async {
+            do {
+                let filehandle = try FileHandle(forReadingFrom: fileUrl)
+                let file = Data(filehandle.availableData)
+                filehandle.closeFile()
 
-            self.bleTransport = McuMgrBleTransport(bleUuid)
-            self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
+                self.bleTransport = McuMgrBleTransport(bleUuid)
+                self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
+                self.dfuManager!.logDelegate = self.logDelegate
+                self.dfuManager!.mode = self.getMode();
 
-            let estimatedSwapTime: TimeInterval = options["estimatedSwapTime"] as! TimeInterval
+                let estimatedSwapTime: TimeInterval = self.options["estimatedSwapTime"] as! TimeInterval
 
-            self.dfuManager!.logDelegate = self.logDelegate
-            self.dfuManager!.estimatedSwapTime = estimatedSwapTime
-            self.dfuManager!.mode = self.getMode();
+                let dfuManagerConfiguration = FirmwareUpgradeConfiguration(
+                    estimatedSwapTime: estimatedSwapTime, pipelineDepth: self.getPipelineDepth(), byteAlignment: self.getByteAlignment()
+                )
 
-            try self.dfuManager!.start(data: file as Data)
-        } catch {
-            reject(error.localizedDescription, error.localizedDescription, error)
+                try self.dfuManager!.start(data: file as Data, using: dfuManagerConfiguration)
+            } catch {
+                reject(error.localizedDescription, error.localizedDescription, error)
+            }
         }
     }
 
@@ -95,6 +99,22 @@ class DeviceUpgrade {
         case .CONFIRM_ONLY:
             return FirmwareUpgradeMode.confirmOnly
         }
+    }
+
+    private func getByteAlignment() -> ImageUploadAlignment {
+        if options["memoryAlignment"] == nil {
+            return ImageUploadAlignment.disabled
+        }
+
+        return ImageUploadAlignment(rawValue: self.options["memoryAlignment"] as! UInt64)!
+    }
+
+    private func getPipelineDepth() -> Int {
+        if self.options["windowUploadCapacity"] == nil {
+            return 1
+        }
+
+        return self.options["windowUploadCapacity"] as! Int
     }
 }
 
@@ -144,6 +164,8 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
         switch e {
         case .none:
             return "NONE"
+        case .requestMcuMgrParameters:
+            return "VALIDATE"
         case .validate:
             return "VALIDATE"
         case .upload:

@@ -61,10 +61,14 @@ class DeviceUpgrade(
 
     private fun doUpdate(updateBundleUri: Uri) {
         val estimatedSwapTime = updateOptions.getInt("estimatedSwapTime") * 1000
+        val memoryAlignment = if (updateOptions.hasKey("memoryAlignment")) updateOptions.getInt("memoryAlignment") else 1
         val modeInt = if (updateOptions.hasKey("upgradeMode"))  updateOptions.getInt("upgradeMode") else 1
         val upgradeMode = UpgradeModes[modeInt] ?: FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM
+        val windowUploadCapacity = if (updateOptions.hasKey("windowUploadCapacity")) updateOptions.getInt("windowUploadCapacity") else 1
 
         dfuManager.setEstimatedSwapTime(estimatedSwapTime)
+        dfuManager.setMemoryAlignment(memoryAlignment)
+        dfuManager.setWindowUploadCapacity(windowUploadCapacity)
 
         try {
             val stream = context.contentResolver.openInputStream(updateBundleUri)

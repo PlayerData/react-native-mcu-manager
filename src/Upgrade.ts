@@ -35,12 +35,27 @@ export interface UpgradeOptions {
   estimatedSwapTime: number;
 
   /**
+   * Each packet will be truncated to fit this alignment.
+   *
+   * If a device uses internal flash buffering this can be disabled.
+   */
+  memoryAlignment?: number;
+
+  /**
    * McuManager firmware upgrades can actually be performed in few different ways.
    * These different upgrade modes determine the commands sent after the upload step.
    *
    * @see UpgradeMode
    */
   upgradeMode?: UpgradeMode;
+
+  /**
+   * The number of buffers to allocate for MCUMgr.
+   * Multiple buffers allow for sending packets in parallel, which may improve upload speed.
+   *
+   * For nRF-Connect applications, set this to match MCUMGR_BUF_COUNT.
+   */
+  windowUploadCapacity?: number;
 }
 
 export type FirmwareUpgradeState =
