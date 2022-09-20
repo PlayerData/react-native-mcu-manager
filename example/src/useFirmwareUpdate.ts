@@ -18,7 +18,9 @@ const useFirmwareUpdate = (
 
     const upgrade = new Upgrade(bleId, updateFileUri, {
       estimatedSwapTime: 60,
+      memoryAlignment: 4,
       upgradeMode,
+      windowUploadCapacity: 4,
     });
 
     upgradeRef.current = upgrade;

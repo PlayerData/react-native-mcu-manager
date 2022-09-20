@@ -11,7 +11,7 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.68.1)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - iOSMcuManagerLibrary (1.1.0):
+  - iOSMcuManagerLibrary (1.2.6):
     - SwiftCBOR (= 0.4.4)
   - MultiplatformBleAdapter (0.1.9)
   - RCT-Folly (2021.06.28.00-v2):
@@ -229,7 +229,7 @@ PODS:
   - react-native-get-random-values (1.8.0):
     - React-Core
   - react-native-mcu-manager (0.0.1-development):
-    - iOSMcuManagerLibrary (~> 1.1.0)
+    - iOSMcuManagerLibrary (~> 1.2.0)
     - React-Core
   - React-perflogger (0.68.1)
   - React-RCTActionSheet (0.68.1):
@@ -424,7 +424,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 371350f24afa87b6aba606972ec959dcd4a95c9a
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 476ee3e89abb49e07f822b48323c51c57124b572
-  iOSMcuManagerLibrary: 64853befc4e6ff100809069f308cbf6ba38ec033
+  iOSMcuManagerLibrary: bce308e72a8ce9016ec9ba9107e1b77ee1eb843c
   MultiplatformBleAdapter: 5a6a897b006764392f9cef785e4360f54fb9477d
   RCT-Folly: 4d8508a426467c48885f1151029bc15fa5d7b3b8
   RCTRequired: 00581111c53531e39e3c6346ef0d2c0cf52a5a37
@@ -442,7 +442,7 @@ SPEC CHECKSUMS:
   react-native-ble-plx: f10240444452dfb2d2a13a0e4f58d7783e92d76e
   react-native-document-picker: 226068006be4c52f8ef7f32d855ee025a12e9e64
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
-  react-native-mcu-manager: 0b8b4258106b8a3c2888a1521a6ae3d5634ba463
+  react-native-mcu-manager: 3f609ab2226b05d5242d936f9618a75e184c6b49
   React-perflogger: 30ab8d6db10e175626069e742eead3ebe8f24fd5
   React-RCTActionSheet: 4b45da334a175b24dabe75f856b98fed3dfd6201
   React-RCTAnimation: d6237386cb04500889877845b3e9e9291146bc2e
