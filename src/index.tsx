@@ -8,7 +8,7 @@ import Upgrade, {
   UpgradeMode,
 } from './Upgrade';
 
-export const eraseImage = McuManager.eraseImage as (
+export const eraseImage = McuManager?.eraseImage as (
   bleId: string
 ) => Promise<void>;
 
