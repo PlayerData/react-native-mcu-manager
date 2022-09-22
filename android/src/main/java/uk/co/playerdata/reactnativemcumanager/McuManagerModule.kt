@@ -6,8 +6,10 @@ import android.net.Uri
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
+import io.runtime.mcumgr.ble.McuMgrBleTransport
+import io.runtime.mcumgr.managers.ImageManager
 
-class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+class McuManagerModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private val TAG = "McuManagerModule"
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private val upgrades: MutableMap<String, DeviceUpgrade> = mutableMapOf()
@@ -17,12 +19,34 @@ class McuManagerModule(val reactContext: ReactApplicationContext) : ReactContext
     }
 
     @ReactMethod
+    fun eraseImage(macAddress: String?, promise: Promise) {
+        if (this.bluetoothAdapter == null) {
+            throw Exception("No bluetooth adapter")
+        }
+
+        try {
+            val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)
+
+            var transport = McuMgrBleTransport(reactContext, device)
+            transport.connect(device).timeout(60000).await()
+
+            val imageManager = ImageManager(transport);
+            imageManager.erase()
+
+            promise.resolve(null)
+        } catch (e: Throwable) {
+            promise.reject(e)
+        }
+    }
+
+    @ReactMethod
     fun createUpgrade(id: String, macAddress: String?, updateFileUriString: String?, updateOptions: ReadableMap) {
         if (this.bluetoothAdapter == null) {
-            throw Exception("no bluetooth adapter")
+            throw Exception("No bluetooth adapter")
         }
+
         if (upgrades.contains(id)){
-            throw Exception("update ID already present")
+            throw Exception("Update ID already present")
         }
 
         val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)

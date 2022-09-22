@@ -1,5 +1,6 @@
 import os
 import CoreBluetooth
+import iOSMcuManagerLibrary
 
 
 @objc(RNMcuManager)
@@ -17,6 +18,27 @@ class RNMcuManager: RCTEventEmitter {
             "uploadProgress",
             "upgradeStateChanged"
         ]
+    }
+
+    @objc
+    func eraseImage(_ bleId: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        guard let bleUuid = UUID(uuidString: bleId) else {
+            let error = NSError(domain: "", code: 200, userInfo: nil)
+            return reject("error", "failed to parse uuid", error);
+        }
+
+        let bleTransport = McuMgrBleTransport(bleUuid)
+        let imageManager = ImageManager(transporter: bleTransport)
+
+        imageManager.erase { (response: McuMgrResponse?, err: Error?) in
+            if (err != nil) {
+                reject("ERASE_ERR", err?.localizedDescription, err)
+                return
+            }
+
+            resolve(nil)
+            return
+        }
     }
 
     @objc
