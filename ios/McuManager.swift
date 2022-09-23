@@ -31,6 +31,8 @@ class RNMcuManager: RCTEventEmitter {
         let imageManager = ImageManager(transporter: bleTransport)
 
         imageManager.erase { (response: McuMgrResponse?, err: Error?) in
+            bleTransport.close()
+
             if (err != nil) {
                 reject("ERASE_ERR", err?.localizedDescription, err)
                 return
