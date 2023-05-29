@@ -1,8 +1,6 @@
-import {
-  NativeModules,
-  NativeEventEmitter,
-  EmitterSubscription,
-} from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
+
+import type { EmitterSubscription } from 'react-native';
 
 import { v4 as uuidv4 } from 'uuid';
 

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Platform } from 'react-native';
-import DocumentPicker, {
-  DocumentPickerOptions,
-} from 'react-native-document-picker';
+import DocumentPicker from 'react-native-document-picker';
+
+import type { DocumentPickerResponse } from 'react-native-document-picker';
 
 export interface SelectedFile {
   uri: string;
@@ -17,41 +17,34 @@ const useFilePicker = (): {
   const [selectedFile, setSelectedFile] = useState<SelectedFile | null>(null);
   const [filePickerError, setError] = useState<string | null>(null);
 
-  const runDocumentPicker = async (
-    pickerArgs: DocumentPickerOptions<any>,
-    fileDelimiter: string
-  ) => {
-    try {
-      const res = await DocumentPicker.pickSingle(pickerArgs);
-      const uri = res.fileCopyUri ? res.fileCopyUri : res.uri;
-      setSelectedFile({ uri, name: uri.split(fileDelimiter).slice(-1)[0] });
-    } catch (err) {
-      if (!DocumentPicker.isCancel(err)) {
-        setSelectedFile(null);
-        setError(err.message);
-      }
-    }
-  };
-
   const pickFile = async () => {
+    let result: DocumentPickerResponse | null = null;
+    let fileDelimiter: string | null = null;
     try {
       if (Platform.OS === 'ios') {
-        runDocumentPicker(
-          {
-            type: ['public.data'],
-            copyTo: 'cachesDirectory',
-          },
-          '/'
-        );
-      } else {
-        runDocumentPicker(
-          {
-            type: ['*/*'],
-          },
-          '%2F'
-        );
+        type os = 'ios';
+        fileDelimiter = '%2F';
+        result = await DocumentPicker.pickSingle<os>({
+          allowMultiSelection: false,
+          type: ['public.data'],
+          copyTo: 'cachesDirectory',
+        });
       }
-    } catch (err) {
+      if (Platform.OS === 'android') {
+        type os = 'android';
+        fileDelimiter = '/';
+        result = await DocumentPicker.pickSingle<os>({
+          allowMultiSelection: false,
+          type: ['*/*'],
+        });
+      }
+
+      if (result == null || fileDelimiter == null) {
+        throw 'Failed to pick a file, is your OS supported?';
+      }
+      const uri = result.fileCopyUri ? result.fileCopyUri : result.uri;
+      setSelectedFile({ uri, name: uri.split(fileDelimiter).slice(-1)[0] });
+    } catch (err: any) {
       if (!DocumentPicker.isCancel(err)) {
         setSelectedFile(null);
         setError(err.message);

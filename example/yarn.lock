@@ -1018,6 +1018,11 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
+"@types/lodash@^4.14.186":
+  version "4.14.195"
+  resolved "https://npm.playerdata.co.uk/@types/lodash/-/lodash-4.14.195.tgz#bafc975b252eb6cea78882ce8a7b6bf22a6de632"
+  integrity sha512-Hwx9EUgdwf2GLarOjQp5ZH8ZmblzcbTBC2wtQWNKARBSxM9ezRIAUpeDTgoQRAFB0+8CNWXVA9+MaSOzOF3nPg==
+
 "@types/node@*":
   version "17.0.31"
   resolved "https://npm.playerdata.co.uk/@types%2fnode/-/node-17.0.31.tgz#a5bb84ecfa27eec5e1c802c6bbf8139bdb163a5d"
@@ -3562,10 +3567,10 @@ react-native-codegen@^0.0.13:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
-react-native-document-picker@^5.0.2:
-  version "5.3.0"
-  resolved "https://npm.playerdata.co.uk/react-native-document-picker/-/react-native-document-picker-5.3.0.tgz#90f53def42d87a316b76311c729ba401c2823ffa"
-  integrity sha512-vFw9pHJywEY+xeMGM8LgfZYMw12bXQNi8vf2DblFLh11lSLf6J99nZweAGVDB8Va+Fg6CP+nLfWG2bWgL4XmMw==
+react-native-document-picker@9.0.1:
+  version "9.0.1"
+  resolved "https://npm.playerdata.co.uk/react-native-document-picker/-/react-native-document-picker-9.0.1.tgz#a5ceec157f84dbadb85fe717c657569755f4c6ca"
+  integrity sha512-l2c2xChwsdjzZIV9QJc85buC3vXkM5ZuY4943yMDj3TiszJp1spmHNaRMZKYIh3yVwdD2jENm0DBU5AWa+jhLg==
   dependencies:
     invariant "^2.2.4"
 
