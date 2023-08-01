@@ -57,12 +57,14 @@ class DeviceUpgrade {
             self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
 
             let estimatedSwapTime: TimeInterval = options["estimatedSwapTime"] as! TimeInterval
+            let config = FirmwareUpgradeConfiguration(
+                estimatedSwapTime: estimatedSwapTime
+            )
 
             self.dfuManager!.logDelegate = self.logDelegate
-            self.dfuManager!.estimatedSwapTime = estimatedSwapTime
             self.dfuManager!.mode = self.getMode();
 
-            try self.dfuManager!.start(data: file as Data)
+            try self.dfuManager!.start(data: file as Data, using: config)
         } catch {
             reject(error.localizedDescription, error.localizedDescription, error)
         }
@@ -156,6 +158,10 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
             return "CONFIRM"
         case .success:
             return "SUCCESS"
+        case .requestMcuMgrParameters:
+            return "REQUEST_MCU_MGR_PARAMETERS"
+        default:
+            return "UNKNOWN"
         }
     }
 
