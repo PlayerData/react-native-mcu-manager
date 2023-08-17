@@ -63,7 +63,7 @@
     "react": "18.1.0",
     "react-native": "0.68.1",
     "react-native-builder-bob": "^0.18.1",
-    "semantic-release": "^17.4.2",
+    "semantic-release": "^19.0.0",
     "typescript": "5.0.4"
   },
   "peerDependencies": {
