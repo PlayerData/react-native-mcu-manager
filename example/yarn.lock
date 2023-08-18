@@ -3473,9 +3473,9 @@ plist@^3.0.2, plist@^3.0.5:
     xmlbuilder "^9.0.7"
 
 pod-install@^0.1.35:
-  version "0.1.35"
-  resolved "https://npm.playerdata.co.uk/pod-install/-/pod-install-0.1.35.tgz#afb1f8265cd958b661f23f8524ea20d8541d354a"
-  integrity sha512-FR/s1CYcbaGOFN2/fR405FtErJ1VyVrL0s83w8AEJ2kEwrr65pPKHPeX8hXb79UJgraKKxruZM7IiUyj1G9MUw==
+  version "0.1.38"
+  resolved "https://npm.playerdata.co.uk/pod-install/-/pod-install-0.1.38.tgz#1c16a800a5fc1abea0cafcc0e190f376368c76ab"
+  integrity sha512-NeDWGigjJRriOIKBOvpW2/tK2tYLfyUT7ia6C6L+oarCAhBNP+IGODWdU+GEAqvfsseqOApcFclpXAJTL0UPzA==
 
 posix-character-classes@^0.1.0:
   version "0.1.1"
