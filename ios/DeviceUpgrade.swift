@@ -39,12 +39,12 @@ class DeviceUpgrade {
             self.upgradeResolver = resolve
             self.upgradeRejecter = reject
 
-            guard let bleUuid = UUID(uuidString: bleId) else {
+            guard let bleUuid = UUID(uuidString: self.bleId) else {
                 let error = NSError(domain: "", code: 200, userInfo: nil)
                 return reject("error", "failed to parse uuid", error);
             }
 
-            guard let fileUrl = URL(string: fileURI) else {
+            guard let fileUrl = URL(string: self.fileURI) else {
                 let error = NSError(domain: "", code: 200, userInfo: nil)
                 return reject("error", "failed to parse file uri as url", error);
             }
@@ -57,7 +57,7 @@ class DeviceUpgrade {
                 self.bleTransport = McuMgrBleTransport(bleUuid)
                 self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
 
-                let estimatedSwapTime: TimeInterval = options["estimatedSwapTime"] as! TimeInterval
+                let estimatedSwapTime: TimeInterval = self.options["estimatedSwapTime"] as! TimeInterval
                 let config = FirmwareUpgradeConfiguration(
                     estimatedSwapTime: estimatedSwapTime
                 )
