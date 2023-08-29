@@ -35,40 +35,38 @@ class DeviceUpgrade {
     }
 
     func startUpgrade(resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        DispatchQueue.main.async {
-            self.upgradeResolver = resolve
-            self.upgradeRejecter = reject
+        self.upgradeResolver = resolve
+        self.upgradeRejecter = reject
 
-            guard let bleUuid = UUID(uuidString: self.bleId) else {
-                let error = NSError(domain: "", code: 200, userInfo: nil)
-                return reject("error", "failed to parse uuid", error);
-            }
+        guard let bleUuid = UUID(uuidString: self.bleId) else {
+            let error = NSError(domain: "", code: 200, userInfo: nil)
+            return reject("error", "failed to parse uuid", error);
+        }
 
-            guard let fileUrl = URL(string: self.fileURI) else {
-                let error = NSError(domain: "", code: 200, userInfo: nil)
-                return reject("error", "failed to parse file uri as url", error);
-            }
+        guard let fileUrl = URL(string: self.fileURI) else {
+            let error = NSError(domain: "", code: 200, userInfo: nil)
+            return reject("error", "failed to parse file uri as url", error);
+        }
 
-            do {
-                let filehandle = try FileHandle(forReadingFrom: fileUrl)
-                let file = Data(filehandle.availableData)
-                filehandle.closeFile()
+        do {
+            let filehandle = try FileHandle(forReadingFrom: fileUrl)
+            let file = Data(filehandle.availableData)
+            filehandle.closeFile()
 
-                self.bleTransport = McuMgrBleTransport(bleUuid)
-                self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
+            self.bleTransport = McuMgrBleTransport(bleUuid)
+            self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
 
-                let estimatedSwapTime: TimeInterval = self.options["estimatedSwapTime"] as! TimeInterval
-                let config = FirmwareUpgradeConfiguration(
-                    estimatedSwapTime: estimatedSwapTime
-                )
+            let estimatedSwapTime: TimeInterval = self.options["estimatedSwapTime"] as! TimeInterval
+            let config = FirmwareUpgradeConfiguration(
+                estimatedSwapTime: estimatedSwapTime
+            )
 
-                self.dfuManager!.logDelegate = self.logDelegate
-                self.dfuManager!.mode = self.getMode();
+            self.dfuManager!.logDelegate = self.logDelegate
+            self.dfuManager!.mode = self.getMode();
 
-                try self.dfuManager!.start(data: file as Data, using: config)
-            } catch {
-                reject(error.localizedDescription, error.localizedDescription, error)
-            }
+            try self.dfuManager!.start(data: file as Data, using: config)
+        } catch {
+            reject(error.localizedDescription, error.localizedDescription, error)
         }
     }
 
