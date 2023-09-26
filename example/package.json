@@ -1,30 +1,26 @@
 {
   "name": "react-native-mcu-manager-example",
-  "description": "Example app for react-native-mcu-manager",
-  "version": "0.0.1",
-  "private": true,
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "start": "react-native start",
-    "pods": "pod-install --quiet"
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "dependencies": {
-    "lodash": "4.17.21",
+    "expo": "~49.0.12",
     "react": "18.2.0",
-    "react-native": "0.68.1",
-    "react-native-ble-plx": "^2.0.2",
-    "react-native-document-picker": "9.0.1",
-    "react-native-get-random-values": "^1.8.0"
+    "react-native": "0.72.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/runtime": "^7.12.5",
-    "@types/lodash": "^4.14.186",
-    "@types/react-native": "^0.67.6",
-    "babel-plugin-module-resolver": "^4.1.0",
-    "metro-react-native-babel-preset": "^0.77.0",
-    "pod-install": "^0.1.35",
-    "typescript": "^4.6.4"
+    "@babel/core": "^7.20.0",
+    "@types/react": "~18.2.14",
+    "typescript": "^5.1.3"
+  },
+  "private": true,
+  "expo": {
+    "autolinking": {
+      "nativeModulesDir": ".."
+    }
   }
 }

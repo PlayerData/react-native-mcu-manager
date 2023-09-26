@@ -1,80 +1,35 @@
-# react-native-mcu-manager
+# @playerdata/react-native-mcu-manager
 
-MCUMgr DFU from React Native.
+React Native Wrappers for MCUMgr's Android / iOS client libraries
 
-## Getting started
+# API documentation
 
-`$ npm install @playerdata/react-native-mcu-manager --save`
-## Usage
-```ts
-import McuManager, { ProgressEvent, UploadEvents } from '@playerdata/react-native-mcu-manager';
+- [Documentation for the main branch](https://github.com/expo/expo/blob/main/docs/pages/versions/unversioned/sdk/@playerdata/react-native-mcu-manager.md)
+- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/@playerdata/react-native-mcu-manager/)
 
-const onUploadProgress = (progress: ProgressEvent) => {
-  console.log("Upload progress: ", progress.bleId, progress.progress);
-};
+# Installation in managed Expo projects
 
-const onUploadStateChanged = (progress: ProgressEvent) => {
-  console.log("Upload state change: ", progress.bleId, progress.state);
-};
+For [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.
 
-UploadEvents.addListener('uploadProgress', onUploadProgress);
-UploadEvents.addListener('uploadStateChanged', onUploadStateChanged);
+# Installation in bare React Native projects
 
-// bluetoothId is a MAC address on Android, and a UUID on iOS
-McuManager.updateDevice(bluetoothId, fileUri)
+For bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.
+
+### Add the package to your npm dependencies
+
+```
+npm install @playerdata/react-native-mcu-manager
 ```
 
-## Contributing
+### Configure for iOS
 
-### Development workflow
+Run `npx pod-install` after installing the npm package.
 
-To get started with the project, run `yarn` in the root directory to install the required dependencies for each package:
 
-```sh
-yarn install
-yarn example install
-yarn example pods
-```
+### Configure for Android
 
-While developing, you can run the [example app](/example/) to test your changes.
 
-To start the packager:
 
-```sh
-yarn example start
-```
+# Contributing
 
-To run the example app on Android:
-
-```sh
-yarn example android
-```
-
-To run the example app on iOS:
-
-```sh
-yarn example ios
-```
-
-Make sure your code passes TypeScript and ESLint. Run the following to verify:
-
-```sh
-yarn typecheck
-yarn lint
-```
-
-To fix formatting errors, run the following:
-
-```sh
-yarn lint --fix
-```
-
-Remember to add tests for your change if possible. Run the unit tests by:
-
-```sh
-yarn test
-```
-
-To edit the Swift files, open `example/ios/McuManagerExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-mcu-manager`.
-
-To edit the Kotlin files, open `example/android` in Android studio and find the source files at `reactnativemcumanager` under `Android`.
+Contributions are very welcome! Please refer to guidelines described in the [contributing guide]( https://github.com/expo/expo#contributing).

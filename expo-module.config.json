@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android", "web"],
+  "ios": {
+    "modules": ["ReactNativeMcuManagerModule"]
+  },
+  "android": {
+    "modules": ["uk.co.playerdata.reactnativemcumanager.ReactNativeMcuManagerModule"]
+  }
+}
