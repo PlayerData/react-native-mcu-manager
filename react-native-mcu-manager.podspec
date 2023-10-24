@@ -16,6 +16,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/PlayerData/react-native-mcu-manager.git", :tag => "#{s.version}" }
 
   s.dependency "React-Core"
-  s.dependency "iOSMcuManagerLibrary", "~> 1.3.2"
+  s.dependency "iOSMcuManagerLibrary", "~> 1.1.0"
 
 end
