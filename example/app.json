@@ -1,32 +1,16 @@
 {
   "expo": {
     "name": "react-native-mcu-manager-example",
-    "slug": "react-native-mcu-manager-example",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "uk.co.playerdata.reactnativemcumanager.example"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "uk.co.playerdata.reactnativemcumanager.example"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "slug": "playerdatareact-native-mcu-manager-example",
+    "version": "0.0.1-development",
+    "description": "React Native Wrappers for MCUMgr's example app",
+    "sdkVersion": "49.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "android": {
+    "package": "com.playerdata.reactnativemcumanagerexample"
   }
 }
