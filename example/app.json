@@ -8,9 +8,12 @@
     "platforms": [
       "ios",
       "android"
-    ]
-  },
-  "android": {
-    "package": "com.playerdata.reactnativemcumanagerexample"
+    ],
+    "android": {
+      "package": "com.example.reactnativemcumanager"
+    },
+    "ios": {
+      "bundleIdentifier": "com.example.reactnativemcumanager"
+    }
   }
 }

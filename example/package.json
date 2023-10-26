@@ -10,11 +10,13 @@
     "pods": "pod-install --quiet"
   },
   "dependencies": {
-    "expo": "*",
+    "expo": "^49.0.0",
     "lodash": "4.17.21",
     "react-native-ble-plx": "^2.0.2",
     "react-native-document-picker": "9.0.1",
-    "react-native-get-random-values": "^1.8.0"
+    "react-native-get-random-values": "^1.8.0",
+    "expo-splash-screen": "~0.20.5",
+    "expo-status-bar": "~1.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

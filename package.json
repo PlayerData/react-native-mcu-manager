@@ -3,6 +3,7 @@
   "title": "React Native MCU Manager",
   "version": "0.0.1-development",
   "description": "React Native Wrappers for MCUMgr's Android / iOS client libraries",
+  "source": "src",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -38,15 +39,12 @@
     "commitlint": "17.7.1",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "expo-modules-core": "^1.5.11",
     "husky": "^8.0.0",
     "prettier": "^3.0.0",
     "semantic-release": "^21.0.0"
   },
   "peerDependencies": {
-    "expo": "*",
-    "react": "*",
-    "react-native": "*"
+    "expo": "*"
   },
   "husky": {
     "hooks": {
