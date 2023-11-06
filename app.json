@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "@playerdata/react-native-mcu-manager",
+    "slug": "playerdatareact-native-mcu-manager",
+    "version": "0.0.1-development",
+    "description": "React Native Wrappers for MCUMgr's Android / iOS client libraries",
+    "sdkVersion": "49.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "android": {
+      "package": "uk.co.playerdata.reactnativemcumanager"
+    },
+    "ios": {
+      "bundleIdentifier": "uk.co.playerdata.reactnativemcumanager"
+    }
+  }
+}

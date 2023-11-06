@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-
 import { Upgrade, UpgradeMode } from '@playerdata/react-native-mcu-manager';
+import { useState, useEffect, useRef } from 'react';
 
 const useFirmwareUpdate = (
   bleId: string | null,

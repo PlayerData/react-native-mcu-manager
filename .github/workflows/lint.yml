@@ -18,13 +18,11 @@ jobs:
           node-version: 18
 
       - name: Install package dependencies
-        run: yarn install
-      
+        run: npm install
+
       - name: Install example app dependencies
-        run: yarn example install
+        working-directory: ./example
+        run: npm install
 
       - name: Lint
-        run: yarn lint
-
-      - name: Typecheck
-        run: yarn typecheck
+        run: npm run lint

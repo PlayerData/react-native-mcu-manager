@@ -1,10 +1,11 @@
-import { NativeModules, NativeEventEmitter } from 'react-native';
-
-import type { EmitterSubscription } from 'react-native';
-
+import {
+  NativeModulesProxy,
+  EventEmitter,
+  Subscription,
+} from 'expo-modules-core';
 import { v4 as uuidv4 } from 'uuid';
 
-const { McuManager } = NativeModules;
+import ReactNativeMcuManager from './ReactNativeMcuManagerModule';
 
 export enum UpgradeMode {
   /**
@@ -51,7 +52,9 @@ export type FirmwareUpgradeState =
   | 'SUCCESS'
   | 'UNKNOWN';
 
-const McuManagerEvents = new NativeEventEmitter(McuManager);
+const McuManagerEvents = new EventEmitter(
+  ReactNativeMcuManager ?? NativeModulesProxy.ReactNativeMcuManager
+);
 
 declare const UpgradeIdSymbol: unique symbol;
 type UpgradeID = string & { [UpgradeIdSymbol]: never };
@@ -59,14 +62,12 @@ type UpgradeID = string & { [UpgradeIdSymbol]: never };
 type AddUpgradeListener = {
   (
     eventType: 'upgradeStateChanged',
-    listener: ({ state }: { state: FirmwareUpgradeState }) => void,
-    context?: any
-  ): EmitterSubscription;
+    listener: ({ state }: { state: FirmwareUpgradeState }) => void
+  ): Subscription;
   (
     eventType: 'uploadProgress',
-    listener: ({ progress }: { progress: number }) => void,
-    context?: any
-  ): EmitterSubscription;
+    listener: ({ progress }: { progress: number }) => void
+  ): Subscription;
 };
 
 class Upgrade {
@@ -86,7 +87,7 @@ class Upgrade {
   ) {
     this.id = uuidv4() as UpgradeID;
 
-    McuManager.createUpgrade(
+    ReactNativeMcuManager.createUpgrade(
       this.id,
       bleId,
       updateFileUriString,
@@ -97,26 +98,18 @@ class Upgrade {
   /**
    * Perform the upgrade.
    */
-  runUpgrade = async (): Promise<void> => McuManager.runUpgrade(this.id);
+  runUpgrade = async (): Promise<void> =>
+    ReactNativeMcuManager.runUpgrade(this.id);
 
   cancel = (): void => {
-    McuManager.cancelUpgrade(this.id);
+    ReactNativeMcuManager.cancelUpgrade(this.id);
   };
 
   addListener: AddUpgradeListener = (
     eventType: any,
-    listener: (...args: any[]) => void,
-    context?: any
-  ): EmitterSubscription => {
-    return McuManagerEvents.addListener(
-      eventType,
-      ({ id, ...event }) => {
-        if (id === this.id) {
-          listener(event);
-        }
-      },
-      context
-    );
+    listener: (...args: any[]) => void
+  ): Subscription => {
+    return McuManagerEvents.addListener(eventType, listener);
   };
 
   /**
@@ -124,7 +117,7 @@ class Upgrade {
    * Failure to do so may result in memory leaks.
    */
   destroy = () => {
-    McuManager.destroyUpgrade(this.id);
+    ReactNativeMcuManager.destroyUpgrade(this.id);
   };
 }
 
