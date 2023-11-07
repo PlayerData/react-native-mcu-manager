@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Platform } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
-
 import type { DocumentPickerResponse } from 'react-native-document-picker';
 
 export interface SelectedFile {
@@ -40,8 +39,9 @@ const useFilePicker = (): {
       }
 
       if (result == null || fileDelimiter == null) {
-        throw 'Failed to pick a file, is your OS supported?';
+        throw new Error('Failed to pick a file, is your OS supported?');
       }
+
       const uri = result.fileCopyUri ? result.fileCopyUri : result.uri;
       setSelectedFile({ uri, name: uri.split(fileDelimiter).slice(-1)[0] });
     } catch (err: any) {

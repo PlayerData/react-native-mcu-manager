@@ -1,10 +1,34 @@
-# react-native-mcu-manager
+# @playerdata/react-native-mcu-manager
 
-MCUMgr DFU from React Native.
+React Native Wrappers for MCUMgr's Android / iOS client libraries
 
-## Getting started
+# Getting started
 
-`$ npm install @playerdata/react-native-mcu-manager --save`
+## Installation in managed Expo projects
+
+For [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects,
+we hope this will Just Work :tm:.
+
+The example app uses Expo Prebuild, so we've some confidence, but let us know
+how you get on.
+
+## Installation in bare React Native projects
+
+For bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.
+
+### Add the package to your npm dependencies
+
+```
+npm install @playerdata/react-native-mcu-manager
+```
+
+### Configure for iOS
+
+Run `npx pod-install` after installing the npm package.
+
+
+### Configure for Android
+
 ## Usage
 ```ts
 import McuManager, { ProgressEvent, UploadEvents } from '@playerdata/react-native-mcu-manager';
@@ -24,57 +48,52 @@ UploadEvents.addListener('uploadStateChanged', onUploadStateChanged);
 McuManager.updateDevice(bluetoothId, fileUri)
 ```
 
-## Contributing
+# Contributing
 
-### Development workflow
+Contributions are very welcome!
 
-To get started with the project, run `yarn` in the root directory to install the required dependencies for each package:
+There are many examples of expo modules in the expo repo packages like
+https://github.com/expo/expo/blob/main/packages/expo-camera/README.md
 
-```sh
-yarn install
-yarn example install
-yarn example pods
+## Development Workflow
+
+Install dependencies:
+
+```
+npm install
 ```
 
-While developing, you can run the [example app](/example/) to test your changes.
+You should use the example app to test your changes:
 
-To start the packager:
+```
+cd example
 
-```sh
-yarn example start
+npx expo prebuild
 ```
 
-To run the example app on Android:
+From the top level of the repo, you can use `npm run open:(ios|android)` to open
+the appropriate IDE.
 
-```sh
-yarn example android
-```
+For Swift files, you'll find the source files at `Pods > Development Pods > ReactNativeMcuManager`
+in XCode.
 
-To run the example app on iOS:
-
-```sh
-yarn example ios
-```
+For Kotlin, you'll find the source files at `reactnativemcumanager` under `Android` in Android Studio.
 
 Make sure your code passes TypeScript and ESLint. Run the following to verify:
 
 ```sh
-yarn typecheck
-yarn lint
+npm run typecheck
+npm run lint
 ```
 
 To fix formatting errors, run the following:
 
 ```sh
-yarn lint --fix
+npm run lint --fix
 ```
 
-Remember to add tests for your change if possible. Run the unit tests by:
+Remember to add unit tests for your change if possible. Run the unit tests by:
 
 ```sh
-yarn test
+npm run test
 ```
-
-To edit the Swift files, open `example/ios/McuManagerExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-mcu-manager`.
-
-To edit the Kotlin files, open `example/android` in Android studio and find the source files at `reactnativemcumanager` under `Android`.
