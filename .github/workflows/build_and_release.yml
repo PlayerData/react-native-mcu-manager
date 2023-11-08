@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build and Release
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,9 +24,60 @@ jobs:
 
       - name: Build
         run: npm run build
+        
+  android-example:
+      name: Android example app
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Making sure the android example app builds
+        run: |
+          npm install
+          cd example
+          npx expo prebuild
+          cd android
+          ./gradlew build
+          
+  ios-example:
+      name: iOS example app
+      runs-on: macos-latest
+      needs: build
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Making sure the ios example app builds
+        run: |
+          npm install
+          cd example
+          npx expo prebuild
+          cd ios
+          xcodebuild build -workspace reactnativemcumanagerexample.xcworkspace -scheme reactnativemcumanagerexample CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+      
+  release:
+    name: Release
+    needs: [android-example, ios-example]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+          node-version: 18
+          
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: npx semantic-release
