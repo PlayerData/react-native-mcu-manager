@@ -79,11 +79,11 @@
     "react-native": "0.72.6"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^12.0.1",
+    "@commitlint/config-conventional": "^18.0.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@types/react": "^18.0.25",
     "@types/uuid": "8.3.4",
-    "commitlint": "17.8.1",
+    "commitlint": "18.2.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "expo-module-scripts": "^3.0.11",
