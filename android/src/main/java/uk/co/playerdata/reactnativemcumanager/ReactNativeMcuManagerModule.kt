@@ -11,6 +11,7 @@ import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
 import io.runtime.mcumgr.ble.McuMgrBleTransport
+import io.runtime.mcumgr.exception.McuMgrException
 import io.runtime.mcumgr.managers.ImageManager
 
 private const val MODULE_NAME = "ReactNativeMcuManager"
@@ -52,8 +53,8 @@ class ReactNativeMcuManagerModule : Module() {
         imageManager.erase()
 
         promise.resolve(null)
-      } catch (e: Throwable) {
-        promise.reject(CodedException(e))
+      } catch (e: McuMgrException) {
+        promise.reject(ReactNativeMcuMgrException.fromMcuMgrException(e))
       }
     }
 
@@ -87,7 +88,7 @@ class ReactNativeMcuManagerModule : Module() {
 
     AsyncFunction("runUpgrade") { id: String, promise: Promise ->
       if (!upgrades.contains(id)) {
-        promise.reject(CodedException("update ID not present"))
+        promise.reject(CodedException("UPGRADE_ID_MISSING", "Upgrade ID $id not present", null))
       }
 
       upgrades[id]!!.startUpgrade(promise)
@@ -95,7 +96,7 @@ class ReactNativeMcuManagerModule : Module() {
 
     AsyncFunction("cancelUpgrade") { id: String, promise: Promise ->
       if (!upgrades.contains(id)) {
-        Log.w(TAG, "can't cancel update ID ($id} not present")
+        Log.w(TAG, "Can't cancel update ID ($id} not present")
         return@AsyncFunction
       }
 
@@ -104,7 +105,7 @@ class ReactNativeMcuManagerModule : Module() {
 
     Function("destroyUpgrade") { id: String ->
       if (!upgrades.contains(id)) {
-        Log.w(TAG, "can't destroy update ID ($id} not present")
+        Log.w(TAG, "Can't destroy update ID ($id} not present")
         return@Function
       }
 
