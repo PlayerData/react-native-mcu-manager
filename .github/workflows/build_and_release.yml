@@ -24,7 +24,7 @@ jobs:
 
       - name: Build
         run: npm run build
-        
+
   android-example:
       name: Android example app
       runs-on: ubuntu-latest
@@ -43,7 +43,7 @@ jobs:
           npx expo prebuild
           cd android
           ./gradlew build
-          
+
   ios-example:
       name: iOS example app
       runs-on: macos-latest
@@ -62,7 +62,7 @@ jobs:
           npx expo prebuild
           cd ios
           xcodebuild build -workspace reactnativemcumanagerexample.xcworkspace -scheme reactnativemcumanagerexample CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
-      
+
   release:
     name: Release
     needs: [android-example, ios-example]
@@ -75,7 +75,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
           node-version: 18
-          
+
+    - name: Install dependencies
+      run: npm install
+
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
