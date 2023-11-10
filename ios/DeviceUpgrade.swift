@@ -164,7 +164,18 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
     /// - parameter state: The state in which the upgrade has failed.
     /// - parameter error: The error.
     func upgradeDidFail(inState state: FirmwareUpgradeState, with error: Error) {
-        self.promise!.reject(Exception(name: "UpgradeFailed", description: error.localizedDescription))
+        self.promise!.reject(getFirmwareUpgradeException(error))
+    }
+
+    private func getFirmwareUpgradeException(_ error: Error) -> Exception {
+        switch error {
+        case FirmwareUpgradeError.invalidResponse(let response):
+            return Exception(name: "McuMgrInvalidResponse", description: "Invalid response: \(response.description)")
+        case ImageUploadError.mcuMgrErrorCode(let code), FirmwareUpgradeError.mcuMgrReturnCodeError(let code):
+            return Exception(name: "McuMgrRemoteError", description: code.description, code: "MCU_MGR_REMOTE_ERROR_\(code._code)")
+        default:
+            return Exception(name: "McuMgr_\(String(describing: error.self))", description: error.localizedDescription)
+        }
     }
 
     /// Called when the firmware upgrade has been cancelled using cancel()
