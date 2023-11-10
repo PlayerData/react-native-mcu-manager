@@ -74,7 +74,7 @@
   "dependencies": {
     "expo-modules-core": "1.5.12",
     "react": "18.2.0",
-    "uuid": "^3.4.0"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^18.0.0",
