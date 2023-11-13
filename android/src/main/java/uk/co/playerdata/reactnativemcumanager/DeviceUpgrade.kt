@@ -14,19 +14,19 @@ import io.runtime.mcumgr.exception.McuMgrException
 import java.io.IOException
 
 val UpgradeModes =
-    mapOf(
-        1 to FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM,
-        2 to FirmwareUpgradeManager.Mode.CONFIRM_ONLY,
-        3 to FirmwareUpgradeManager.Mode.TEST_ONLY
-    )
+        mapOf(
+                1 to FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM,
+                2 to FirmwareUpgradeManager.Mode.CONFIRM_ONLY,
+                3 to FirmwareUpgradeManager.Mode.TEST_ONLY
+        )
 
 class DeviceUpgrade(
-    private val id: String,
-    device: BluetoothDevice,
-    private val context: Context,
-    private val updateFileUri: Uri,
-    private val updateOptions: UpdateOptions,
-    private val manager: ReactNativeMcuManagerModule
+        private val id: String,
+        device: BluetoothDevice,
+        private val context: Context,
+        private val updateFileUri: Uri,
+        private val updateOptions: UpdateOptions,
+        private val manager: ReactNativeMcuManagerModule
 ) : FirmwareUpgradeCallback {
     private val TAG = "DeviceUpdate"
     private var lastNotification = -1
@@ -54,13 +54,7 @@ class DeviceUpgrade(
         disconnectDevice()
         Log.v(this.TAG, "Cancel")
         withSafePromise { promise ->
-            promise.reject(
-                CodedException(
-                    "UPGRADE_CANCELLED",
-                    "Upgrade cancelled",
-                    null
-                )
-            )
+            promise.reject(CodedException("UPGRADE_CANCELLED", "Upgrade cancelled", null))
         }
     }
 
@@ -93,11 +87,7 @@ class DeviceUpgrade(
             disconnectDevice()
             Log.v(this.TAG, "mcu exception")
             withSafePromise { promise ->
-                promise.reject(
-                    ReactNativeMcuMgrException.fromMcuMgrException(
-                        e
-                    )
-                )
+                promise.reject(ReactNativeMcuMgrException.fromMcuMgrException(e))
             }
         }
     }
@@ -105,8 +95,8 @@ class DeviceUpgrade(
     override fun onUpgradeStarted(controller: FirmwareUpgradeController) {}
 
     override fun onStateChanged(
-        prevState: FirmwareUpgradeManager.State,
-        newState: FirmwareUpgradeManager.State
+            prevState: FirmwareUpgradeManager.State,
+            newState: FirmwareUpgradeManager.State
     ) {
         val stateMap: Map<String, Any?> = mapOf("id" to id, "state" to newState.name)
         manager.upgradeStateCB(stateMap)
@@ -120,24 +110,14 @@ class DeviceUpgrade(
     override fun onUpgradeFailed(state: FirmwareUpgradeManager.State, error: McuMgrException) {
         disconnectDevice()
         withSafePromise { promise ->
-            promise.reject(
-                ReactNativeMcuMgrException.fromMcuMgrException(
-                    error
-                )
-            )
+            promise.reject(ReactNativeMcuMgrException.fromMcuMgrException(error))
         }
     }
 
     override fun onUpgradeCanceled(state: FirmwareUpgradeManager.State) {
         disconnectDevice()
         withSafePromise { promise ->
-            promise.reject(
-                CodedException(
-                    "UPGRADE_CANCELLED",
-                    "Upgrade cancelled",
-                    null
-                )
-            )
+            promise.reject(CodedException("UPGRADE_CANCELLED", "Upgrade cancelled", null))
         }
     }
 

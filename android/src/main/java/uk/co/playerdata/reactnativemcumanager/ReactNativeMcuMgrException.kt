@@ -10,9 +10,9 @@ import io.runtime.mcumgr.exception.McuMgrErrorException
 import io.runtime.mcumgr.exception.McuMgrException
 import io.runtime.mcumgr.exception.McuMgrTimeoutException
 
-class ReactNativeMcuMgrException private constructor(
-    code: String, message: String?, cause: Throwable?
-) : CodedException(code, message, cause) {
+class ReactNativeMcuMgrException
+private constructor(code: String, message: String?, cause: Throwable?) :
+        CodedException(code, message, cause) {
 
     companion object {
         private fun getCode(e: McuMgrException): String {
