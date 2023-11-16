@@ -27,7 +27,7 @@ const useBluetoothDevices = () => {
           deviceIdRef.current.push(scannedDevice.id);
 
           setDevices((oldDevices) =>
-            sortBy(uniqBy([...oldDevices, scannedDevice], 'id'), 'name')
+            sortBy(uniqBy([scannedDevice, ...oldDevices], 'id'), 'name')
           );
         }
       )

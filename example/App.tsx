@@ -127,7 +127,7 @@ export default function App() {
         <Text style={styles.block}>Step 4 - Update</Text>
 
         <View style={styles.block}>
-          <Text>Update Progress / State:</Text>
+          <Text>State / Update Progress:</Text>
           <Text>
             {state}: {progress}
           </Text>
