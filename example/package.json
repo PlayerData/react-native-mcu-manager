@@ -23,7 +23,7 @@
     "react-native-document-picker": "^9.0.1",
     "react-native-get-random-values": "^1.8.0",
     "react-native-toast-message": "^2.1.7",
-    "expo-constants": "~15.0.0"
+    "expo-constants": "~15.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
