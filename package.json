@@ -72,7 +72,7 @@
     ]
   },
   "dependencies": {
-    "expo-modules-core": "1.5.12",
+    "expo-modules-core": "1.11.8",
     "react": "18.2.0",
     "uuid": "^9.0.0"
   },
