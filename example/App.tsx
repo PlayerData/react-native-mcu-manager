@@ -1,3 +1,5 @@
+import 'react-native-get-random-values';
+
 import { UpgradeMode } from '@playerdata/react-native-mcu-manager';
 import React, { useState } from 'react';
 import {
@@ -9,8 +11,6 @@ import {
   StyleSheet,
   Text,
   View,
-  PermissionsAndroid,
-  Platform,
 } from 'react-native';
 
 import useBluetoothDevices from './src/useBluetoothDevices';

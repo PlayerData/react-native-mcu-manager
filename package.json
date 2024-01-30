@@ -72,11 +72,11 @@
     ]
   },
   "dependencies": {
-    "expo-modules-core": "1.5.12",
     "react": "18.2.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.0",
     "@commitlint/config-conventional": "^18.0.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@types/react": "^18.0.25",
@@ -84,14 +84,14 @@
     "commitlint": "18.6.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "expo-module-scripts": "^3.0.11",
+    "expo-module-scripts": "^3.4.0",
     "husky": "^9.0.0",
     "prettier": "^3.0.0",
-    "semantic-release": "^23.0.0",
-    "@babel/core": "^7.20.0"
+    "semantic-release": "^23.0.0"
   },
   "peerDependencies": {
     "expo": "*",
+    "expo-modules-core": "*",
     "react": "*",
     "react-native": "*"
   }
