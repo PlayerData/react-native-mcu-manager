@@ -20,7 +20,7 @@
     "react-native-document-picker": "9.1.0",
     "react-native-get-random-values": "1.10.0",
     "react-native-toast-message": "2.2.0",
-    "react-native": "0.73.2"
+    "react-native": "0.73.3"
   },
   "devDependencies": {
     "@babel/core": "7.23.9",
