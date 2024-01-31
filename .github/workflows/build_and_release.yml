@@ -32,34 +32,49 @@ jobs:
       steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '18'
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
       - name: Making sure the android example app builds
         run: |
           npm install
+
           cd example
-          npx expo prebuild
+          npm install
+          npx expo prebuild --platform android
+
           cd android
           ./gradlew build
 
   ios-example:
       name: iOS example app
-      runs-on: macos-latest
+      runs-on: macos-14
       needs: build
       steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
       - name: Making sure the ios example app builds
         run: |
           npm install
+
           cd example
-          npx expo prebuild
+          npm install
+          npx expo prebuild --platform ios
+
           cd ios
           xcodebuild build -workspace reactnativemcumanagerexample.xcworkspace -scheme reactnativemcumanagerexample CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 

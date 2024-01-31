@@ -5,18 +5,13 @@ apply plugin: 'maven-publish'
 group = 'uk.co.playerdata.reactnativemcumanager'
 version = '0.1.0'
 
-def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
-if (expoModulesCorePlugin.exists()) {
-  apply from: expoModulesCorePlugin
-  applyKotlinExpoModulesCorePlugin()
-  // Remove this check, but keep the contents after SDK49 support is dropped
-  if (safeExtGet("expoProvidesDefaultConfig", false)) {
-    useExpoPublishing()
-    useCoreDependencies()
-  }
-}
-
 buildscript {
+  def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
+  if (expoModulesCorePlugin.exists()) {
+    apply from: expoModulesCorePlugin
+    applyKotlinExpoModulesCorePlugin()
+  }
+
   // Simple helper that allows the root project to override versions declared by this library.
   ext.safeExtGet = { prop, fallback ->
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
@@ -73,7 +68,7 @@ android {
   namespace "uk.co.playerdata.reactnativemcumanager"
   defaultConfig {
     minSdkVersion safeExtGet("minSdkVersion", 21)
-    targetSdkVersion safeExtGet("targetSdkVersion", 33)
+    targetSdkVersion safeExtGet("targetSdkVersion", 34)
     versionCode 1
     versionName "0.1.0"
   }
