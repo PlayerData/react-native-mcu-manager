@@ -18,7 +18,7 @@ private const val MODULE_NAME = "ReactNativeMcuManager"
 private val TAG = "McuManagerModule"
 
 private const val UPGRADE_STATE_EVENTS = "upgradeStateChanged"
-private const val UPLOAD_PROGRESS_EVENTS = "uploadProgressChanged"
+private const val UPLOAD_PROGRESS_EVENTS = "uploadProgress"
 
 class UpdateOptions : Record {
   @Field val estimatedSwapTime: Int = 0
