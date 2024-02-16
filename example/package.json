@@ -11,7 +11,7 @@
     "pods": "pod-install --quiet"
   },
   "dependencies": {
-    "expo": "50.0.6",
+    "expo": "50.0.7",
     "expo-splash-screen": "0.26.4",
     "expo-status-bar": "1.11.1",
     "lodash": "4.17.21",
