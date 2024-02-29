@@ -23,8 +23,8 @@
     "react-native": "0.73.5"
   },
   "devDependencies": {
-    "@babel/core": "7.23.9",
-    "@babel/runtime": "7.23.9",
+    "@babel/core": "7.24.0",
+    "@babel/runtime": "7.24.0",
     "@types/lodash": "4.14.202",
     "@types/react": "18.2.60",
     "babel-plugin-module-resolver": "5.0.0",
