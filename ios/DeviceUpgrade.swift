@@ -49,9 +49,9 @@ class DeviceUpgrade {
     }
 
     do {
-      let fileHandle = try FileHandle(forReadingFrom: fileUrl)
-      let file = Data(fileHandle.availableData)
-      fileHandle.closeFile()
+      let binData = try Data(contentsOf: fileUrl)
+      let binHash = try McuMgrImage(data: binData).hash
+      let image = ImageManager.Image(image: 0, hash: binHash, data: binData)
 
       self.bleTransport = McuMgrBleTransport(bleUuid)
       self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
@@ -64,7 +64,7 @@ class DeviceUpgrade {
 
       DispatchQueue.main.async {
         do {
-          try self.dfuManager!.start(data: file as Data, using: config)
+          try self.dfuManager!.start(images: [image], using: config)
         } catch {
           promise.reject(UnexpectedException(error))
         }

@@ -59,14 +59,23 @@ const McuManagerEvents = new EventEmitter(
 declare const UpgradeIdSymbol: unique symbol;
 type UpgradeID = string & { [UpgradeIdSymbol]: never };
 
+type UpgradeEvent = 'upgradeStateChanged' | 'uploadProgress';
+
+type UpgradeStateChangedPayload = {
+  id: UpgradeID;
+  state: FirmwareUpgradeState;
+};
+type UploadProgressPayload = { id: UpgradeID; progress: number };
+type UpgradeEventPayload = UpgradeStateChangedPayload & UploadProgressPayload;
+
 type AddUpgradeListener = {
   (
     eventType: 'upgradeStateChanged',
-    listener: ({ state }: { state: FirmwareUpgradeState }) => void
+    listener: (event: UpgradeStateChangedPayload) => void
   ): Subscription;
   (
     eventType: 'uploadProgress',
-    listener: ({ progress }: { progress: number }) => void
+    listener: (event: UploadProgressPayload) => void
   ): Subscription;
 };
 
@@ -106,10 +115,17 @@ class Upgrade {
   };
 
   addListener: AddUpgradeListener = (
-    eventType: any,
-    listener: (...args: any[]) => void
+    eventType: UpgradeEvent,
+    listener: (event: UpgradeEventPayload) => void
   ): Subscription => {
-    return McuManagerEvents.addListener(eventType, listener);
+    return McuManagerEvents.addListener<UpgradeEventPayload>(
+      eventType,
+      (event) => {
+        if (event.id !== this.id) return;
+
+        listener(event);
+      }
+    );
   };
 
   /**
