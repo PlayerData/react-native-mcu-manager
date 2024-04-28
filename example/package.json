@@ -17,7 +17,7 @@
     "lodash": "4.17.21",
     "react": "18.2.0",
     "react-native-ble-plx": "3.1.2",
-    "react-native-document-picker": "9.1.2",
+    "react-native-document-picker": "9.2.0",
     "react-native-get-random-values": "1.11.0",
     "react-native-toast-message": "2.2.0",
     "react-native": "0.73.6"
