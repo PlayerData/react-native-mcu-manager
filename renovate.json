@@ -1,6 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>PlayerData/renovate-config"
+  "extends": ["local>PlayerData/renovate-config"],
+  "reviewers": ["team:device-engineering"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["react-native"],
+      "enabled": false
+    }
   ]
 }
