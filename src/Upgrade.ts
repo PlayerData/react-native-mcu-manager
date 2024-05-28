@@ -1,5 +1,4 @@
 import {
-  NativeModulesProxy,
   EventEmitter,
   Subscription,
 } from 'expo-modules-core';
@@ -52,9 +51,7 @@ export type FirmwareUpgradeState =
   | 'SUCCESS'
   | 'UNKNOWN';
 
-const McuManagerEvents = new EventEmitter(
-  ReactNativeMcuManager ?? NativeModulesProxy.ReactNativeMcuManager
-);
+const McuManagerEvents = new EventEmitter(ReactNativeMcuManager);
 
 declare const UpgradeIdSymbol: unique symbol;
 type UpgradeID = string & { [UpgradeIdSymbol]: never };

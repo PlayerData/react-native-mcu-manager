@@ -3,6 +3,7 @@
     "name": "react-native-mcu-manager-example",
     "slug": "react-native-mcu-manager-example",
     "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
     "orientation": "portrait",
     "assetBundlePatterns": [
       "**/*"
