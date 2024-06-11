@@ -73,7 +73,7 @@
   },
   "dependencies": {
     "react": "18.2.0",
-    "uuid": "^9.0.0"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
