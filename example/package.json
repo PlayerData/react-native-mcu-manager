@@ -11,9 +11,9 @@
     "pods": "pod-install --quiet"
   },
   "dependencies": {
-    "expo": "50.0.17",
-    "expo-splash-screen": "0.26.4",
-    "expo-status-bar": "1.11.1",
+    "expo": "50.0.19",
+    "expo-splash-screen": "0.27.5",
+    "expo-status-bar": "1.12.1",
     "lodash": "4.17.21",
     "react": "18.2.0",
     "react-native-ble-plx": "3.2.1",
@@ -29,7 +29,7 @@
     "@types/react": "18.2.79",
     "babel-plugin-module-resolver": "5.0.2",
     "metro-react-native-babel-preset": "0.77.0",
-    "pod-install": "0.2.0",
+    "pod-install": "0.2.2",
     "typescript": "5.5.4"
   },
   "expo": {
