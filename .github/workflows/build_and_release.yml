@@ -14,16 +14,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 20
+          version: 8
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
+        run: pnpm install
 
   android-example:
       name: Android example app
@@ -38,17 +35,17 @@ jobs:
           distribution: 'temurin'
           java-version: '18'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 20
+          version: 8
 
       - name: Making sure the android example app builds
         run: |
-          npm install
+          pnpm install
 
           cd example
-          npm install
+          pnpm install
           npx expo prebuild --platform android
 
           cd android
@@ -62,17 +59,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 20
+          version: 8
 
       - name: Making sure the ios example app builds
         run: |
-          npm install
+          pnpm install
 
           cd example
-          npm install
+          pnpm install
           npx expo prebuild --platform ios
 
           cd ios
@@ -86,13 +83,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - name: Setup PNPM
+      uses: pnpm/action-setup@v4
       with:
-          node-version: 20
+        version: 8
 
     - name: Install dependencies
-      run: npm install
+      run: pnpm install
 
     - name: Release
       env:
