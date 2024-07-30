@@ -15,14 +15,21 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install package dependencies
-        run: npm install
-
-      - name: Install example app dependencies
-        working-directory: ./example
-        run: npm install
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
 
       - name: Lint
-        run: npm run lint
+        run: pnpm lint
+
+      - name: Typecheck MCU Manager
+        run: pnpm typecheck
+        working-directory: ./react-native-mcu-manager
+
+      - name: Typecheck Example
+        run: pnpm typecheck
+        working-directory: ./example

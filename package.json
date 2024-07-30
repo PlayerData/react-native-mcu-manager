@@ -1,64 +1,16 @@
 {
-  "name": "@playerdata/react-native-mcu-manager",
-  "title": "React Native MCU Manager",
-  "version": "0.0.1-development",
-  "description": "React Native Wrappers for MCUMgr's Android / iOS client libraries",
-  "source": "src/",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
   "scripts": {
-    "build": "expo-module build",
-    "clean": "expo-module clean",
-    "lint": "expo-module lint",
-    "test": "expo-module test",
-    "prepare": "expo-module prepare",
-    "prepublishOnly": "expo-module prepublishOnly",
-    "expo-module": "expo-module",
+    "preinstall": "npx only-allow pnpm",
     "open:ios": "open -a \"Xcode\" example/ios",
-    "open:android": "open -a \"Android Studio\" example/android"
+    "open:android": "open -a \"Android Studio\" example/android",
+    "lint": "eslint --report-unused-disable-directives example react-native-mcu-manager"
   },
-  "keywords": [
-    "react-native",
-    "ios",
-    "android",
-    "mcumgr"
-  ],
-  "author": "PlayerData <dev@playerdata.com> (https://github.com/PlayerData)",
-  "license": "MIT",
-  "repository": "https://github.com/PlayerData/react-native-mcu-manager",
-  "bugs": {
-    "url": "https://github.com/PlayerData/react-native-mcu-manager/issues"
-  },
-  "homepage": "https://github.com/PlayerData/react-native-mcu-manager#readme",
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn lint && yarn typescript"
+      "pre-commit": "pnpm run lint && pnpm typescript"
     }
   },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native-community",
-      "prettier"
-    ],
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/"
-  ],
   "prettier": {
     "quoteProps": "consistent",
     "singleQuote": true,
@@ -66,33 +18,14 @@
     "trailingComma": "es5",
     "useTabs": false
   },
-  "release": {
-    "branches": [
-      "main"
-    ]
-  },
-  "dependencies": {
-    "react": "18.2.0",
-    "uuid": "^10.0.0"
-  },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "@commitlint/config-conventional": "^19.0.0",
-    "@react-native-community/eslint-config": "^3.2.0",
-    "@types/react": "^18.0.25",
-    "@types/uuid": "10.0.0",
+    "@commitlint/config-conventional": "19.2.2",
+    "@react-native-community/eslint-config": "3.2.0",
     "commitlint": "19.4.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "expo-module-scripts": "^3.4.0",
-    "husky": "^9.0.0",
-    "prettier": "^3.0.0",
-    "semantic-release": "^24.0.0"
-  },
-  "peerDependencies": {
-    "expo": "*",
-    "expo-modules-core": "*",
-    "react": "*",
-    "react-native": "*"
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.1.3",
+    "husky": "9.0.11",
+    "prettier": "3.2.5",
+    "semantic-release": "24.0.0"
   }
 }

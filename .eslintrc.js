@@ -1,5 +1,5 @@
 module.exports = {
   root: true,
-  extends: ['universe/native', 'universe/web'],
-  ignorePatterns: ['build'],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+  ignorePatterns: ['build/**'],
 };

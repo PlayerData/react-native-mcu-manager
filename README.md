@@ -16,15 +16,15 @@ how you get on.
 
 For bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.
 
-### Add the package to your npm dependencies
+### Add the package to your pnpm dependencies
 
 ```
-npm install @playerdata/react-native-mcu-manager
+pnpm install @playerdata/react-native-mcu-manager
 ```
 
 ### Configure for iOS
 
-Run `npx pod-install` after installing the npm package.
+Run `npx pod-install` after installing the pnpm package.
 
 
 ### Configure for Android
@@ -82,18 +82,18 @@ For Kotlin, you'll find the source files at `reactnativemcumanager` under `Andro
 Make sure your code passes TypeScript and ESLint. Run the following to verify:
 
 ```sh
-npm run typecheck
-npm run lint
+pnpm run typecheck
+pnpm run lint
 ```
 
 To fix formatting errors, run the following:
 
 ```sh
-npm run lint --fix
+pnpm run typecheck run lint --fix
 ```
 
 Remember to add unit tests for your change if possible. Run the unit tests by:
 
 ```sh
-npm run test
+pnpm run typecheck run test
 ```

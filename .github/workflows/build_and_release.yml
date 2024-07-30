@@ -19,11 +19,15 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm install
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
 
       - name: Build
-        run: npm run build
+        working-directory: ./react-native-mcu-manager
+        run: pnpm build
 
   android-example:
       name: Android example app
@@ -43,12 +47,15 @@ jobs:
         with:
           node-version: 20
 
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+
       - name: Making sure the android example app builds
         run: |
-          npm install
-
           cd example
-          npm install
           npx expo prebuild --platform android
 
           cd android
@@ -67,12 +74,15 @@ jobs:
         with:
           node-version: 20
 
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+
       - name: Making sure the ios example app builds
         run: |
-          npm install
-
           cd example
-          npm install
           npx expo prebuild --platform ios
 
           cd ios
@@ -89,13 +99,17 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-          node-version: 20
+        node-version: 20
 
-    - name: Install dependencies
-      run: npm install
+    - name: Setup PNPM
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+        run_install: true
 
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      working-directory: react-native-mcu-manager
       run: npx semantic-release
