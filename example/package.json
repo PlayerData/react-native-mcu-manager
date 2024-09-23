@@ -3,38 +3,33 @@
   "description": "Example app for react-native-mcu-manager",
   "version": "0.0.1",
   "private": true,
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "android": "expo run:android",
     "ios": "expo run:ios",
     "start": "expo start",
-    "pods": "pod-install --quiet"
+    "pods": "pod-install --quiet",
+    "typecheck": "pnpm tsc --noEmit"
   },
   "dependencies": {
-    "expo": "50.0.17",
-    "expo-splash-screen": "0.26.4",
-    "expo-status-bar": "1.11.1",
+    "@playerdata/react-native-mcu-manager": "workspace:*",
+    "expo": "51.0.32",
+    "expo-splash-screen": "0.27.5",
+    "expo-status-bar": "1.12.1",
     "lodash": "4.17.21",
     "react": "18.2.0",
+    "react-native": "0.74.5",
     "react-native-ble-plx": "3.2.1",
-    "react-native-document-picker": "9.3.0",
+    "react-native-document-picker": "9.3.1",
     "react-native-get-random-values": "1.11.0",
-    "react-native-toast-message": "2.2.0",
-    "react-native": "0.73.6"
+    "react-native-toast-message": "2.2.1"
   },
   "devDependencies": {
-    "@babel/core": "7.25.2",
-    "@babel/runtime": "7.25.0",
-    "@types/lodash": "4.17.7",
+    "@babel/core": "7.24.5",
+    "@babel/runtime": "7.24.5",
+    "@types/lodash": "4.17.4",
     "@types/react": "18.2.79",
-    "babel-plugin-module-resolver": "5.0.2",
     "metro-react-native-babel-preset": "0.77.0",
-    "pod-install": "0.2.0",
-    "typescript": "5.5.4"
-  },
-  "expo": {
-    "autolinking": {
-      "nativeModulesDir": ".."
-    }
+    "pod-install": "0.2.2",
+    "typescript": "5.3.3"
   }
 }

@@ -52,6 +52,7 @@ const useFirmwareUpdate = (
       }
 
       await upgradeRef.current.runUpgrade();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (ex: any) {
       setState(ex.message);
     }

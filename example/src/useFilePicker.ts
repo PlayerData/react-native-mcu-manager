@@ -21,18 +21,16 @@ const useFilePicker = (): {
     let fileDelimiter: string | null = null;
     try {
       if (Platform.OS === 'ios') {
-        type os = 'ios';
         fileDelimiter = '%2F';
-        result = await DocumentPicker.pickSingle<os>({
+        result = await DocumentPicker.pickSingle({
           allowMultiSelection: false,
           type: ['public.data'],
           copyTo: 'cachesDirectory',
         });
       }
       if (Platform.OS === 'android') {
-        type os = 'android';
         fileDelimiter = '/';
-        result = await DocumentPicker.pickSingle<os>({
+        result = await DocumentPicker.pickSingle({
           allowMultiSelection: false,
           type: ['*/*'],
         });
@@ -44,6 +42,7 @@ const useFilePicker = (): {
 
       const uri = result.fileCopyUri ? result.fileCopyUri : result.uri;
       setSelectedFile({ uri, name: uri.split(fileDelimiter).slice(-1)[0] });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (!DocumentPicker.isCancel(err)) {
         setSelectedFile(null);

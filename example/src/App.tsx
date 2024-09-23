@@ -1,6 +1,7 @@
 import 'react-native-get-random-values';
 
 import { UpgradeMode } from '@playerdata/react-native-mcu-manager';
+
 import React, { useState } from 'react';
 import {
   Button,
@@ -13,9 +14,9 @@ import {
   View,
 } from 'react-native';
 
-import useBluetoothDevices from './src/useBluetoothDevices';
-import useFilePicker from './src/useFilePicker';
-import useFirmwareUpdate from './src/useFirmwareUpdate';
+import useBluetoothDevices from './useBluetoothDevices';
+import useFilePicker from './useFilePicker';
+import useFirmwareUpdate from './useFirmwareUpdate';
 
 const styles = StyleSheet.create({
   root: {
