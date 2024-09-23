@@ -37,7 +37,7 @@
   "devDependencies": {
     "@types/react": "18.2.79",
     "@types/uuid": "10.0.0",
-    "expo-module-scripts": "3.4.0",
+    "expo-module-scripts": "3.5.2",
     "expo-modules-core": "1.12.24"
   },
   "peerDependencies": {
