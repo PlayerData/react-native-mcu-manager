@@ -9,14 +9,14 @@ importers:
   .:
     devDependencies:
       '@commitlint/config-conventional':
-        specifier: 19.2.2
-        version: 19.2.2
+        specifier: 19.5.0
+        version: 19.5.0
       '@react-native-community/eslint-config':
         specifier: 3.2.0
         version: 3.2.0(eslint@8.57.1)(prettier@3.2.5)(typescript@5.3.3)
       commitlint:
-        specifier: 19.4.0
-        version: 19.4.0(@types/node@22.5.5)(typescript@5.3.3)
+        specifier: 19.5.0
+        version: 19.5.0(@types/node@22.5.5)(typescript@5.3.3)
       eslint-config-prettier:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.57.1)
@@ -918,8 +918,8 @@ packages:
     engines: {node: '>=v18'}
     hasBin: true
 
-  '@commitlint/config-conventional@19.2.2':
-    resolution: {integrity: sha512-mLXjsxUVLYEGgzbxbxicGPggDuyWNkf25Ht23owXIH+zV2pv1eJuzLK3t1gDY5Gp6pxdE60jZnWUY5cvgL3ufw==}
+  '@commitlint/config-conventional@19.5.0':
+    resolution: {integrity: sha512-OBhdtJyHNPryZKg0fFpZNOBM1ZDbntMvqMuSmpfyP86XSfwzGw4CaoYRG4RutUPg0BTK07VMRIkNJT6wi2zthg==}
     engines: {node: '>=v18'}
 
   '@commitlint/config-validator@19.5.0':
@@ -2268,8 +2268,8 @@ packages:
     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
     engines: {node: ^12.20.0 || >=14}
 
-  commitlint@19.4.0:
-    resolution: {integrity: sha512-aZU6Y5j918XufTVbm5fOu1xOeUgDcBiVfRpFxkOb83RMsPcYAW6maWRmm6Vs6YhSQbOEZ2+AE+IPoVFvoevQqg==}
+  commitlint@19.5.0:
+    resolution: {integrity: sha512-lCtwxgFulvMnCgBc8MVPlVMf+PNOqQSBhHpEnjV2JjEQEAhxjVDtC7IeuEtR+hHpGvHt6CwlLtm3uZNyEby5dQ==}
     engines: {node: '>=v18'}
     hasBin: true
 
@@ -7292,7 +7292,7 @@ snapshots:
       - '@types/node'
       - typescript
 
-  '@commitlint/config-conventional@19.2.2':
+  '@commitlint/config-conventional@19.5.0':
     dependencies:
       '@commitlint/types': 19.5.0
       conventional-changelog-conventionalcommits: 7.0.2
@@ -9431,7 +9431,7 @@ snapshots:
 
   commander@9.5.0: {}
 
-  commitlint@19.4.0(@types/node@22.5.5)(typescript@5.3.3):
+  commitlint@19.5.0(@types/node@22.5.5)(typescript@5.3.3):
     dependencies:
       '@commitlint/cli': 19.5.0(@types/node@22.5.5)(typescript@5.3.3)
       '@commitlint/types': 19.5.0
