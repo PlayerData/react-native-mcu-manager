@@ -92,6 +92,12 @@ jobs:
     name: Release
     needs: [android-example, ios-example]
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
