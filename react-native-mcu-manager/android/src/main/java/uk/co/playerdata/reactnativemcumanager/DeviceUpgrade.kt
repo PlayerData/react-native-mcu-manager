@@ -9,7 +9,8 @@ import expo.modules.kotlin.exception.CodedException
 import io.runtime.mcumgr.ble.McuMgrBleTransport
 import io.runtime.mcumgr.dfu.FirmwareUpgradeCallback
 import io.runtime.mcumgr.dfu.FirmwareUpgradeController
-import io.runtime.mcumgr.dfu.FirmwareUpgradeManager
+import io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager
+import io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager.Settings
 import io.runtime.mcumgr.exception.McuMgrException
 import java.io.IOException
 
@@ -27,7 +28,7 @@ class DeviceUpgrade(
         private val updateFileUri: Uri,
         private val updateOptions: UpdateOptions,
         private val manager: ReactNativeMcuManagerModule
-) : FirmwareUpgradeCallback {
+) : FirmwareUpgradeCallback<FirmwareUpgradeManager.State> {
     private val TAG = "DeviceUpdate"
     private var lastNotification = -1
     private var transport = McuMgrBleTransport(context, device)
@@ -67,7 +68,7 @@ class DeviceUpgrade(
         val modeInt = updateOptions.upgradeMode ?: 1
         val upgradeMode = UpgradeModes[modeInt] ?: FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM
 
-        dfuManager.setEstimatedSwapTime(estimatedSwapTime)
+        val settings = Settings.Builder().setEstimatedSwapTime(estimatedSwapTime).build()
 
         try {
             val stream = context.contentResolver.openInputStream(updateBundleUri)
@@ -76,7 +77,7 @@ class DeviceUpgrade(
             stream.read(imageData)
 
             dfuManager.setMode(upgradeMode)
-            dfuManager.start(imageData)
+            dfuManager.start(imageData, settings)
         } catch (e: IOException) {
             e.printStackTrace()
             disconnectDevice()

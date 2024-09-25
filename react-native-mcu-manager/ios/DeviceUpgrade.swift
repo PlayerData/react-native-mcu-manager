@@ -54,7 +54,7 @@ class DeviceUpgrade {
       let image = ImageManager.Image(image: 0, hash: binHash, data: binData)
 
       self.bleTransport = McuMgrBleTransport(bleUuid)
-      self.dfuManager = FirmwareUpgradeManager(transporter: self.bleTransport!, delegate: self)
+      self.dfuManager = FirmwareUpgradeManager(transport: self.bleTransport!, delegate: self)
       let config = FirmwareUpgradeConfiguration(
         estimatedSwapTime: self.options.estimatedSwapTime,
         upgradeMode: self.getMode()

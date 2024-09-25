@@ -24,7 +24,7 @@ public class ReactNativeMcuManagerModule: Module {
       }
 
       let bleTransport = McuMgrBleTransport(bleUuid)
-      let imageManager = ImageManager(transporter: bleTransport)
+      let imageManager = ImageManager(transport: bleTransport)
 
       imageManager.erase { (response: McuMgrResponse?, err: Error?) in
         bleTransport.close()
