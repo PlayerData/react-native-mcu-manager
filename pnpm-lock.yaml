@@ -55,19 +55,19 @@ importers:
         version: 18.3.1
       react-native:
         specifier: 0.74.5
-        version: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1)
+        version: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1)
       react-native-ble-plx:
         specifier: 3.2.1
-        version: 3.2.1(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1))(react@18.3.1)
+        version: 3.2.1(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1))(react@18.3.1)
       react-native-document-picker:
         specifier: 9.3.1
-        version: 9.3.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1))(react@18.3.1)
+        version: 9.3.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1))(react@18.3.1)
       react-native-get-random-values:
         specifier: 1.11.0
-        version: 1.11.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1))
+        version: 1.11.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1))
       react-native-toast-message:
         specifier: 2.2.1
-        version: 2.2.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1))(react@18.3.1)
+        version: 2.2.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: 7.25.2
@@ -79,8 +79,8 @@ importers:
         specifier: 4.17.9
         version: 4.17.9
       '@types/react':
-        specifier: 18.3.9
-        version: 18.3.9
+        specifier: 18.3.10
+        version: 18.3.10
       metro-react-native-babel-preset:
         specifier: 0.77.0
         version: 0.77.0(@babel/core@7.25.2)
@@ -101,14 +101,14 @@ importers:
         version: 18.3.1
       react-native:
         specifier: '*'
-        version: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1)
+        version: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1)
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
     devDependencies:
       '@types/react':
-        specifier: 18.3.9
-        version: 18.3.9
+        specifier: 18.3.10
+        version: 18.3.10
       '@types/uuid':
         specifier: 10.0.0
         version: 10.0.0
@@ -1582,8 +1582,8 @@ packages:
   '@types/react-test-renderer@18.3.0':
     resolution: {integrity: sha512-HW4MuEYxfDbOHQsVlY/XtOvNHftCVEPhJF2pQXXwcUiUF+Oyb0usgp48HSgpK5rt8m9KZb22yqOeZm+rrVG8gw==}
 
-  '@types/react@18.3.9':
-    resolution: {integrity: sha512-+BpAVyTpJkNWWSSnaLBk6ePpHLOGJKnEQNbINNovPWzvEUyAe3e+/d494QdEh71RekM/qV7lw6jzf1HGrJyAtQ==}
+  '@types/react@18.3.10':
+    resolution: {integrity: sha512-02sAAlBnP39JgXwkAq3PeU9DVaaGpZyF3MGcC0MKgQVkZor5IiiDAipVaxQHtDJAmO4GIy/rVBy/LzVj76Cyqg==}
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -8386,14 +8386,14 @@ snapshots:
 
   '@react-native/normalize-colors@0.74.87': {}
 
-  '@react-native/virtualized-lists@0.74.87(@types/react@18.3.9)(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1))(react@18.3.1)':
+  '@react-native/virtualized-lists@0.74.87(@types/react@18.3.10)(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1))(react@18.3.1)':
     dependencies:
       invariant: 2.2.4
       nullthrows: 1.1.1
       react: 18.3.1
-      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1)
+      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1)
     optionalDependencies:
-      '@types/react': 18.3.9
+      '@types/react': 18.3.10
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     dependencies:
@@ -8513,7 +8513,7 @@ snapshots:
   '@testing-library/react-hooks@7.0.2(react-test-renderer@18.2.0(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.25.6
-      '@types/react': 18.3.9
+      '@types/react': 18.3.10
       '@types/react-dom': 18.3.0
       '@types/react-test-renderer': 18.3.0
       react: 18.3.1
@@ -8608,13 +8608,13 @@ snapshots:
 
   '@types/react-dom@18.3.0':
     dependencies:
-      '@types/react': 18.3.9
+      '@types/react': 18.3.10
 
   '@types/react-test-renderer@18.3.0':
     dependencies:
-      '@types/react': 18.3.9
+      '@types/react': 18.3.10
 
-  '@types/react@18.3.9':
+  '@types/react@18.3.10':
     dependencies:
       '@types/prop-types': 15.7.13
       csstype: 3.1.3
@@ -12644,12 +12644,12 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-native-ble-plx@3.2.1(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1))(react@18.3.1):
+  react-native-ble-plx@3.2.1(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1))(react@18.3.1):
     dependencies:
       '@expo/config-plugins': 8.0.8
       expo: 51.0.34(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))
       react: 18.3.1
-      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1)
+      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1)
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
@@ -12658,23 +12658,23 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-native-document-picker@9.3.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1))(react@18.3.1):
+  react-native-document-picker@9.3.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1))(react@18.3.1):
     dependencies:
       invariant: 2.2.4
       react: 18.3.1
-      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1)
+      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1)
 
-  react-native-get-random-values@1.11.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1)):
+  react-native-get-random-values@1.11.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1)):
     dependencies:
       fast-base64-decode: 1.0.0
-      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1)
+      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1)
 
-  react-native-toast-message@2.2.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1))(react@18.3.1):
+  react-native-toast-message@2.2.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
-      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1)
+      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1)
 
-  react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1):
+  react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1):
     dependencies:
       '@jest/create-cache-key-function': 29.7.0
       '@react-native-community/cli': 13.6.9
@@ -12686,7 +12686,7 @@ snapshots:
       '@react-native/gradle-plugin': 0.74.87
       '@react-native/js-polyfills': 0.74.87
       '@react-native/normalize-colors': 0.74.87
-      '@react-native/virtualized-lists': 0.74.87(@types/react@18.3.9)(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.9)(react@18.3.1))(react@18.3.1)
+      '@react-native/virtualized-lists': 0.74.87(@types/react@18.3.10)(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.10)(react@18.3.1))(react@18.3.1)
       abort-controller: 3.0.0
       anser: 1.4.10
       ansi-regex: 5.0.1
@@ -12715,7 +12715,7 @@ snapshots:
       ws: 6.2.3
       yargs: 17.7.2
     optionalDependencies:
-      '@types/react': 18.3.9
+      '@types/react': 18.3.10
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
