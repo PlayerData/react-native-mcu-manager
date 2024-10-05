@@ -36,6 +36,50 @@ class DeviceUpgrade {
     self.logDelegate = UpdateLogDelegate()
   }
 
+  func extractImageFrom(from url: URL) throws -> [ImageManager.Image] {
+    switch url.pathExtension.lowercased() {
+    case "bin":
+      return try extractImageFromBinFile(from: url)
+    case "zip":
+      return try extractImageFromZipFile(from: url)
+    default:
+      throw Exception(name: "UnsupportedFileType", description: "File must be .bin or .zip")
+    }
+  }
+
+  func extractImageFromBinFile(from url: URL) throws -> [ImageManager.Image] {
+    let binData = try Data(contentsOf: url)
+    let binHash = try McuMgrImage(data: binData).hash
+    return [ImageManager.Image(image: 0, hash: binHash, data: binData)]
+  }
+
+  func extractImageFromZipFile(from url: URL) throws -> [ImageManager.Image] {
+    let fileManager = FileManager.default
+    let tempDirectory = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+
+    try fileManager.createDirectory(at: tempDirectory, withIntermediateDirectories: true, attributes: nil)
+
+    defer {
+      try? fileManager.removeItem(at: tempDirectory)
+    }
+
+    try fileManager.unzipItem(at: url, to: tempDirectory)
+
+    let contents = try fileManager.contentsOfDirectory(at: tempDirectory, includingPropertiesForKeys: nil, options: [])
+
+    var images: [ImageManager.Image] = []
+
+    for fileURL in contents {
+      if fileURL.pathExtension.lowercased() == "bin" {
+        let binData = try Data(contentsOf: fileURL)
+        let binHash = try McuMgrImage(data: binData).hash
+        images.append(ImageManager.Image(image: 0, hash: binHash, data: binData))
+      }
+    }
+
+    return images
+  }
+
   func startUpgrade(_ promise: Promise) {
     self.promise = promise
 
@@ -49,9 +93,7 @@ class DeviceUpgrade {
     }
 
     do {
-      let binData = try Data(contentsOf: fileUrl)
-      let binHash = try McuMgrImage(data: binData).hash
-      let image = ImageManager.Image(image: 0, hash: binHash, data: binData)
+      let images = try extractImageFrom(from: fileUrl)
 
       self.bleTransport = McuMgrBleTransport(bleUuid)
       self.dfuManager = FirmwareUpgradeManager(transport: self.bleTransport!, delegate: self)
@@ -64,7 +106,7 @@ class DeviceUpgrade {
 
       DispatchQueue.main.async {
         do {
-          try self.dfuManager!.start(images: [image], using: config)
+          try self.dfuManager!.start(images: images, using: config)
         } catch {
           promise.reject(UnexpectedException(error))
         }
