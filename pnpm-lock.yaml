@@ -41,6 +41,9 @@ importers:
       expo:
         specifier: 51.0.36
         version: 51.0.36(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))
+      expo-document-picker:
+        specifier: ^12.0.2
+        version: 12.0.2(expo@51.0.36(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7)))
       expo-splash-screen:
         specifier: 0.27.6
         version: 0.27.6(expo-modules-autolinking@1.11.3)(expo@51.0.36(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7)))
@@ -59,9 +62,6 @@ importers:
       react-native-ble-plx:
         specifier: 3.2.1
         version: 3.2.1(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))(react-native@0.74.5(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))(@types/react@18.3.11)(react@18.3.1))(react@18.3.1)
-      react-native-document-picker:
-        specifier: 9.3.1
-        version: 9.3.1(react-native@0.74.5(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))(@types/react@18.3.11)(react@18.3.1))(react@18.3.1)
       react-native-get-random-values:
         specifier: 1.11.0
         version: 1.11.0(react-native@0.74.5(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))(@types/react@18.3.11)(react@18.3.1))
@@ -3242,6 +3242,11 @@ packages:
     peerDependencies:
       expo: '*'
 
+  expo-document-picker@12.0.2:
+    resolution: {integrity: sha512-tmwuRWoCPv6SmNDSMEWcttMBJ95k8/g5sMWnHdmvOx0UKp0pFXP8FI+55HKtQpo6k2+118MkdDDhQSwKqASVAw==}
+    peerDependencies:
+      expo: '*'
+
   expo-file-system@17.0.1:
     resolution: {integrity: sha512-dYpnZJqTGj6HCYJyXAgpFkQWsiCH3HY1ek2cFZVHFoEc5tLz9gmdEgTF6nFHurvmvfmXqxi7a5CXyVm0aFYJBw==}
     peerDependencies:
@@ -5334,16 +5339,6 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
-
-  react-native-document-picker@9.3.1:
-    resolution: {integrity: sha512-Vcofv9wfB0j67zawFjfq9WQPMMzXxOZL9kBmvWDpjVuEcVK73ndRmlXHlkeFl5ZHVsv4Zb6oZYhqm9u5omJOPA==}
-    peerDependencies:
-      react: '*'
-      react-native: '*'
-      react-native-windows: '*'
-    peerDependenciesMeta:
-      react-native-windows:
-        optional: true
 
   react-native-get-random-values@1.11.0:
     resolution: {integrity: sha512-4BTbDbRmS7iPdhYLRcz3PGFIpFJBwNZg9g42iwa2P6FOv9vZj/xJc678RZXnLNZzd0qd7Q3CCF6Yd+CU2eoXKQ==}
@@ -10921,6 +10916,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  expo-document-picker@12.0.2(expo@51.0.36(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))):
+    dependencies:
+      expo: 51.0.36(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))
+
   expo-file-system@17.0.1(expo@51.0.36(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))):
     dependencies:
       expo: 51.0.36(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))
@@ -13331,12 +13330,6 @@ snapshots:
       - encoding
       - supports-color
       - utf-8-validate
-
-  react-native-document-picker@9.3.1(react-native@0.74.5(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))(@types/react@18.3.11)(react@18.3.1))(react@18.3.1):
-    dependencies:
-      invariant: 2.2.4
-      react: 18.3.1
-      react-native: 0.74.5(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))(@types/react@18.3.11)(react@18.3.1)
 
   react-native-get-random-values@1.11.0(react-native@0.74.5(@babel/core@7.25.7)(@babel/preset-env@7.25.4(@babel/core@7.25.7))(@types/react@18.3.11)(react@18.3.1)):
     dependencies:
