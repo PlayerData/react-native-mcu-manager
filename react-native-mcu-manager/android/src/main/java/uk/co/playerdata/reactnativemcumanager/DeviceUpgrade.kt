@@ -11,8 +11,11 @@ import io.runtime.mcumgr.dfu.FirmwareUpgradeCallback
 import io.runtime.mcumgr.dfu.FirmwareUpgradeController
 import io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager
 import io.runtime.mcumgr.dfu.mcuboot.FirmwareUpgradeManager.Settings
+import io.runtime.mcumgr.dfu.mcuboot.model.ImageSet
 import io.runtime.mcumgr.exception.McuMgrException
+import io.runtime.mcumgr.image.McuMgrImage
 import java.io.IOException
+
 
 val UpgradeModes =
         mapOf(
@@ -63,6 +66,11 @@ class DeviceUpgrade(
         transport.release()
     }
 
+    fun uriToByteArray(uri: Uri): ByteArray? {
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        return inputStream.use { it.readBytes() }
+    }
+
     private fun doUpdate(updateBundleUri: Uri) {
         val estimatedSwapTime = updateOptions.estimatedSwapTime * 1000
         val modeInt = updateOptions.upgradeMode ?: 1
@@ -71,17 +79,31 @@ class DeviceUpgrade(
         val settings = Settings.Builder().setEstimatedSwapTime(estimatedSwapTime).build()
 
         try {
-            val stream = context.contentResolver.openInputStream(updateBundleUri)
-            val imageData = ByteArray(stream!!.available())
+            val byteArray = uriToByteArray(updateBundleUri) ?: return
 
-            stream.read(imageData)
+            try {
+                // Check if the BIN file is valid.
+                McuMgrImage.getHash(byteArray)
 
-            dfuManager.setMode(upgradeMode)
-            dfuManager.start(imageData, settings)
+                val stream = context.contentResolver.openInputStream(updateBundleUri)
+                val images = ByteArray(stream!!.available())
+                stream.read(images)
+                
+                dfuManager.setMode(upgradeMode)
+                dfuManager.start(images, settings)
+            } catch (e: Exception) {
+                try {
+                    val zip = ZipPackage(byteArray)
+                    val images: ImageSet = zip.getBinaries();
+                    dfuManager.setMode(upgradeMode)
+                    dfuManager.start(images, settings)
+                } catch (e1: Exception) {
+                    return
+                }
+            }
         } catch (e: IOException) {
             e.printStackTrace()
             disconnectDevice()
-            Log.v(this.TAG, "IOException")
             withSafePromise { promise -> promise.reject(CodedException(e)) }
         } catch (e: McuMgrException) {
             e.printStackTrace()
