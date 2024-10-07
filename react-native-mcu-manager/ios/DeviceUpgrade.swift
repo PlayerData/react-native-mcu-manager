@@ -36,6 +36,56 @@ class DeviceUpgrade {
     self.logDelegate = UpdateLogDelegate()
   }
 
+  func extractImageFrom(from url: URL) throws -> [ImageManager.Image] {
+    switch url.pathExtension.lowercased() {
+    case "bin":
+      return try extractImageFromBinFile(from: url)
+    case "zip":
+      return try extractImageFromZipFile(from: url)
+    default:
+      throw Exception(name: "UnsupportedFileType", description: "File must be .bin or .zip")
+    }
+  }
+
+  func extractImageFromBinFile(from url: URL) throws -> [ImageManager.Image] {
+    let binData = try Data(contentsOf: url)
+    let binHash = try McuMgrImage(data: binData).hash
+    return [ImageManager.Image(image: 0, hash: binHash, data: binData)]
+  }
+
+  func extractImageFromZipFile(from url: URL) throws -> [ImageManager.Image] {
+    let fileManager = FileManager.default
+    let tempDirectory = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+
+    try fileManager.createDirectory(at: tempDirectory, withIntermediateDirectories: true, attributes: nil)
+
+    defer {
+      try? fileManager.removeItem(at: tempDirectory)
+    }
+
+    try fileManager.unzipItem(at: url, to: tempDirectory)
+    let unzippedURLs = try fileManager.contentsOfDirectory(at: tempDirectory, includingPropertiesForKeys: nil, options: [])
+
+    guard let dfuManifestURL = unzippedURLs.first(where: { $0.pathExtension == "json" }) else {
+      throw McuMgrPackage.Error.manifestFileNotFound
+    }
+    let manifest = try McuMgrManifest(from: dfuManifestURL)
+    let images = try manifest.files.compactMap { manifestFile -> ImageManager.Image in
+      guard let imageURL = unzippedURLs.first(where: { $0.absoluteString.contains(manifestFile.file) }) else {
+        throw McuMgrPackage.Error.manifestImageNotFound
+      }
+      let imageData = try Data(contentsOf: imageURL)
+      let imageHash = try McuMgrImage(data: imageData).hash
+      return ImageManager.Image(manifestFile, hash: imageHash, data: imageData)
+    }
+
+    try unzippedURLs.forEach { url in
+      try fileManager.removeItem(at: url)
+    }
+
+    return images
+  }
+
   func startUpgrade(_ promise: Promise) {
     self.promise = promise
 
@@ -49,9 +99,7 @@ class DeviceUpgrade {
     }
 
     do {
-      let binData = try Data(contentsOf: fileUrl)
-      let binHash = try McuMgrImage(data: binData).hash
-      let image = ImageManager.Image(image: 0, hash: binHash, data: binData)
+      let images = try extractImageFrom(from: fileUrl)
 
       self.bleTransport = McuMgrBleTransport(bleUuid)
       self.dfuManager = FirmwareUpgradeManager(transport: self.bleTransport!, delegate: self)
@@ -64,7 +112,7 @@ class DeviceUpgrade {
 
       DispatchQueue.main.async {
         do {
-          try self.dfuManager!.start(images: [image], using: config)
+          try self.dfuManager!.start(images: images, using: config)
         } catch {
           promise.reject(UnexpectedException(error))
         }
