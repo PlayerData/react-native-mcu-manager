@@ -98,7 +98,11 @@ class DeviceUpgrade(
                     dfuManager.setMode(upgradeMode)
                     dfuManager.start(images, settings)
                 } catch (e1: Exception) {
-                    return
+                    e1.printStackTrace()
+                    disconnectDevice()
+                    withSafePromise { promise ->
+                        promise.reject(ReactNativeMcuMgrException.fromMcuMgrException(e1))
+                    }
                 }
             }
         } catch (e: IOException) {
@@ -108,7 +112,6 @@ class DeviceUpgrade(
         } catch (e: McuMgrException) {
             e.printStackTrace()
             disconnectDevice()
-            Log.v(this.TAG, "mcu exception")
             withSafePromise { promise ->
                 promise.reject(ReactNativeMcuMgrException.fromMcuMgrException(e))
             }
