@@ -64,17 +64,23 @@ class DeviceUpgrade {
     }
 
     try fileManager.unzipItem(at: url, to: tempDirectory)
+    let unzippedURLs = try fileManager.contentsOfDirectory(at: tempDirectory, includingPropertiesForKeys: nil, options: [])
 
-    let contents = try fileManager.contentsOfDirectory(at: tempDirectory, includingPropertiesForKeys: nil, options: [])
-
-    var images: [ImageManager.Image] = []
-
-    for fileURL in contents {
-      if fileURL.pathExtension.lowercased() == "bin" {
-        let binData = try Data(contentsOf: fileURL)
-        let binHash = try McuMgrImage(data: binData).hash
-        images.append(ImageManager.Image(image: 0, hash: binHash, data: binData))
+    guard let dfuManifestURL = unzippedURLs.first(where: { $0.pathExtension == "json" }) else {
+      throw McuMgrPackage.Error.manifestFileNotFound
+    }
+    let manifest = try McuMgrManifest(from: dfuManifestURL)
+    let images = try manifest.files.compactMap { manifestFile -> ImageManager.Image in
+      guard let imageURL = unzippedURLs.first(where: { $0.absoluteString.contains(manifestFile.file) }) else {
+        throw McuMgrPackage.Error.manifestImageNotFound
       }
+      let imageData = try Data(contentsOf: imageURL)
+      let imageHash = try McuMgrImage(data: imageData).hash
+      return ImageManager.Image(manifestFile, hash: imageHash, data: imageData)
+    }
+
+    try unzippedURLs.forEach { url in
+      try fileManager.removeItem(at: url)
     }
 
     return images
