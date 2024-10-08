@@ -16,7 +16,6 @@ import io.runtime.mcumgr.exception.McuMgrException
 import io.runtime.mcumgr.image.McuMgrImage
 import java.io.IOException
 
-
 val UpgradeModes =
         mapOf(
                 1 to FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM,
@@ -66,9 +65,34 @@ class DeviceUpgrade(
         transport.release()
     }
 
-    fun uriToByteArray(uri: Uri): ByteArray? {
+    private fun uriToByteArray(uri: Uri): ByteArray? {
         val inputStream = context.contentResolver.openInputStream(uri) ?: return null
         return inputStream.use { it.readBytes() }
+    }
+
+    private fun extractImagesFrom(updateBundleUri: Uri): ImageSet {
+        val type = context.contentResolver.getType(updateBundleUri)
+        val binData = uriToByteArray(updateBundleUri) ?: throw IOException("Failed to read update file")
+
+        if (type == "application/zip") {
+            return extractImagesFromZipFile(binData)
+        } else {
+            return extractImagesFromBinFile(binData)
+        }
+    }
+
+    private fun extractImagesFromBinFile(binData: ByteArray): ImageSet {
+        // Check if the BIN file is valid.
+        McuMgrImage.getHash(binData)
+
+        val binaries = ImageSet()
+        binaries.add(binData)
+
+        return binaries
+    }
+
+    private fun extractImagesFromZipFile(zipData: ByteArray): ImageSet {
+        return ZipPackage(zipData).getBinaries();
     }
 
     private fun doUpdate(updateBundleUri: Uri) {
@@ -79,32 +103,10 @@ class DeviceUpgrade(
         val settings = Settings.Builder().setEstimatedSwapTime(estimatedSwapTime).build()
 
         try {
-            val byteArray = uriToByteArray(updateBundleUri) ?: return
+            val images = extractImagesFrom(updateBundleUri)
 
-            try {
-                // Check if the BIN file is valid.
-                McuMgrImage.getHash(byteArray)
-
-                val stream = context.contentResolver.openInputStream(updateBundleUri)
-                val images = ByteArray(stream!!.available())
-                stream.read(images)
-                
-                dfuManager.setMode(upgradeMode)
-                dfuManager.start(images, settings)
-            } catch (e: Exception) {
-                try {
-                    val zip = ZipPackage(byteArray)
-                    val images: ImageSet = zip.getBinaries();
-                    dfuManager.setMode(upgradeMode)
-                    dfuManager.start(images, settings)
-                } catch (e1: Exception) {
-                    e1.printStackTrace()
-                    disconnectDevice()
-                    withSafePromise { promise ->
-                        promise.reject(ReactNativeMcuMgrException.fromMcuMgrException(e1))
-                    }
-                }
-            }
+            dfuManager.setMode(upgradeMode)
+            dfuManager.start(images, settings)
         } catch (e: IOException) {
             e.printStackTrace()
             disconnectDevice()
