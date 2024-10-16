@@ -76,7 +76,7 @@ class DeviceUpgrade(
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
         val binData = uriToByteArray(updateBundleUri) ?: throw IOException("Failed to read update file")
 
-        if (type == "application/zip") {
+        if (mimeType == "application/zip") {
             return extractImagesFromZipFile(binData)
         } else {
             return extractImagesFromBinFile(binData)
