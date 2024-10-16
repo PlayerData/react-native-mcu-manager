@@ -15,6 +15,7 @@ import io.runtime.mcumgr.dfu.mcuboot.model.ImageSet
 import io.runtime.mcumgr.exception.McuMgrException
 import io.runtime.mcumgr.image.McuMgrImage
 import java.io.IOException
+import android.webkit.MimeTypeMap
 
 val UpgradeModes =
         mapOf(
@@ -71,7 +72,8 @@ class DeviceUpgrade(
     }
 
     private fun extractImagesFrom(updateBundleUri: Uri): ImageSet {
-        val type = context.contentResolver.getType(updateBundleUri)
+        val fileExtension = MimeTypeMap.getFileExtensionFromUrl(updateBundleUri.toString())
+        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
         val binData = uriToByteArray(updateBundleUri) ?: throw IOException("Failed to read update file")
 
         if (type == "application/zip") {
