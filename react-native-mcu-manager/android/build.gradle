@@ -50,5 +50,5 @@ repositories {
 }
 
 dependencies {
-  implementation "no.nordicsemi.android:mcumgr-ble:2.2.0"
+  implementation "no.nordicsemi.android:mcumgr-ble:2.2.1"
 }
