@@ -87,29 +87,36 @@ class ReactNativeMcuManagerModule : Module() {
     }
 
     AsyncFunction("runUpgrade") { id: String, promise: Promise ->
-      if (!upgrades.contains(id)) {
+      val upgrade = upgrades[id]
+
+      if (upgrade == null) {
         promise.reject(CodedException("UPGRADE_ID_MISSING", "Upgrade ID $id not present", null))
-      }
-
-      upgrades[id]!!.startUpgrade(promise)
-    }
-
-    AsyncFunction("cancelUpgrade") { id: String, promise: Promise ->
-      if (!upgrades.contains(id)) {
-        Log.w(TAG, "Can't cancel update ID ($id} not present")
         return@AsyncFunction
       }
 
-      upgrades[id]!!.cancel()
+      upgrade.startUpgrade(promise)
+    }
+
+    AsyncFunction("cancelUpgrade") { id: String, promise: Promise ->
+      val upgrade = upgrades[id]
+
+      if (upgrade == null) {
+        promise.reject(CodedException("UPGRADE_ID_MISSING", "Upgrade ID $id not present", null))
+        return@AsyncFunction
+      }
+
+      upgrade.startUpgrade(promise)
     }
 
     Function("destroyUpgrade") { id: String ->
-      if (!upgrades.contains(id)) {
+      val upgrade = upgrades[id]
+
+      if (upgrade == null) {
         Log.w(TAG, "Can't destroy update ID ($id} not present")
         return@Function
       }
 
-      upgrades[id]!!.cancel()
+      upgrade.cancel()
       upgrades.remove(id)
     }
   }
