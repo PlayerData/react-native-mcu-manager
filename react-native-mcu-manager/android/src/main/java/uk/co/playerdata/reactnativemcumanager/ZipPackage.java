@@ -92,7 +92,7 @@ public final class ZipPackage {
                 final byte[] content = getData(zis);
                 entries.put(name, content);
             } else {
-                Log.v("KT", "les");
+                throw new IOException("Unsupported file found: " + name);
             }
         }
     }
