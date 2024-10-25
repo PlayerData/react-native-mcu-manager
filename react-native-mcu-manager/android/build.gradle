@@ -51,4 +51,5 @@ repositories {
 
 dependencies {
   implementation "no.nordicsemi.android:mcumgr-ble:2.2.1"
+  implementation "com.google.code.gson:gson:2.11.0"
 }
