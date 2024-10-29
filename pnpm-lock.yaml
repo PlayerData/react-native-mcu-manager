@@ -62,9 +62,6 @@ importers:
       react-native-ble-plx:
         specifier: 3.2.1
         version: 3.2.1(@babel/core@7.26.0)(@babel/preset-env@7.25.4(@babel/core@7.26.0))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.25.4(@babel/core@7.26.0))(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
-      react-native-get-random-values:
-        specifier: 1.11.0
-        version: 1.11.0(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.25.4(@babel/core@7.26.0))(@types/react@18.3.12)(react@18.3.1))
       react-native-toast-message:
         specifier: 2.2.1
         version: 2.2.1(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.25.4(@babel/core@7.26.0))(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
@@ -102,19 +99,19 @@ importers:
       react-native:
         specifier: '*'
         version: 0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.25.4(@babel/core@7.26.0))(@types/react@18.3.12)(react@18.3.1)
+      react-native-get-random-values:
+        specifier: 1.11.0
+        version: 1.11.0(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.25.4(@babel/core@7.26.0))(@types/react@18.3.12)(react@18.3.1))
       uuid:
-        specifier: ^11.0.0
-        version: 11.0.0
+        specifier: ^11.0.1
+        version: 11.0.2
     devDependencies:
       '@types/react':
         specifier: 18.3.12
         version: 18.3.12
-      '@types/uuid':
-        specifier: 10.0.0
-        version: 10.0.0
       expo-module-scripts:
         specifier: 3.5.2
-        version: 3.5.2(@babel/core@7.26.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(eslint@8.57.1)(jest@29.7.0(@types/node@22.7.7))(prettier@3.3.3)(react-test-renderer@18.2.0(react@18.3.1))(react@18.3.1)
+        version: 3.5.2(@babel/core@7.26.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(eslint@8.57.1)(jest@29.7.0(@types/node@22.7.7))(prettier@2.8.8)(react-test-renderer@18.2.0(react@18.3.1))(react@18.3.1)
       expo-modules-core:
         specifier: 1.12.26
         version: 1.12.26
@@ -1886,9 +1883,6 @@ packages:
 
   '@types/tough-cookie@4.0.5':
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
-
-  '@types/uuid@10.0.0':
-    resolution: {integrity: sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==}
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -6282,8 +6276,8 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
-  uuid@11.0.0:
-    resolution: {integrity: sha512-iE8Fa5fgBY4rN5GvNUJ8TSwO1QG7TzdPfhrJczf6XJ6mZUxh/GX433N70fCiJL9h8EKP5ayEIo0Q6EBQGWHFqA==}
+  uuid@11.0.2:
+    resolution: {integrity: sha512-14FfcOJmqdjbBPdDjFQyk/SdT4NySW4eM0zcG+HqbHP5jzuH56xO3J1DGhgs/cEMCfwYi3HQI1gnTO62iaG+tQ==}
     hasBin: true
 
   uuid@7.0.3:
@@ -9318,8 +9312,6 @@ snapshots:
 
   '@types/tough-cookie@4.0.5': {}
 
-  '@types/uuid@10.0.0': {}
-
   '@types/yargs-parser@21.0.3': {}
 
   '@types/yargs@13.0.12':
@@ -10625,7 +10617,7 @@ snapshots:
     dependencies:
       eslint: 8.57.1
 
-  eslint-config-universe@12.1.0(eslint@8.57.1)(prettier@3.3.3)(typescript@5.6.3):
+  eslint-config-universe@12.1.0(eslint@8.57.1)(prettier@2.8.8)(typescript@5.6.3):
     dependencies:
       '@typescript-eslint/eslint-plugin': 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1)(typescript@5.6.3)
       '@typescript-eslint/parser': 6.21.0(eslint@8.57.1)(typescript@5.6.3)
@@ -10633,11 +10625,11 @@ snapshots:
       eslint-config-prettier: 8.10.0(eslint@8.57.1)
       eslint-plugin-import: 2.30.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1)
       eslint-plugin-node: 11.1.0(eslint@8.57.1)
-      eslint-plugin-prettier: 5.2.1(eslint-config-prettier@8.10.0(eslint@8.57.1))(eslint@8.57.1)(prettier@3.3.3)
+      eslint-plugin-prettier: 5.2.1(eslint-config-prettier@8.10.0(eslint@8.57.1))(eslint@8.57.1)(prettier@2.8.8)
       eslint-plugin-react: 7.36.1(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.1)
     optionalDependencies:
-      prettier: 3.3.3
+      prettier: 2.8.8
     transitivePeerDependencies:
       - '@types/eslint'
       - eslint-import-resolver-typescript
@@ -10738,10 +10730,10 @@ snapshots:
     optionalDependencies:
       eslint-config-prettier: 8.10.0(eslint@8.57.1)
 
-  eslint-plugin-prettier@5.2.1(eslint-config-prettier@8.10.0(eslint@8.57.1))(eslint@8.57.1)(prettier@3.3.3):
+  eslint-plugin-prettier@5.2.1(eslint-config-prettier@8.10.0(eslint@8.57.1))(eslint@8.57.1)(prettier@2.8.8):
     dependencies:
       eslint: 8.57.1
-      prettier: 3.3.3
+      prettier: 2.8.8
       prettier-linter-helpers: 1.0.0
       synckit: 0.9.1
     optionalDependencies:
@@ -10973,7 +10965,7 @@ snapshots:
     dependencies:
       expo: 51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.25.4(@babel/core@7.26.0))
 
-  expo-module-scripts@3.5.2(@babel/core@7.26.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(eslint@8.57.1)(jest@29.7.0(@types/node@22.7.7))(prettier@3.3.3)(react-test-renderer@18.2.0(react@18.3.1))(react@18.3.1):
+  expo-module-scripts@3.5.2(@babel/core@7.26.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(eslint@8.57.1)(jest@29.7.0(@types/node@22.7.7))(prettier@2.8.8)(react-test-renderer@18.2.0(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/cli': 7.25.6(@babel/core@7.26.0)
       '@babel/plugin-transform-export-namespace-from': 7.24.7(@babel/core@7.26.0)
@@ -10986,7 +10978,7 @@ snapshots:
       babel-plugin-dynamic-import-node: 2.3.3
       babel-preset-expo: 11.0.14(@babel/core@7.26.0)(@babel/preset-env@7.25.4(@babel/core@7.26.0))
       commander: 2.20.3
-      eslint-config-universe: 12.1.0(eslint@8.57.1)(prettier@3.3.3)(typescript@5.6.3)
+      eslint-config-universe: 12.1.0(eslint@8.57.1)(prettier@2.8.8)(typescript@5.6.3)
       find-yarn-workspace-root: 2.0.0
       glob: 7.2.3
       jest-expo: 51.0.4(@babel/core@7.26.0)(jest@29.7.0(@types/node@22.7.7))(react@18.3.1)
@@ -14408,7 +14400,7 @@ snapshots:
 
   utils-merge@1.0.1: {}
 
-  uuid@11.0.0: {}
+  uuid@11.0.2: {}
 
   uuid@7.0.3: {}
 
