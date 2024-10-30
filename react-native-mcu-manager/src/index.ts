@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import McuManagerModule from './ReactNativeMcuManagerModule';
 import type { FirmwareUpgradeState, UpgradeOptions } from './Upgrade';
 import Upgrade, { UpgradeMode } from './Upgrade';
