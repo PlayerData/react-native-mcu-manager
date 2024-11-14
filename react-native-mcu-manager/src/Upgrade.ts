@@ -1,9 +1,4 @@
-import {
-  NativeModulesProxy,
-  EventEmitter,
-  Subscription,
-} from 'expo-modules-core';
-import { v4 as uuidv4 } from 'uuid';
+import { EventEmitter, EventSubscription } from 'expo-modules-core';
 
 import ReactNativeMcuManager from './ReactNativeMcuManagerModule';
 
@@ -52,10 +47,6 @@ export type FirmwareUpgradeState =
   | 'SUCCESS'
   | 'UNKNOWN';
 
-const McuManagerEvents = new EventEmitter(
-  ReactNativeMcuManager ?? NativeModulesProxy.ReactNativeMcuManager
-);
-
 declare const UpgradeIdSymbol: unique symbol;
 type UpgradeID = string & { [UpgradeIdSymbol]: never };
 
@@ -72,12 +63,19 @@ type AddUpgradeListener = {
   (
     eventType: 'upgradeStateChanged',
     listener: (event: UpgradeStateChangedPayload) => void
-  ): Subscription;
+  ): EventSubscription;
   (
     eventType: 'uploadProgress',
     listener: (event: UploadProgressPayload) => void
-  ): Subscription;
+  ): EventSubscription;
 };
+
+type McuManagerEventMap = {
+  upgradeStateChanged: (payload: UpgradeStateChangedPayload) => void;
+  uploadProgress: (payload: UploadProgressPayload) => void;
+};
+
+const McuManagerEvents = new EventEmitter<McuManagerEventMap>();
 
 class Upgrade {
   private id: UpgradeID;
@@ -91,16 +89,26 @@ class Upgrade {
    */
   constructor(
     bleId: string,
-    updateFileUriString: string,
-    updateOptions: UpgradeOptions
+    updateFileUri: string,
+    updateOptions: UpgradeOptions,
+    private onProgress?: (progress: number) => void,
+    private onStateChange?: (state: string) => void
   ) {
-    this.id = uuidv4() as UpgradeID;
+    this.id = String(
+      Math.floor(100000000 + Math.random() * 900000000)
+    ) as UpgradeID;
 
     ReactNativeMcuManager.createUpgrade(
       this.id,
       bleId,
-      updateFileUriString,
-      updateOptions
+      updateFileUri,
+      updateOptions,
+      (id: string, progress: number) => {
+        this.onProgress?.(progress);
+      },
+      (id: string, state: string) => {
+        this.onStateChange?.(state);
+      }
     );
   }
 
@@ -117,15 +125,11 @@ class Upgrade {
   addListener: AddUpgradeListener = (
     eventType: UpgradeEvent,
     listener: (event: UpgradeEventPayload) => void
-  ): Subscription => {
-    return McuManagerEvents.addListener<UpgradeEventPayload>(
-      eventType,
-      (event) => {
-        if (event.id !== this.id) return;
-
-        listener(event);
-      }
-    );
+  ): EventSubscription => {
+    return McuManagerEvents.addListener(eventType, (event) => {
+      if (event.id !== this.id) return;
+      listener(event);
+    });
   };
 
   /**

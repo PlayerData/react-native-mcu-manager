@@ -1,5 +1,3 @@
-import 'react-native-get-random-values';
-
 import { UpgradeMode } from '@playerdata/react-native-mcu-manager';
 
 import React, { useState } from 'react';

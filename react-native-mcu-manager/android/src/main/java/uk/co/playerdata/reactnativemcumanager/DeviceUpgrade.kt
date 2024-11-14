@@ -30,7 +30,8 @@ class DeviceUpgrade(
         private val context: Context,
         private val updateFileUri: Uri,
         private val updateOptions: UpdateOptions,
-        private val manager: ReactNativeMcuManagerModule
+        private val progressCallback: (Int) -> Unit,
+        private val stateCallback: (String) -> Unit
 ) : FirmwareUpgradeCallback<FirmwareUpgradeManager.State> {
     private val TAG = "DeviceUpdate"
     private var lastNotification = -1
@@ -128,8 +129,7 @@ class DeviceUpgrade(
             prevState: FirmwareUpgradeManager.State,
             newState: FirmwareUpgradeManager.State
     ) {
-        val stateMap: Map<String, Any?> = mapOf("id" to id, "state" to newState.name)
-        manager.upgradeStateCB(stateMap)
+        stateCallback(newState.name)
     }
 
     override fun onUpgradeCompleted() {
@@ -155,8 +155,7 @@ class DeviceUpgrade(
         val progressPercent = bytesSent * 100 / imageSize
         if (progressPercent != lastNotification) {
             lastNotification = progressPercent
-            val progressMap: Map<String, Any?> = mapOf("id" to id, "progress" to progressPercent)
-            manager.updateProgressCB(progressMap)
+            progressCallback(progressPercent)
         }
     }
 }

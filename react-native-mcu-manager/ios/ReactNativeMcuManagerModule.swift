@@ -41,12 +41,36 @@ public class ReactNativeMcuManagerModule: Module {
 
     Function("createUpgrade") {
       (
-        id: String, bleId: String, updateFileUriString: String,
-        updateOptions: UpdateOptions
+        id: String,
+        bleId: String,
+        updateFileUriString: String,
+        updateOptions: UpdateOptions,
+        progressCallback: JavaScriptFunction<ExpressibleByNilLiteral>,
+        stateCallback: JavaScriptFunction<ExpressibleByNilLiteral>
       ) in
       upgrades[id] = DeviceUpgrade(
-        id: id, bleId: bleId, fileURI: updateFileUriString, options: updateOptions,
-        manager: self
+        id: id,
+        bleId: bleId,
+        fileURI: updateFileUriString,
+        options: updateOptions,
+        progressHandler: { progress in
+          self.appContext?.executeOnJavaScriptThread {
+            do {
+              let _ = try progressCallback.call(id, progress)
+            } catch let err {
+              print("Failed to call progress callback: \(err.localizedDescription)")
+            }
+          }
+        },
+        stateHandler: { state in
+          self.appContext?.executeOnJavaScriptThread {
+            do {
+              let _ = try stateCallback.call(id, state)
+            } catch let err {
+              print("Failed to call state callback: \(err.localizedDescription)")
+            }
+          }
+        }
       )
     }
 
@@ -75,13 +99,5 @@ public class ReactNativeMcuManagerModule: Module {
       upgrade.cancel()
       self.upgrades[id] = nil
     }
-  }
-
-  func updateProgress(progress: [String: Any?]) {
-    sendEvent(UPLOAD_PROGRESS_EVENTS, progress)
-  }
-
-  func updateState(state: [String: Any?]) {
-    sendEvent(UPGRADE_STATE_EVENTS, state)
   }
 }
