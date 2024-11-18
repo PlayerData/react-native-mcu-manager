@@ -16,7 +16,7 @@ importers:
         version: 3.2.0(eslint@8.57.1)(prettier@3.3.3)(typescript@5.6.3)
       commitlint:
         specifier: 19.5.0
-        version: 19.5.0(@types/node@22.7.7)(typescript@5.6.3)
+        version: 19.5.0(@types/node@22.9.0)(typescript@5.6.3)
       eslint-config-prettier:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.57.1)
@@ -24,8 +24,8 @@ importers:
         specifier: 5.2.1
         version: 5.2.1(eslint-config-prettier@9.1.0(eslint@8.57.1))(eslint@8.57.1)(prettier@3.3.3)
       husky:
-        specifier: 9.1.6
-        version: 9.1.6
+        specifier: 9.1.7
+        version: 9.1.7
       prettier:
         specifier: 3.3.3
         version: 3.3.3
@@ -3749,8 +3749,8 @@ packages:
     resolution: {integrity: sha512-/1/GPCpDUCCYwlERiYjxoczfP0zfvZMU/OWgQPMya9AbAE24vseigFdhAMObpc8Q4lc/kjutPfUddDYyAmejnA==}
     engines: {node: '>=18.18.0'}
 
-  husky@9.1.6:
-    resolution: {integrity: sha512-sqbjZKK7kf44hfdE94EoX8MZNk0n7HeW37O4YrVGCF4wzgQjp+akPAkfUK5LZ6KuR/6sqeAVuXHji+RzQgOn5A==}
+  husky@9.1.7:
+    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -8012,11 +8012,11 @@ snapshots:
   '@colors/colors@1.5.0':
     optional: true
 
-  '@commitlint/cli@19.5.0(@types/node@22.7.7)(typescript@5.6.3)':
+  '@commitlint/cli@19.5.0(@types/node@22.9.0)(typescript@5.6.3)':
     dependencies:
       '@commitlint/format': 19.5.0
       '@commitlint/lint': 19.5.0
-      '@commitlint/load': 19.5.0(@types/node@22.7.7)(typescript@5.6.3)
+      '@commitlint/load': 19.5.0(@types/node@22.9.0)(typescript@5.6.3)
       '@commitlint/read': 19.5.0
       '@commitlint/types': 19.5.0
       tinyexec: 0.3.0
@@ -8063,7 +8063,7 @@ snapshots:
       '@commitlint/rules': 19.5.0
       '@commitlint/types': 19.5.0
 
-  '@commitlint/load@19.5.0(@types/node@22.7.7)(typescript@5.6.3)':
+  '@commitlint/load@19.5.0(@types/node@22.9.0)(typescript@5.6.3)':
     dependencies:
       '@commitlint/config-validator': 19.5.0
       '@commitlint/execute-rule': 19.5.0
@@ -8071,7 +8071,7 @@ snapshots:
       '@commitlint/types': 19.5.0
       chalk: 5.3.0
       cosmiconfig: 9.0.0(typescript@5.6.3)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.7.7)(cosmiconfig@9.0.0(typescript@5.6.3))(typescript@5.6.3)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.9.0)(cosmiconfig@9.0.0(typescript@5.6.3))(typescript@5.6.3)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -10220,9 +10220,9 @@ snapshots:
 
   commander@9.5.0: {}
 
-  commitlint@19.5.0(@types/node@22.7.7)(typescript@5.6.3):
+  commitlint@19.5.0(@types/node@22.9.0)(typescript@5.6.3):
     dependencies:
-      '@commitlint/cli': 19.5.0(@types/node@22.7.7)(typescript@5.6.3)
+      '@commitlint/cli': 19.5.0(@types/node@22.9.0)(typescript@5.6.3)
       '@commitlint/types': 19.5.0
     transitivePeerDependencies:
       - '@types/node'
@@ -10312,9 +10312,9 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@22.7.7)(cosmiconfig@9.0.0(typescript@5.6.3))(typescript@5.6.3):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@22.9.0)(cosmiconfig@9.0.0(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.9.0
       cosmiconfig: 9.0.0(typescript@5.6.3)
       jiti: 1.21.6
       typescript: 5.6.3
@@ -11612,7 +11612,7 @@ snapshots:
 
   human-signals@8.0.0: {}
 
-  husky@9.1.6: {}
+  husky@9.1.7: {}
 
   iconv-lite@0.6.3:
     dependencies:
