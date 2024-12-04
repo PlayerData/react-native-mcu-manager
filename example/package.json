@@ -30,6 +30,6 @@
     "metro-react-native-babel-preset": "0.77.0",
     "pod-install": "0.2.2",
     "ts-node": "^10.9.2",
-    "typescript": "5.6.3"
+    "typescript": "5.7.2"
   }
 }
