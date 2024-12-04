@@ -36,7 +36,7 @@
     "uuid": "^11.0.1"
   },
   "devDependencies": {
-    "@types/react": "18.3.12",
+    "@types/react": "18.3.13",
     "expo-module-scripts": "3.5.2",
     "expo-modules-core": "1.12.26"
   },
