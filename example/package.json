@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@playerdata/react-native-mcu-manager": "workspace:*",
-    "expo": "52.0.15",
+    "expo": "52.0.16",
     "expo-document-picker": "13.0.1",
     "expo-splash-screen": "0.29.13",
     "lodash": "4.17.21",
