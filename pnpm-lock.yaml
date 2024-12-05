@@ -88,8 +88,8 @@ importers:
         specifier: 0.77.0
         version: 0.77.0(@babel/core@7.26.0)
       pod-install:
-        specifier: 0.2.2
-        version: 0.2.2
+        specifier: 0.3.2
+        version: 0.3.2
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.10.1)(typescript@5.7.2)
@@ -4879,8 +4879,8 @@ packages:
     resolution: {integrity: sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==}
     engines: {node: '>=4.0.0'}
 
-  pod-install@0.2.2:
-    resolution: {integrity: sha512-NgQpKiuWZo8mWU+SVxmrn+ARy9+fFYzW53ze6CDTo70u5Ie8AVSn7FqolDC/c7+N4/kQ1BldAnXEab6SNYA8xw==}
+  pod-install@0.3.2:
+    resolution: {integrity: sha512-oDP1/4FoUYkiSf38EZ7VWmDvZF/UvQBglzS1Z63TMc8CADb66acYfUhl36pI5vbY7p4jdTAyIuedZKWp6AoB3w==}
     hasBin: true
 
   possible-typed-array-names@1.0.0:
@@ -12387,7 +12387,7 @@ snapshots:
 
   pngjs@3.4.0: {}
 
-  pod-install@0.2.2: {}
+  pod-install@0.3.2: {}
 
   possible-typed-array-names@1.0.0: {}
 
