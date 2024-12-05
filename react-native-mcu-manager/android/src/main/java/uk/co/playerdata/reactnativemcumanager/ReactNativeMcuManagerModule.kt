@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.CodedException
+import expo.modules.kotlin.jni.JavaScriptFunction
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.records.Field
@@ -17,16 +18,12 @@ import io.runtime.mcumgr.managers.ImageManager
 private const val MODULE_NAME = "ReactNativeMcuManager"
 private val TAG = "McuManagerModule"
 
-private const val UPGRADE_STATE_EVENTS = "upgradeStateChanged"
-private const val UPLOAD_PROGRESS_EVENTS = "uploadProgress"
-
 class UpdateOptions : Record {
   @Field val estimatedSwapTime: Int = 0
   @Field val upgradeMode: Int? = null
 }
 
 class ReactNativeMcuManagerModule : Module() {
-
   private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
   private val upgrades: MutableMap<String, DeviceUpgrade> = mutableMapOf()
   private val context
@@ -34,9 +31,6 @@ class ReactNativeMcuManagerModule : Module() {
 
   override fun definition() = ModuleDefinition {
     Name(MODULE_NAME)
-
-    // Defines event names that the module can send to JavaScript.
-    Events(UPGRADE_STATE_EVENTS, UPLOAD_PROGRESS_EVENTS)
 
     AsyncFunction("eraseImage") { macAddress: String?, promise: Promise ->
       if (this@ReactNativeMcuManagerModule.bluetoothAdapter == null) {
@@ -62,7 +56,9 @@ class ReactNativeMcuManagerModule : Module() {
         id: String,
         macAddress: String?,
         updateFileUriString: String?,
-        updateOptions: UpdateOptions ->
+        updateOptions: UpdateOptions,
+        progressCallback: JavaScriptFunction<Unit>,
+        stateCallback: JavaScriptFunction<Unit> ->
       if (this@ReactNativeMcuManagerModule.bluetoothAdapter == null) {
         throw Exception("No bluetooth adapter")
       }
@@ -74,15 +70,23 @@ class ReactNativeMcuManagerModule : Module() {
       val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)
       val updateFileUri = Uri.parse(updateFileUriString)
 
-      val upgrade =
-          DeviceUpgrade(
-              id,
-              device,
-              context,
-              updateFileUri,
-              updateOptions,
-              this@ReactNativeMcuManagerModule
-          )
+      val upgrade = DeviceUpgrade(
+          id,
+          device,
+          context,
+          updateFileUri,
+          updateOptions,
+          { progress ->
+            appContext.executeOnJavaScriptThread {
+              progressCallback(id, progress)
+            }
+          },
+          { state ->
+            appContext.executeOnJavaScriptThread {
+              stateCallback(id, state)
+            }
+          }
+      )
       this@ReactNativeMcuManagerModule.upgrades[id] = upgrade
     }
 
@@ -119,13 +123,5 @@ class ReactNativeMcuManagerModule : Module() {
       upgrade.cancel()
       upgrades.remove(id)
     }
-  }
-
-  fun updateProgressCB(progress: Map<String, Any?>) {
-    sendEvent(UPLOAD_PROGRESS_EVENTS, progress)
-  }
-
-  fun upgradeStateCB(state: Map<String, Any?>) {
-    sendEvent(UPGRADE_STATE_EVENTS, state)
   }
 }

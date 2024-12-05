@@ -13,7 +13,8 @@ class DeviceUpgrade {
   private let bleId: String
   private let fileURI: String
   private let options: UpdateOptions
-  private let manager: ReactNativeMcuManagerModule
+  private let progressHandler: (Int) -> Void
+  private let stateHandler: (String) -> Void
 
   private var lastProgress: Int
   private let logDelegate: McuMgrLogDelegate
@@ -24,15 +25,17 @@ class DeviceUpgrade {
 
   init(
     id: String, bleId: String, fileURI: String, options: UpdateOptions,
-    manager: ReactNativeMcuManagerModule
+    progressHandler: @escaping (Int) -> Void,
+    stateHandler: @escaping (String) -> Void
   ) {
     self.id = id
     self.bleId = bleId
     self.fileURI = fileURI
     self.options = options
+    self.progressHandler = progressHandler
+    self.stateHandler = stateHandler
 
     self.lastProgress = -1
-    self.manager = manager
     self.logDelegate = UpdateLogDelegate()
   }
 
@@ -171,12 +174,7 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
   /// - parameter controller: The controller that may be used to pause,
   ///   resume or cancel the upgrade.
   func upgradeDidStart(controller: FirmwareUpgradeController) {
-    self.manager.updateState(
-      state: [
-        "id": self.id,
-        "state": "STARTED",
-      ]
-    )
+    self.stateHandler("STARTED")
   }
 
   /// Called when the firmware upgrade state has changed.
@@ -186,12 +184,7 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
   func upgradeStateDidChange(
     from previousState: FirmwareUpgradeState, to newState: FirmwareUpgradeState
   ) {
-    self.manager.updateState(
-      state: [
-        "id": self.id,
-        "state": firmwareEnumToString(e: newState),
-      ]
-    )
+    self.stateHandler(firmwareEnumToString(e: newState))
   }
 
   func firmwareEnumToString(e: FirmwareUpgradeState) -> String {
@@ -257,11 +250,6 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
     }
 
     self.lastProgress = progress
-    self.manager.updateProgress(
-      progress: [
-        "id": self.id,
-        "progress": progress,
-      ]
-    )
+    self.progressHandler(progress)
   }
 }

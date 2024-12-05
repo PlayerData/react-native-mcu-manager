@@ -7,6 +7,10 @@ const config: ExpoConfig = {
   version: "1.0.0",
   orientation: "portrait",
   assetBundlePatterns: ["**/*"],
+  splash: {
+    image: ".assets/images/pd.png",
+    backgroundColor: "#FFFFFF",
+  },
   ios: {
     supportsTablet: true,
     bundleIdentifier: "uk.co.playerdata.reactnativemcumanager.example",

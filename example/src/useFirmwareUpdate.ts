@@ -15,10 +15,16 @@ const useFirmwareUpdate = (
       return () => null;
     }
 
-    const upgrade = new Upgrade(bleId, updateFileUri, {
-      estimatedSwapTime: 60,
-      upgradeMode,
-    });
+    const upgrade = new Upgrade(
+      bleId,
+      updateFileUri,
+      {
+        estimatedSwapTime: 60,
+        upgradeMode,
+      },
+      setProgress,
+      setState
+    );
 
     upgradeRef.current = upgrade;
 
