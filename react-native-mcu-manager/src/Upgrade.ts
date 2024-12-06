@@ -1,5 +1,3 @@
-import { EventEmitter, EventSubscription } from 'expo-modules-core';
-
 import ReactNativeMcuManager from './ReactNativeMcuManagerModule';
 
 export enum UpgradeMode {
@@ -50,33 +48,6 @@ export type FirmwareUpgradeState =
 declare const UpgradeIdSymbol: unique symbol;
 type UpgradeID = string & { [UpgradeIdSymbol]: never };
 
-type UpgradeEvent = 'upgradeStateChanged' | 'uploadProgress';
-
-type UpgradeStateChangedPayload = {
-  id: UpgradeID;
-  state: FirmwareUpgradeState;
-};
-type UploadProgressPayload = { id: UpgradeID; progress: number };
-type UpgradeEventPayload = UpgradeStateChangedPayload & UploadProgressPayload;
-
-type AddUpgradeListener = {
-  (
-    eventType: 'upgradeStateChanged',
-    listener: (event: UpgradeStateChangedPayload) => void
-  ): EventSubscription;
-  (
-    eventType: 'uploadProgress',
-    listener: (event: UploadProgressPayload) => void
-  ): EventSubscription;
-};
-
-type McuManagerEventMap = {
-  upgradeStateChanged: (payload: UpgradeStateChangedPayload) => void;
-  uploadProgress: (payload: UploadProgressPayload) => void;
-};
-
-const McuManagerEvents = new EventEmitter<McuManagerEventMap>();
-
 class Upgrade {
   private id: UpgradeID;
 
@@ -120,16 +91,6 @@ class Upgrade {
 
   cancel = (): void => {
     ReactNativeMcuManager.cancelUpgrade(this.id);
-  };
-
-  addListener: AddUpgradeListener = (
-    eventType: UpgradeEvent,
-    listener: (event: UpgradeEventPayload) => void
-  ): EventSubscription => {
-    return McuManagerEvents.addListener(eventType, (event) => {
-      if (event.id !== this.id) return;
-      listener(event);
-    });
   };
 
   /**
