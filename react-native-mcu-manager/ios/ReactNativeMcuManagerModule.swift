@@ -5,17 +5,12 @@ import os
 
 private let MODULE_NAME = "ReactNativeMcuManager"
 private let TAG = "McuManagerModule"
-private let UPGRADE_STATE_EVENTS = "upgradeStateChanged"
-private let UPLOAD_PROGRESS_EVENTS = "uploadProgress"
 
 public class ReactNativeMcuManagerModule: Module {
   private var upgrades: [String: DeviceUpgrade] = [:]
 
   public func definition() -> ModuleDefinition {
     Name(MODULE_NAME)
-
-    // Defines event names that the module can send to JavaScript.
-    Events(UPGRADE_STATE_EVENTS, UPLOAD_PROGRESS_EVENTS)
 
     AsyncFunction("eraseImage") { (bleId: String, promise: Promise) in
       guard let bleUuid = UUID(uuidString: bleId) else {
