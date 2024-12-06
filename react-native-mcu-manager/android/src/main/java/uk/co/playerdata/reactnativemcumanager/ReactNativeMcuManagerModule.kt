@@ -20,6 +20,7 @@ private val TAG = "McuManagerModule"
 
 class UpdateOptions : Record {
   @Field val estimatedSwapTime: Int = 0
+  @Field val upgradeFileType: Int = 0
   @Field val upgradeMode: Int? = null
 }
 
@@ -71,7 +72,6 @@ class ReactNativeMcuManagerModule : Module() {
       val updateFileUri = Uri.parse(updateFileUriString)
 
       val upgrade = DeviceUpgrade(
-          id,
           device,
           context,
           updateFileUri,
