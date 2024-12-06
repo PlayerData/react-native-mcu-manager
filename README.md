@@ -26,26 +26,35 @@ pnpm install @playerdata/react-native-mcu-manager
 
 Run `npx pod-install` after installing the pnpm package.
 
-
 ### Configure for Android
 
 ## Usage
+
 ```ts
-import McuManager, { ProgressEvent, UploadEvents } from '@playerdata/react-native-mcu-manager';
+import McuManager, {
+  UpgradeOptions,
+} from '@playerdata/react-native-mcu-manager';
 
-const onUploadProgress = (progress: ProgressEvent) => {
-  console.log("Upload progress: ", progress.bleId, progress.progress);
+const upgradeOptions: UpgradeOptions = {
+  estimatedSwapTime: 30,
 };
 
-const onUploadStateChanged = (progress: ProgressEvent) => {
-  console.log("Upload state change: ", progress.bleId, progress.state);
+const onUploadProgress = (progress: number) => {
+  console.log('Upload progress: ', progress);
 };
 
-UploadEvents.addListener('uploadProgress', onUploadProgress);
-UploadEvents.addListener('uploadStateChanged', onUploadStateChanged);
+const onUploadStateChanged = (state: string) => {
+  console.log('Upload state change: ', state);
+};
 
 // bluetoothId is a MAC address on Android, and a UUID on iOS
-McuManager.updateDevice(bluetoothId, fileUri)
+McuManager.updateDevice(
+  bluetoothId,
+  fileUri,
+  upgradeOptions,
+  onUploadProgress,
+  onUploadStateChanged
+);
 ```
 
 # Contributing
