@@ -28,24 +28,7 @@ const useFirmwareUpdate = (
 
     upgradeRef.current = upgrade;
 
-    const uploadProgressListener = upgrade.addListener(
-      'uploadProgress',
-      ({ progress: newProgress }) => {
-        setProgress(newProgress);
-      }
-    );
-
-    const uploadStateChangedListener = upgrade.addListener(
-      'upgradeStateChanged',
-      ({ state: newState }) => {
-        setState(newState);
-      }
-    );
-
     return function cleanup() {
-      uploadProgressListener.remove();
-      uploadStateChangedListener.remove();
-
       upgrade.cancel();
       upgrade.destroy();
     };
