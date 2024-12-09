@@ -1,4 +1,4 @@
-import { Upgrade, UpgradeMode } from '@playerdata/react-native-mcu-manager';
+import { Upgrade, UpgradeMode, UpgradeFileType } from '@playerdata/react-native-mcu-manager';
 import { useState, useEffect, useRef } from 'react';
 
 const useFirmwareUpdate = (
@@ -21,6 +21,7 @@ const useFirmwareUpdate = (
       {
         estimatedSwapTime: 60,
         upgradeMode,
+        upgradeFileType: UpgradeFileType.ZIP
       },
       setProgress,
       setState

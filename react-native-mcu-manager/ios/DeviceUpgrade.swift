@@ -7,6 +7,11 @@ enum JSUpgradeMode: Int {
   case TEST_ONLY = 3
 }
 
+enum UpgradeFileType: Int {
+  case BIN = 0
+  case ZIP = 1
+}
+
 class DeviceUpgrade {
   private let id: String
 
@@ -39,14 +44,12 @@ class DeviceUpgrade {
     self.logDelegate = UpdateLogDelegate()
   }
 
-  func extractImageFrom(from url: URL) throws -> [ImageManager.Image] {
-    switch url.pathExtension.lowercased() {
-    case "bin":
+  func extractImageFrom(from url: URL, upgradeFileType: UpgradeFileType) throws -> [ImageManager.Image] {
+    switch upgradeFileType {
+    case UpgradeFileType.BIN:
       return try extractImageFromBinFile(from: url)
-    case "zip":
+    case UpgradeFileType.ZIP:
       return try extractImageFromZipFile(from: url)
-    default:
-      throw Exception(name: "UnsupportedFileType", description: "File must be .bin or .zip")
     }
   }
 
@@ -102,7 +105,9 @@ class DeviceUpgrade {
     }
 
     do {
-      let images = try extractImageFrom(from: fileUrl)
+      let images = try extractImageFrom(
+        from: fileUrl, upgradeFileType: UpgradeFileType(rawValue: self.options.upgradeFileType)!
+      )
 
       self.bleTransport = McuMgrBleTransport(bleUuid)
       self.dfuManager = FirmwareUpgradeManager(transport: self.bleTransport!, delegate: self)

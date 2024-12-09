@@ -1,5 +1,17 @@
 import ReactNativeMcuManager from './ReactNativeMcuManagerModule';
 
+export enum UpgradeFileType {
+  /**
+   * A single binary update image.
+   */
+  BIN = 0,
+
+  /**
+   * A zip file containing a manifest.json file that describes the contents of the zip file.
+   */
+  ZIP = 1,
+}
+
 export enum UpgradeMode {
   /**
    * This mode is the default and recommended mode for performing upgrades due to it's ability to
@@ -25,6 +37,11 @@ export interface UpgradeOptions {
    * The estimated time, in seconds, that it takes for the target device to swap to the updated image.
    */
   estimatedSwapTime: number;
+
+  /**
+   * The type of firmware update file.
+   */
+  upgradeFileType: UpgradeFileType;
 
   /**
    * McuManager firmware upgrades can actually be performed in few different ways.
