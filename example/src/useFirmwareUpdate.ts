@@ -8,7 +8,7 @@ const useFirmwareUpdate = (
 ) => {
   const [progress, setProgress] = useState(0);
   const [state, setState] = useState('');
-  const upgradeRef = useRef<Upgrade>();
+  const upgradeRef = useRef<Upgrade>(null);
 
   useEffect(() => {
     if (!bleId || !updateFileUri) {
