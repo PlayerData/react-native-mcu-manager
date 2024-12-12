@@ -80,7 +80,7 @@ class Upgrade {
     updateFileUri: string,
     updateOptions: UpgradeOptions,
     private onProgress?: (progress: number) => void,
-    private onStateChange?: (state: string) => void
+    private onStateChange?: (state: FirmwareUpgradeState) => void
   ) {
     this.id = String(
       Math.floor(100000000 + Math.random() * 900000000)
@@ -94,7 +94,7 @@ class Upgrade {
       (id: string, progress: number) => {
         this.onProgress?.(progress);
       },
-      (id: string, state: string) => {
+      (id: string, state: FirmwareUpgradeState) => {
         this.onStateChange?.(state);
       }
     );
