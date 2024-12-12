@@ -15,7 +15,6 @@ import io.runtime.mcumgr.dfu.mcuboot.model.ImageSet
 import io.runtime.mcumgr.exception.McuMgrException
 import io.runtime.mcumgr.image.McuMgrImage
 import java.io.IOException
-import android.webkit.MimeTypeMap
 
 val UpgradeModes =
         mapOf(
@@ -24,8 +23,17 @@ val UpgradeModes =
                 3 to FirmwareUpgradeManager.Mode.TEST_ONLY
         )
 
+enum class UpgradeFileType {
+    BIN,
+    ZIP,
+}
+
+val UpgradeFileTypes = mapOf(
+    0 to UpgradeFileType.BIN,
+    1 to UpgradeFileType.ZIP,
+)
+
 class DeviceUpgrade(
-        private val id: String,
         device: BluetoothDevice,
         private val context: Context,
         private val updateFileUri: Uri,
@@ -72,15 +80,12 @@ class DeviceUpgrade(
         return inputStream.use { it.readBytes() }
     }
 
-    private fun extractImagesFrom(updateBundleUri: Uri): ImageSet {
-        val fileExtension = MimeTypeMap.getFileExtensionFromUrl(updateBundleUri.toString())
-        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
+    private fun extractImagesFrom(updateBundleUri: Uri, upgradeFileType: UpgradeFileType): ImageSet {
         val binData = uriToByteArray(updateBundleUri) ?: throw IOException("Failed to read update file")
 
-        if (mimeType == "application/zip") {
-            return extractImagesFromZipFile(binData)
-        } else {
-            return extractImagesFromBinFile(binData)
+        return when (upgradeFileType) {
+            UpgradeFileType.BIN -> extractImagesFromBinFile(binData)
+            UpgradeFileType.ZIP -> extractImagesFromZipFile(binData)
         }
     }
 
@@ -95,18 +100,19 @@ class DeviceUpgrade(
     }
 
     private fun extractImagesFromZipFile(zipData: ByteArray): ImageSet {
-        return ZipPackage(zipData).getBinaries();
+        return ZipPackage(zipData).getBinaries()
     }
 
     private fun doUpdate(updateBundleUri: Uri) {
         val estimatedSwapTime = updateOptions.estimatedSwapTime * 1000
         val modeInt = updateOptions.upgradeMode ?: 1
+        val upgradeFileType = UpgradeFileTypes[updateOptions.upgradeFileType] ?: UpgradeFileType.BIN
         val upgradeMode = UpgradeModes[modeInt] ?: FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM
 
         val settings = Settings.Builder().setEstimatedSwapTime(estimatedSwapTime).build()
 
         try {
-            val images = extractImagesFrom(updateBundleUri)
+            val images = extractImagesFrom(updateBundleUri, upgradeFileType)
 
             dfuManager.setMode(upgradeMode)
             dfuManager.start(images, settings)

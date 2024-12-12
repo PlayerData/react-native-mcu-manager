@@ -1,4 +1,7 @@
-import { UpgradeMode } from '@playerdata/react-native-mcu-manager';
+import {
+  UpgradeFileType,
+  UpgradeMode,
+} from '@playerdata/react-native-mcu-manager';
 
 import React, { useState } from 'react';
 import {
@@ -36,6 +39,9 @@ export default function App() {
   const [selectedDeviceName, setSelectedDeviceName] = useState<string | null>(
     null
   );
+  const [fileType, setFileType] = useState<UpgradeFileType>(
+    UpgradeFileType.BIN
+  );
   const [upgradeMode, setUpgradeMode] = useState<UpgradeMode | undefined>(
     undefined
   );
@@ -45,6 +51,7 @@ export default function App() {
   const { cancelUpdate, runUpdate, progress, state } = useFirmwareUpdate(
     selectedDeviceId,
     selectedFile?.uri || null,
+    fileType,
     upgradeMode
   );
 
@@ -96,6 +103,21 @@ export default function App() {
             {selectedFile?.name} {filePickerError}
           </Text>
           <Button onPress={() => pickFile()} title="Pick File" />
+        </View>
+
+        <Text style={styles.block}>Step 2a - Select Update File Type</Text>
+
+        <View style={styles.block}>
+          <Button
+            disabled={fileType === UpgradeFileType.BIN}
+            title="BIN"
+            onPress={() => setFileType(UpgradeFileType.BIN)}
+          />
+          <Button
+            disabled={fileType === UpgradeFileType.ZIP}
+            title="ZIP"
+            onPress={() => setFileType(UpgradeFileType.ZIP)}
+          />
         </View>
 
         <Text style={styles.block}>Step 3 - Upgrade Mode</Text>

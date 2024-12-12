@@ -1,9 +1,14 @@
-import { Upgrade, UpgradeMode } from '@playerdata/react-native-mcu-manager';
+import {
+  Upgrade,
+  UpgradeMode,
+  UpgradeFileType,
+} from '@playerdata/react-native-mcu-manager';
 import { useState, useEffect, useRef } from 'react';
 
 const useFirmwareUpdate = (
   bleId: string | null,
   updateFileUri: string | null,
+  upgradeFileType: UpgradeFileType,
   upgradeMode?: UpgradeMode
 ) => {
   const [progress, setProgress] = useState(0);
@@ -21,6 +26,7 @@ const useFirmwareUpdate = (
       {
         estimatedSwapTime: 60,
         upgradeMode,
+        upgradeFileType,
       },
       setProgress,
       setState
@@ -32,7 +38,7 @@ const useFirmwareUpdate = (
       upgrade.cancel();
       upgrade.destroy();
     };
-  }, [bleId, updateFileUri, upgradeMode]);
+  }, [bleId, upgradeFileType, updateFileUri, upgradeMode]);
 
   const runUpdate = async (): Promise<void> => {
     try {
@@ -41,7 +47,7 @@ const useFirmwareUpdate = (
       }
 
       await upgradeRef.current.runUpgrade();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (ex: any) {
       setState(ex.message);
     }

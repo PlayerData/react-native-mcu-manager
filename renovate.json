@@ -6,6 +6,11 @@
     {
       "matchPackageNames": ["react-native"],
       "enabled": false
+    },
+    {
+      "matchPackageNames": ["react"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
