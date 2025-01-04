@@ -24,7 +24,7 @@
   "devDependencies": {
     "@babel/core": "7.26.0",
     "@babel/runtime": "7.26.0",
-    "@types/lodash": "4.17.13",
+    "@types/lodash": "4.17.14",
     "@types/react": "19.0.2",
     "metro-react-native-babel-preset": "0.77.0",
     "pod-install": "0.3.2",
