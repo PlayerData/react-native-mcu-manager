@@ -25,7 +25,7 @@
     "@babel/core": "7.26.0",
     "@babel/runtime": "7.26.0",
     "@types/lodash": "4.17.14",
-    "@types/react": "19.0.4",
+    "@types/react": "19.0.7",
     "metro-react-native-babel-preset": "0.77.0",
     "pod-install": "0.3.4",
     "ts-node": "^10.9.2",
