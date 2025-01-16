@@ -94,5 +94,32 @@ public class ReactNativeMcuManagerModule: Module {
       upgrade.cancel()
       self.upgrades[id] = nil
     }
+
+    AsyncFunction("resetDevice") { (bleId: String, promise: Promise) in
+      guard let bleUuid = UUID(uuidString: bleId) else {
+        promise.reject(Exception(name: "UUIDParseError", description: "Failed to parse UUID"))
+        return
+      }
+
+      let bleTransport = McuMgrBleTransport(bleUuid)
+      let manager = DefaultManager(transport: bleTransport)
+
+      manager.reset { (response: McuMgrResponse?, err: Error?) in
+        bleTransport.close()
+
+        if err != nil {
+          promise.reject(Exception(name: "ResetError", description: err!.localizedDescription))
+          return
+        }
+
+        let smpErr = response?.getError()
+        if (smpErr != nil) {
+          promise.reject(Exception(name: "ResetError", description: smpErr!.localizedDescription))
+          return
+        }
+
+        promise.resolve()
+      }
+    }
   }
 }

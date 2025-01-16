@@ -6,5 +6,9 @@ export const eraseImage = McuManagerModule?.eraseImage as (
   bleId: string
 ) => Promise<void>;
 
+export const resetDevice = McuManagerModule?.resetDevice as (
+  bleId: string
+) => Promise<void>;
+
 export { Upgrade, UpgradeMode, UpgradeFileType };
 export type { FirmwareUpgradeState, UpgradeOptions };

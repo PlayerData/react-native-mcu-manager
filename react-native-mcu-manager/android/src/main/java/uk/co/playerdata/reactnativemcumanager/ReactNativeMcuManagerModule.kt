@@ -11,9 +11,12 @@ import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
+import io.runtime.mcumgr.McuMgrCallback
 import io.runtime.mcumgr.ble.McuMgrBleTransport
 import io.runtime.mcumgr.exception.McuMgrException
+import io.runtime.mcumgr.managers.DefaultManager
 import io.runtime.mcumgr.managers.ImageManager
+import io.runtime.mcumgr.response.dflt.McuMgrOsResponse
 
 private const val MODULE_NAME = "ReactNativeMcuManager"
 private val TAG = "McuManagerModule"
@@ -41,7 +44,7 @@ class ReactNativeMcuManagerModule : Module() {
       try {
         val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)
 
-        var transport = McuMgrBleTransport(context, device)
+        val transport = McuMgrBleTransport(context, device)
         transport.connect(device).timeout(60000).await()
 
         val imageManager = ImageManager(transport)
@@ -122,6 +125,33 @@ class ReactNativeMcuManagerModule : Module() {
 
       upgrade.cancel()
       upgrades.remove(id)
+    }
+
+    AsyncFunction("resetDevice") { macAddress: String, promise: Promise ->
+      if (this@ReactNativeMcuManagerModule.bluetoothAdapter == null) {
+        throw Exception("No bluetooth adapter")
+      }
+
+      val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)
+
+      val transport = McuMgrBleTransport(context, device)
+      transport.connect(device).timeout(60000).await()
+
+      val manager = DefaultManager(transport)
+
+      val callback = object: McuMgrCallback<McuMgrOsResponse> {
+        override fun onResponse(response: McuMgrOsResponse) {
+          transport.release()
+          promise.resolve()
+        }
+
+        override fun onError(error: McuMgrException) {
+          transport.release()
+          promise.reject(CodedException("RESET_DEVICE_FAILED", "Failed to reset device", error))
+        }
+      }
+
+      manager.reset(callback)
     }
   }
 }
