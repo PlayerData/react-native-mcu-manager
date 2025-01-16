@@ -4,9 +4,11 @@ import 'ts-node/register';
 const config: ExpoConfig = {
   name: "react-native-mcu-manager-example",
   slug: "react-native-mcu-manager-example",
-  version: "1.0.0",
-  orientation: "portrait",
   assetBundlePatterns: ["**/*"],
+  orientation: "portrait",
+  platforms: ["ios", "android"],
+  scheme: "rnmcumgr",
+  version: "1.0.0",
   splash: {
     image: ".assets/images/pd.png",
     backgroundColor: "#FFFFFF",
@@ -27,6 +29,7 @@ const config: ExpoConfig = {
   },
   plugins: [
     ["expo-document-picker"],
+    ["expo-router"],
     ["./gradlePlugin.ts"]
   ]
 };
