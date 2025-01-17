@@ -2,6 +2,8 @@ package uk.co.playerdata.reactnativemcumanager
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import expo.modules.kotlin.Promise
@@ -27,22 +29,24 @@ class UpdateOptions : Record {
   @Field val upgradeMode: Int? = null
 }
 
-class ReactNativeMcuManagerModule : Module() {
-  private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+class ReactNativeMcuManagerModule() : Module() {
   private val upgrades: MutableMap<String, DeviceUpgrade> = mutableMapOf()
   private val context
     get() = requireNotNull(appContext.reactContext) { "React Application Context is null" }
+
+  private fun getBluetoothDevice(macAddress: String?): BluetoothDevice {
+    val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+    val adapter = bluetoothManager?.adapter ?: throw Exception("No bluetooth adapter")
+
+    return adapter.getRemoteDevice(macAddress)
+  }
 
   override fun definition() = ModuleDefinition {
     Name(MODULE_NAME)
 
     AsyncFunction("eraseImage") { macAddress: String?, promise: Promise ->
-      if (this@ReactNativeMcuManagerModule.bluetoothAdapter == null) {
-        throw Exception("No bluetooth adapter")
-      }
-
       try {
-        val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)
+        val device: BluetoothDevice = getBluetoothDevice(macAddress)
 
         val transport = McuMgrBleTransport(context, device)
         transport.connect(device).timeout(60000).await()
@@ -63,15 +67,11 @@ class ReactNativeMcuManagerModule : Module() {
         updateOptions: UpdateOptions,
         progressCallback: JavaScriptFunction<Unit>,
         stateCallback: JavaScriptFunction<Unit> ->
-      if (this@ReactNativeMcuManagerModule.bluetoothAdapter == null) {
-        throw Exception("No bluetooth adapter")
-      }
-
       if (upgrades.contains(id)) {
         throw Exception("Update ID already present")
       }
 
-      val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)
+      val device: BluetoothDevice = getBluetoothDevice(macAddress)
       val updateFileUri = Uri.parse(updateFileUriString)
 
       val upgrade = DeviceUpgrade(
@@ -128,11 +128,7 @@ class ReactNativeMcuManagerModule : Module() {
     }
 
     AsyncFunction("resetDevice") { macAddress: String, promise: Promise ->
-      if (this@ReactNativeMcuManagerModule.bluetoothAdapter == null) {
-        throw Exception("No bluetooth adapter")
-      }
-
-      val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress)
+      val device: BluetoothDevice = getBluetoothDevice(macAddress)
 
       val transport = McuMgrBleTransport(context, device)
       transport.connect(device).timeout(60000).await()
