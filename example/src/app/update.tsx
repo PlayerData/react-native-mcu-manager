@@ -6,8 +6,6 @@ import {
 import React, { useState } from 'react';
 import {
   Button,
-  FlatList,
-  Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -15,9 +13,9 @@ import {
   View,
 } from 'react-native';
 
-import useBluetoothDevices from './useBluetoothDevices';
-import useFilePicker from './useFilePicker';
-import useFirmwareUpdate from './useFirmwareUpdate';
+import useFilePicker from '../hooks/useFilePicker';
+import useFirmwareUpdate from '../hooks/useFirmwareUpdate';
+import { useSelectedDevice } from '../context/selectedDevice';
 
 const styles = StyleSheet.create({
   root: {
@@ -27,18 +25,11 @@ const styles = StyleSheet.create({
   block: {
     marginBottom: 16,
   },
-
-  list: {
-    padding: 16,
-  },
 });
 
-export default function App() {
-  const [devicesListVisible, setDevicesListVisible] = useState(false);
-  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
-  const [selectedDeviceName, setSelectedDeviceName] = useState<string | null>(
-    null
-  );
+const Update = () => {
+  const { selectedDevice } = useSelectedDevice();
+
   const [fileType, setFileType] = useState<UpgradeFileType>(
     UpgradeFileType.BIN
   );
@@ -46,10 +37,9 @@ export default function App() {
     undefined
   );
 
-  const { devices, error: scanError } = useBluetoothDevices();
   const { selectedFile, filePickerError, pickFile } = useFilePicker();
   const { cancelUpdate, runUpdate, progress, state } = useFirmwareUpdate(
-    selectedDeviceId,
+    selectedDevice?.deviceId || null,
     selectedFile?.uri || null,
     fileType,
     upgradeMode
@@ -61,40 +51,13 @@ export default function App() {
         <Text style={styles.block}>Step 1 - Select Device to Update</Text>
 
         <View style={styles.block}>
-          {selectedDeviceId && (
+          {selectedDevice?.deviceId && (
             <>
               <Text>Selected:</Text>
-              <Text>{selectedDeviceName}</Text>
+              <Text>{selectedDevice.deviceName}</Text>
             </>
           )}
-          <Button
-            onPress={() => setDevicesListVisible(true)}
-            title="Select Device"
-          />
         </View>
-
-        <Modal visible={devicesListVisible}>
-          <FlatList
-            contentContainerStyle={styles.list}
-            data={devices}
-            keyExtractor={({ id }) => id}
-            renderItem={({ item }) => (
-              <View>
-                <Text>{item.name || item.id}</Text>
-
-                <Button
-                  title="Select"
-                  onPress={() => {
-                    setSelectedDeviceId(item.id);
-                    setSelectedDeviceName(item.name);
-                    setDevicesListVisible(false);
-                  }}
-                />
-              </View>
-            )}
-            ListHeaderComponent={() => <Text>{scanError}</Text>}
-          />
-        </Modal>
 
         <Text style={styles.block}>Step 2 - Select Update File</Text>
 
@@ -154,13 +117,13 @@ export default function App() {
           </Text>
 
           <Button
-            disabled={!selectedFile || !selectedDeviceId}
+            disabled={!selectedFile || !selectedDevice?.deviceId}
             onPress={() => selectedFile && runUpdate()}
             title="Start Update"
           />
 
           <Button
-            disabled={!selectedFile || !selectedDeviceId}
+            disabled={!selectedFile || !selectedDevice?.deviceId}
             onPress={() => cancelUpdate()}
             title="Cancel Update"
           />
@@ -169,3 +132,5 @@ export default function App() {
     </SafeAreaView>
   );
 }
+
+export default Update;

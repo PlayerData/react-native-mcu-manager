@@ -2,7 +2,7 @@ import { sortBy, uniqBy } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { Device } from 'react-native-ble-plx';
 
-import { BLEService } from './BLEService';
+import { BLEService } from '../BLEService';
 
 const useBluetoothDevices = () => {
   const [bleManager] = useState(() => BLEService.manager);
@@ -15,7 +15,7 @@ const useBluetoothDevices = () => {
     BLEService.initializeBLE().then(() =>
       bleManager.startDeviceScan(
         [],
-        { allowDuplicates: false },
+        { allowDuplicates: false, legacyScan: false },
         (e, scannedDevice) => {
           if (e) {
             setError(`${e.message} - ${e.reason}`);
