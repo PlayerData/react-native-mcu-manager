@@ -20,6 +20,7 @@ const RootLayout = () => {
           options={{ title: 'Home' }}
         />
         <Tabs.Screen name="update" options={{ title: 'Update' }} />
+        <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
       </Tabs>
     </SelectedDeviceProvider>
   );

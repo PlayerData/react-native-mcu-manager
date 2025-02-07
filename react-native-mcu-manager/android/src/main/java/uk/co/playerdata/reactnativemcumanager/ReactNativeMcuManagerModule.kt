@@ -11,14 +11,19 @@ import expo.modules.kotlin.exception.CodedException
 import expo.modules.kotlin.jni.JavaScriptFunction
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import expo.modules.kotlin.objects.Object
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
-import io.runtime.mcumgr.McuMgrCallback
 import io.runtime.mcumgr.ble.McuMgrBleTransport
 import io.runtime.mcumgr.exception.McuMgrException
 import io.runtime.mcumgr.managers.DefaultManager
 import io.runtime.mcumgr.managers.ImageManager
+import io.runtime.mcumgr.managers.SettingsManager
+import io.runtime.mcumgr.McuMgrCallback
 import io.runtime.mcumgr.response.dflt.McuMgrOsResponse
+import io.runtime.mcumgr.response.McuMgrResponse
+import io.runtime.mcumgr.response.settings.McuMgrSettingsReadResponse
+import java.util.Base64
 
 private const val MODULE_NAME = "ReactNativeMcuManager"
 private val TAG = "McuManagerModule"
@@ -34,11 +39,16 @@ class ReactNativeMcuManagerModule() : Module() {
   private val context
     get() = requireNotNull(appContext.reactContext) { "React Application Context is null" }
 
-  private fun getBluetoothDevice(macAddress: String?): BluetoothDevice {
+  private fun getTransport(macAddress: String?): McuMgrBleTransport {
     val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-    val adapter = bluetoothManager?.adapter ?: throw Exception("No bluetooth adapter")
+    val adapter = bluetoothManager.adapter ?: throw Exception("No bluetooth adapter")
 
-    return adapter.getRemoteDevice(macAddress)
+    val device = adapter.getRemoteDevice(macAddress)
+
+    val transport = McuMgrBleTransport(context, device)
+    transport.connect(device).timeout(60000).await()
+
+    return transport
   }
 
   override fun definition() = ModuleDefinition {
@@ -46,10 +56,7 @@ class ReactNativeMcuManagerModule() : Module() {
 
     AsyncFunction("eraseImage") { macAddress: String?, promise: Promise ->
       try {
-        val device: BluetoothDevice = getBluetoothDevice(macAddress)
-
-        val transport = McuMgrBleTransport(context, device)
-        transport.connect(device).timeout(60000).await()
+        val transport = getTransport(macAddress)
 
         val imageManager = ImageManager(transport)
         imageManager.erase()
@@ -71,11 +78,11 @@ class ReactNativeMcuManagerModule() : Module() {
         throw Exception("Update ID already present")
       }
 
-      val device: BluetoothDevice = getBluetoothDevice(macAddress)
+      val transport = getTransport(macAddress)
       val updateFileUri = Uri.parse(updateFileUriString)
 
       val upgrade = DeviceUpgrade(
-          device,
+          transport,
           context,
           updateFileUri,
           updateOptions,
@@ -127,12 +134,50 @@ class ReactNativeMcuManagerModule() : Module() {
       upgrades.remove(id)
     }
 
+    AsyncFunction("readSetting") { macAddress: String, settingName: String, promise: Promise ->
+      val transport = getTransport(macAddress)
+      val settingsManager = SettingsManager(transport)
+
+      val callback = object: McuMgrCallback<McuMgrSettingsReadResponse> {
+          override fun onResponse(response: McuMgrSettingsReadResponse) {
+            transport.release()
+            promise.resolve(
+              Base64.getEncoder().encodeToString(response.`val`)
+            )
+          }
+
+          override fun onError(error: McuMgrException) {
+            transport.release()
+            promise.reject(CodedException("READ_FAILED", "Failed to read setting", error))
+          }
+        }
+
+      settingsManager.read(settingName, callback)
+    }
+
+    AsyncFunction("writeSetting") { macAddress: String, settingName: String, valueB64: String, promise: Promise ->
+      val transport = getTransport(macAddress)
+      val settingsManager = SettingsManager(transport)
+
+      val value = Base64.getDecoder().decode(valueB64)
+
+      val callback = object: McuMgrCallback<McuMgrResponse> {
+        override fun onResponse(response: McuMgrResponse) {
+          transport.release()
+          promise.resolve()
+        }
+
+        override fun onError(error: McuMgrException) {
+          transport.release()
+          promise.reject(CodedException("WRITE_FAILED", "Failed to write setting", error))
+        }
+      }
+
+      settingsManager.write(settingName, value, callback)
+    }
+
     AsyncFunction("resetDevice") { macAddress: String, promise: Promise ->
-      val device: BluetoothDevice = getBluetoothDevice(macAddress)
-
-      val transport = McuMgrBleTransport(context, device)
-      transport.connect(device).timeout(60000).await()
-
+      val transport = getTransport(macAddress)
       val manager = DefaultManager(transport)
 
       val callback = object: McuMgrCallback<McuMgrOsResponse> {

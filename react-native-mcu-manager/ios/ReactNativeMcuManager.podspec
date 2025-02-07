@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.static_framework = true
 
   s.dependency 'ExpoModulesCore'
-  s.dependency 'iOSMcuManagerLibrary', '1.7.3'
+  s.dependency 'iOSMcuManagerLibrary', '>= 1.9.1'
 
   # Swift/Objective-C compatibility
   s.pod_target_xcconfig = {

@@ -12,3 +12,14 @@ export const resetDevice = McuManagerModule?.resetDevice as (
 
 export { Upgrade, UpgradeMode, UpgradeFileType };
 export type { FirmwareUpgradeState, UpgradeOptions };
+
+export const readSetting = McuManagerModule?.readSetting as (
+  bleId: string,
+  key: string
+) => Promise<string>;
+
+export const writeSetting = McuManagerModule?.writeSetting as (
+  bleId: string,
+  key: string,
+  valueB64: string
+) => Promise<void>;
