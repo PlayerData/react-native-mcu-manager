@@ -1,6 +1,5 @@
 package uk.co.playerdata.reactnativemcumanager
 
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
@@ -14,7 +13,9 @@ import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
 import io.runtime.mcumgr.McuMgrCallback
+import io.runtime.mcumgr.McuMgrErrorCode
 import io.runtime.mcumgr.ble.McuMgrBleTransport
+import io.runtime.mcumgr.exception.McuMgrErrorException
 import io.runtime.mcumgr.exception.McuMgrException
 import io.runtime.mcumgr.managers.DefaultManager
 import io.runtime.mcumgr.managers.ImageManager
@@ -29,7 +30,15 @@ class UpdateOptions : Record {
   @Field val upgradeMode: Int? = null
 }
 
+class BootloaderInfo : Record {
+  @Field var bootloader: String? = null
+  @Field var mode: Int? = null
+  @Field var noDowngrade: Boolean = false
+}
+
 class ReactNativeMcuManagerModule() : Module() {
+  private val MCUBOOT = "MCUboot"
+
   private val upgrades: MutableMap<String, DeviceUpgrade> = mutableMapOf()
   private val context
     get() = requireNotNull(appContext.reactContext) { "React Application Context is null" }
@@ -43,6 +52,41 @@ class ReactNativeMcuManagerModule() : Module() {
 
   override fun definition() = ModuleDefinition {
     Name(MODULE_NAME)
+
+    AsyncFunction("bootloaderInfo") { macAddress: String?, promise: Promise ->
+      val device: BluetoothDevice = getBluetoothDevice(macAddress)
+
+      val transport = McuMgrBleTransport(context, device)
+      transport.connect(device).timeout(60000).await()
+
+      val manager = DefaultManager(transport)
+      val info = BootloaderInfo()
+
+      try {
+        val nameResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_QUERY_BOOTLOADER)
+        info.bootloader = nameResult.bootloader
+      } catch(ex: McuMgrErrorException) {
+        transport.release()
+
+        // For consistency with iOS, if the error code is 8 (MGMT_ERR_ENOTSUP), return null
+        if (ex.code == McuMgrErrorCode.NOT_SUPPORTED) {
+          promise.resolve(info)
+          return@AsyncFunction
+        }
+
+        throw ex;
+      }
+
+      if (info.bootloader == MCUBOOT) {
+        val mcuMgrResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_MCUBOOT_QUERY_MODE)
+
+        info.mode = mcuMgrResult.mode
+        info.noDowngrade = mcuMgrResult.noDowngrade
+      }
+
+      transport.release()
+      promise.resolve(info)
+    }
 
     AsyncFunction("eraseImage") { macAddress: String?, promise: Promise ->
       try {
