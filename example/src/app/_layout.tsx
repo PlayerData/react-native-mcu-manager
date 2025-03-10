@@ -15,9 +15,10 @@ const RootLayout = () => {
   return (
     <SelectedDeviceProvider value={{ selectedDevice, setSelectedDevice }}>
       <Tabs>
+        <Tabs.Screen name="(home)" options={{ title: 'Home' }} />
         <Tabs.Screen
-          name="(home)"
-          options={{ title: 'Home' }}
+          name="bootloader_info"
+          options={{ title: 'Bootloader Info' }}
         />
         <Tabs.Screen name="update" options={{ title: 'Update' }} />
       </Tabs>
