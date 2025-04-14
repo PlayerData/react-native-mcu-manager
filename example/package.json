@@ -32,7 +32,7 @@
   "devDependencies": {
     "@babel/core": "7.26.10",
     "@babel/runtime": "7.27.0",
-    "@types/lodash": "4.17.15",
+    "@types/lodash": "4.17.16",
     "@types/react": "19.0.8",
     "metro-react-native-babel-preset": "0.77.0",
     "ts-node": "^10.9.2",
