@@ -78,8 +78,8 @@ importers:
         specifier: 0.76.3
         version: 0.76.3(@babel/core@7.26.10)(@babel/preset-env@7.26.0(@babel/core@7.26.10))(@types/react@19.0.8)(react@18.3.1)
       react-native-ble-plx:
-        specifier: 3.4.0
-        version: 3.4.0(react-native@0.76.3(@babel/core@7.26.10)(@babel/preset-env@7.26.0(@babel/core@7.26.10))(@types/react@19.0.8)(react@18.3.1))(react@18.3.1)
+        specifier: 3.5.0
+        version: 3.5.0(react-native@0.76.3(@babel/core@7.26.10)(@babel/preset-env@7.26.0(@babel/core@7.26.10))(@types/react@19.0.8)(react@18.3.1))(react@18.3.1)
       react-native-reanimated:
         specifier: ~3.16.1
         version: 3.16.7(@babel/core@7.26.10)(react-native@0.76.3(@babel/core@7.26.10)(@babel/preset-env@7.26.0(@babel/core@7.26.10))(@types/react@19.0.8)(react@18.3.1))(react@18.3.1)
@@ -5259,8 +5259,8 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-native-ble-plx@3.4.0:
-    resolution: {integrity: sha512-ou/PtbDVU0TP9+Wt0N8NUCKjp1rTVRAsAbFRhDkaCuTdnkaouN5g8kfyhgN+2bRiROI7HhdVi4XUnWmt7vQP7g==}
+  react-native-ble-plx@3.5.0:
+    resolution: {integrity: sha512-PeSnRswHLwLRVMQkOfDaRICtrGmo94WGKhlSC09XmHlqX2EuYgH+vNJpGcLkd8lyiYpEJyf8wlFAdj9Akliwmw==}
     engines: {node: '>= 18.0.0'}
     peerDependencies:
       react: '*'
@@ -13240,7 +13240,7 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-native-ble-plx@3.4.0(react-native@0.76.3(@babel/core@7.26.10)(@babel/preset-env@7.26.0(@babel/core@7.26.10))(@types/react@19.0.8)(react@18.3.1))(react@18.3.1):
+  react-native-ble-plx@3.5.0(react-native@0.76.3(@babel/core@7.26.10)(@babel/preset-env@7.26.0(@babel/core@7.26.10))(@types/react@19.0.8)(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-native: 0.76.3(@babel/core@7.26.10)(@babel/preset-env@7.26.0(@babel/core@7.26.10))(@types/react@19.0.8)(react@18.3.1)
