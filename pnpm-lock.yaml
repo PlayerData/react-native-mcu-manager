@@ -61,7 +61,7 @@ importers:
         version: 7.0.5(expo@52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@expo/metro-runtime@5.0.4(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1)))(graphql@15.8.0)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1)
       expo-router:
         specifier: ~5.0.0
-        version: 5.0.5(21b305eb44464be91a44a8fa938c9df7)
+        version: 5.0.5(4e051b52b3f7c4614959ddfdc3315284)
       expo-splash-screen:
         specifier: 0.29.24
         version: 0.29.24(expo@52.0.46(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@expo/metro-runtime@5.0.4(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1)))(graphql@15.8.0)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1))
@@ -81,8 +81,8 @@ importers:
         specifier: 3.5.0
         version: 3.5.0(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1)
       react-native-reanimated:
-        specifier: ~3.17.0
-        version: 3.17.5(@babel/core@7.27.1)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1)
+        specifier: ~3.18.0
+        version: 3.18.0(@babel/core@7.27.1)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1)
       react-native-safe-area-context:
         specifier: 5.4.0
         version: 5.4.0(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1)
@@ -5172,8 +5172,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-reanimated@3.17.5:
-    resolution: {integrity: sha512-SxBK7wQfJ4UoWoJqQnmIC7ZjuNgVb9rcY5Xc67upXAFKftWg0rnkknTw6vgwnjRcvYThrjzUVti66XoZdDJGtw==}
+  react-native-reanimated@3.18.0:
+    resolution: {integrity: sha512-eVcNcqeOkMW+BUWAHdtvN3FKgC8J8wiEJkX6bNGGQaLS7m7e4amTfjIcqf/Ta+lerZLurmDaQ0lICI1CKPrb1Q==}
     peerDependencies:
       '@babel/core': ^7.0.0-0
       react: '*'
@@ -7386,7 +7386,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.27.1
       '@babel/helper-plugin-utils': 7.26.5
-      '@babel/helper-validator-option': 7.25.9
+      '@babel/helper-validator-option': 7.27.1
       '@babel/plugin-transform-flow-strip-types': 7.26.5(@babel/core@7.27.1)
 
   '@babel/preset-modules@0.1.6-no-external-plugins(@babel/core@7.27.1)':
@@ -7412,7 +7412,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.27.1
       '@babel/helper-plugin-utils': 7.26.5
-      '@babel/helper-validator-option': 7.25.9
+      '@babel/helper-validator-option': 7.27.1
       '@babel/plugin-syntax-jsx': 7.25.9(@babel/core@7.27.1)
       '@babel/plugin-transform-modules-commonjs': 7.26.3(@babel/core@7.27.1)
       '@babel/plugin-transform-typescript': 7.27.0(@babel/core@7.27.1)
@@ -10491,7 +10491,7 @@ snapshots:
     dependencies:
       invariant: 2.2.4
 
-  expo-router@5.0.5(21b305eb44464be91a44a8fa938c9df7):
+  expo-router@5.0.5(4e051b52b3f7c4614959ddfdc3315284):
     dependencies:
       '@expo/metro-runtime': 5.0.4(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))
       '@expo/server': 0.6.2
@@ -10513,7 +10513,7 @@ snapshots:
       server-only: 0.0.1
       shallowequal: 1.1.0
     optionalDependencies:
-      react-native-reanimated: 3.17.5(@babel/core@7.27.1)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1)
+      react-native-reanimated: 3.18.0(@babel/core@7.27.1)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - '@react-native-masked-view/masked-view'
       - '@types/react'
@@ -12813,7 +12813,7 @@ snapshots:
       react: 18.3.1
       react-native: 0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1)
 
-  react-native-reanimated@3.17.5(@babel/core@7.27.1)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1):
+  react-native-reanimated@3.18.0(@babel/core@7.27.1)(react-native@0.76.9(@babel/core@7.27.1)(@babel/preset-env@7.26.0(@babel/core@7.27.1))(@types/react@19.1.3)(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/core': 7.27.1
       '@babel/plugin-transform-arrow-functions': 7.25.9(@babel/core@7.27.1)
