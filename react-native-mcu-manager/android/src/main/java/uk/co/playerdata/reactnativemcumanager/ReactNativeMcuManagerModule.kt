@@ -156,7 +156,7 @@ class ReactNativeMcuManagerModule() : Module() {
         return@AsyncFunction
       }
 
-      upgrade.startUpgrade(promise)
+      upgrade.cancel()
     }
 
     Function("destroyUpgrade") { id: String ->
