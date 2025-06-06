@@ -148,15 +148,15 @@ class ReactNativeMcuManagerModule() : Module() {
       upgrade.startUpgrade(promise)
     }
 
-    AsyncFunction("cancelUpgrade") { id: String, promise: Promise ->
+    Function("cancelUpgrade") { id: String ->
       val upgrade = upgrades[id]
 
       if (upgrade == null) {
-        promise.reject(CodedException("UPGRADE_ID_MISSING", "Upgrade ID $id not present", null))
-        return@AsyncFunction
+        Log.w(TAG, "Can't cancel update ID ($id} not present")
+        return@Function
       }
 
-      upgrade.startUpgrade(promise)
+      upgrade.cancel()
     }
 
     Function("destroyUpgrade") { id: String ->
