@@ -18,9 +18,10 @@ import java.io.IOException
 
 val UpgradeModes =
         mapOf(
-                1 to FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM,
-                2 to FirmwareUpgradeManager.Mode.CONFIRM_ONLY,
-                3 to FirmwareUpgradeManager.Mode.TEST_ONLY
+            1 to FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM,
+            2 to FirmwareUpgradeManager.Mode.CONFIRM_ONLY,
+            3 to FirmwareUpgradeManager.Mode.TEST_ONLY,
+            4 to FirmwareUpgradeManager.Mode.NONE,
         )
 
 enum class UpgradeFileType {
