@@ -5,6 +5,7 @@ enum JSUpgradeMode: Int {
   case TEST_AND_CONFIRM = 1
   case CONFIRM_ONLY = 2
   case TEST_ONLY = 3
+  case UPLOAD_ONLY = 4
 }
 
 enum UpgradeFileType: Int {
@@ -158,6 +159,8 @@ class DeviceUpgrade {
       return FirmwareUpgradeMode.testOnly
     case .CONFIRM_ONLY:
       return FirmwareUpgradeMode.confirmOnly
+    case .UPLOAD_ONLY:
+      return FirmwareUpgradeMode.uploadOnly
     }
   }
 }

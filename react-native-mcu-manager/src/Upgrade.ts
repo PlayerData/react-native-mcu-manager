@@ -14,13 +14,6 @@ export enum UpgradeFileType {
 
 export enum UpgradeMode {
   /**
-   * When this flag is set, the manager will immediately send the reset command after
-   * the upload is complete. The device will reboot and will run the new image on its next
-   * boot.
-   */
-  NONE = 0,
-
-  /**
    * This mode is the default and recommended mode for performing upgrades due to it's ability to
    * recover from a bad firmware upgrade. The process for this mode is upload, test, reset, confirm.
    */
@@ -37,6 +30,13 @@ export enum UpgradeMode {
    * manually as the primary boot image. The process for this mode is upload, test, reset.
    */
   TEST_ONLY = 3,
+
+  /**
+   * When this flag is set, the manager will immediately send the reset command after
+   * the upload is complete. The device will reboot and will run the new image on its next
+   * boot.
+   */
+  UPLOAD_ONLY = 4,
 }
 
 export interface UpgradeOptions {
