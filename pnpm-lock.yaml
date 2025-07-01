@@ -90,8 +90,8 @@ importers:
         specifier: ~4.11.0
         version: 4.11.1(react-native@0.76.9(@babel/core@7.27.7)(@babel/preset-env@7.26.0(@babel/core@7.27.7))(@types/react@19.1.8)(react@18.3.1))(react@18.3.1)
       react-native-toast-message:
-        specifier: 2.3.1
-        version: 2.3.1(react-native@0.76.9(@babel/core@7.27.7)(@babel/preset-env@7.26.0(@babel/core@7.27.7))(@types/react@19.1.8)(react@18.3.1))(react@18.3.1)
+        specifier: 2.3.3
+        version: 2.3.3(react-native@0.76.9(@babel/core@7.27.7)(@babel/preset-env@7.26.0(@babel/core@7.27.7))(@types/react@19.1.8)(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: 7.27.7
@@ -5198,8 +5198,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-toast-message@2.3.1:
-    resolution: {integrity: sha512-86OpiJhggXZMUL/8KMmgRRRzGgu4lfUXVV0YkHc0F8PitVkTnhQ6P5UzIypCYQ4CbQUu9O1dCY+rlQG4c5j0sA==}
+  react-native-toast-message@2.3.3:
+    resolution: {integrity: sha512-4IIUHwUPvKHu4gjD0Vj2aGQzqPATiblL1ey8tOqsxOWRPGGu52iIbL8M/mCz4uyqecvPdIcMY38AfwRuUADfQQ==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -12866,7 +12866,7 @@ snapshots:
       react-native-is-edge-to-edge: 1.1.7(react-native@0.76.9(@babel/core@7.27.7)(@babel/preset-env@7.26.0(@babel/core@7.27.7))(@types/react@19.1.8)(react@18.3.1))(react@18.3.1)
       warn-once: 0.1.1
 
-  react-native-toast-message@2.3.1(react-native@0.76.9(@babel/core@7.27.7)(@babel/preset-env@7.26.0(@babel/core@7.27.7))(@types/react@19.1.8)(react@18.3.1))(react@18.3.1):
+  react-native-toast-message@2.3.3(react-native@0.76.9(@babel/core@7.27.7)(@babel/preset-env@7.26.0(@babel/core@7.27.7))(@types/react@19.1.8)(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-native: 0.76.9(@babel/core@7.27.7)(@babel/preset-env@7.26.0(@babel/core@7.27.7))(@types/react@19.1.8)(react@18.3.1)
