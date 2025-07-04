@@ -114,6 +114,7 @@ class DeviceUpgrade {
       self.dfuManager = FirmwareUpgradeManager(transport: self.bleTransport!, delegate: self)
       let config = FirmwareUpgradeConfiguration(
         estimatedSwapTime: self.options.estimatedSwapTime,
+        eraseAppSettings: self.options.eraseAppSettings,
         upgradeMode: self.getMode()
       )
 
