@@ -57,6 +57,11 @@ export interface UpgradeOptions {
    * @see UpgradeMode
    */
   upgradeMode?: UpgradeMode;
+
+  /**
+   * If true, erase application settings during upgrade (if supported by firmware). Defaults to false.
+   */
+  eraseAppSettings?: boolean;
 }
 
 export type FirmwareUpgradeState =

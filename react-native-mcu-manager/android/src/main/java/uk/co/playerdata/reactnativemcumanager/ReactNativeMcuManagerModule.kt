@@ -28,6 +28,7 @@ class UpdateOptions : Record {
   @Field val estimatedSwapTime: Int = 0
   @Field val upgradeFileType: Int = 0
   @Field val upgradeMode: Int? = null
+  @Field val eraseAppSettings: Boolean? = false
 }
 
 class BootloaderInfo : Record {
