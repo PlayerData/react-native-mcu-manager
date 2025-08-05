@@ -63,7 +63,7 @@ jobs:
 
   ios-example:
       name: iOS example app
-      runs-on: macos-14
+      runs-on: macos-15
       needs: build
       steps:
       - name: Checkout
