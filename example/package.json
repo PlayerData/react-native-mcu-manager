@@ -36,6 +36,6 @@
     "@types/react": "19.1.9",
     "metro-react-native-babel-preset": "0.77.0",
     "ts-node": "^10.9.2",
-    "typescript": "5.8.3"
+    "typescript": "5.9.2"
   }
 }
