@@ -25,7 +25,7 @@
     "react-native": "0.79.5",
     "react-native-ble-plx": "3.5.0",
     "react-native-reanimated": "~3.19.0",
-    "react-native-safe-area-context": "5.5.2",
+    "react-native-safe-area-context": "5.6.0",
     "react-native-screens": "~4.13.0",
     "react-native-toast-message": "2.3.3"
   },
