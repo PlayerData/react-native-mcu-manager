@@ -62,7 +62,7 @@ importers:
         version: 7.1.7(expo@53.0.20(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1)))(graphql@15.8.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
       expo-router:
         specifier: ~5.1.4
-        version: 5.1.4(fccbda035b13396449828f7a9cee6be3)
+        version: 5.1.4(4ba9179f9101e24032983e83fa5f87d2)
       expo-splash-screen:
         specifier: 0.30.10
         version: 0.30.10(expo@53.0.20(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1)))(graphql@15.8.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1))
@@ -82,8 +82,8 @@ importers:
         specifier: 3.5.0
         version: 3.5.0(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
       react-native-reanimated:
-        specifier: ~3.17.5
-        version: 3.17.5(@babel/core@7.28.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
+        specifier: ~4.0.0
+        version: 4.0.1(@babel/core@7.28.0)(react-native-worklets@0.4.1(@babel/core@7.28.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
       react-native-safe-area-context:
         specifier: 5.5.2
         version: 5.5.2(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
@@ -4997,24 +4997,19 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-is-edge-to-edge@1.1.7:
-    resolution: {integrity: sha512-EH6i7E8epJGIcu7KpfXYXiV2JFIYITtq+rVS8uEb+92naMRBdxhTuS8Wn2Q7j9sqyO0B+Xbaaf9VdipIAmGW4w==}
-    peerDependencies:
-      react: '*'
-      react-native: '*'
-
   react-native-is-edge-to-edge@1.2.1:
     resolution: {integrity: sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==}
     peerDependencies:
       react: '*'
       react-native: '*'
 
-  react-native-reanimated@3.17.5:
-    resolution: {integrity: sha512-SxBK7wQfJ4UoWoJqQnmIC7ZjuNgVb9rcY5Xc67upXAFKftWg0rnkknTw6vgwnjRcvYThrjzUVti66XoZdDJGtw==}
+  react-native-reanimated@4.0.1:
+    resolution: {integrity: sha512-SZmIpxVd1yijV1MA8KB9S9TUj6JpdU4THjVB0WCkfV9p6F8oR3YxO4e+GRKbNci3mODp7plW095LhjaCB9bqZQ==}
     peerDependencies:
       '@babel/core': ^7.0.0-0
       react: '*'
       react-native: '*'
+      react-native-worklets: '>=0.3.0'
 
   react-native-safe-area-context@5.5.2:
     resolution: {integrity: sha512-t4YVbHa9uAGf+pHMabGrb0uHrD5ogAusSu842oikJ3YKXcYp6iB4PTGl0EZNkUIR3pCnw/CXKn42OCfhsS0JIw==}
@@ -5031,6 +5026,13 @@ packages:
   react-native-toast-message@2.3.3:
     resolution: {integrity: sha512-4IIUHwUPvKHu4gjD0Vj2aGQzqPATiblL1ey8tOqsxOWRPGGu52iIbL8M/mCz4uyqecvPdIcMY38AfwRuUADfQQ==}
     peerDependencies:
+      react: '*'
+      react-native: '*'
+
+  react-native-worklets@0.4.1:
+    resolution: {integrity: sha512-QXAMZ8jz0sLEoNrc3ej050z6Sd+UJ/Gef4SACeMuoLRinwHIy4uel7XtMPJZMqKhFerkwXZ7Ips5vIjnNyPDBA==}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
       react: '*'
       react-native: '*'
 
@@ -10258,7 +10260,7 @@ snapshots:
     dependencies:
       invariant: 2.2.4
 
-  expo-router@5.1.4(fccbda035b13396449828f7a9cee6be3):
+  expo-router@5.1.4(4ba9179f9101e24032983e83fa5f87d2):
     dependencies:
       '@expo/metro-runtime': 5.0.4(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))
       '@expo/server': 0.6.3
@@ -10280,7 +10282,7 @@ snapshots:
       server-only: 0.0.1
       shallowequal: 1.1.0
     optionalDependencies:
-      react-native-reanimated: 3.17.5(@babel/core@7.28.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
+      react-native-reanimated: 4.0.1(@babel/core@7.28.0)(react-native-worklets@0.4.1(@babel/core@7.28.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
     transitivePeerDependencies:
       - '@react-native-masked-view/masked-view'
       - '@types/react'
@@ -12493,35 +12495,19 @@ snapshots:
       react: 19.1.1
       react-native: 0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1)
 
-  react-native-is-edge-to-edge@1.1.7(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1):
-    dependencies:
-      react: 19.1.1
-      react-native: 0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1)
-
   react-native-is-edge-to-edge@1.2.1(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1):
     dependencies:
       react: 19.1.1
       react-native: 0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1)
 
-  react-native-reanimated@3.17.5(@babel/core@7.28.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1):
+  react-native-reanimated@4.0.1(@babel/core@7.28.0)(react-native-worklets@0.4.1(@babel/core@7.28.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1):
     dependencies:
       '@babel/core': 7.28.0
-      '@babel/plugin-transform-arrow-functions': 7.25.9(@babel/core@7.28.0)
-      '@babel/plugin-transform-class-properties': 7.25.9(@babel/core@7.28.0)
-      '@babel/plugin-transform-classes': 7.25.9(@babel/core@7.28.0)
-      '@babel/plugin-transform-nullish-coalescing-operator': 7.26.6(@babel/core@7.28.0)
-      '@babel/plugin-transform-optional-chaining': 7.25.9(@babel/core@7.28.0)
-      '@babel/plugin-transform-shorthand-properties': 7.25.9(@babel/core@7.28.0)
-      '@babel/plugin-transform-template-literals': 7.26.8(@babel/core@7.28.0)
-      '@babel/plugin-transform-unicode-regex': 7.25.9(@babel/core@7.28.0)
-      '@babel/preset-typescript': 7.27.0(@babel/core@7.28.0)
-      convert-source-map: 2.0.0
-      invariant: 2.2.4
       react: 19.1.1
       react-native: 0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1)
-      react-native-is-edge-to-edge: 1.1.7(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
-    transitivePeerDependencies:
-      - supports-color
+      react-native-is-edge-to-edge: 1.2.1(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
+      react-native-worklets: 0.4.1(@babel/core@7.28.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
+      semver: 7.7.2
 
   react-native-safe-area-context@5.5.2(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1):
     dependencies:
@@ -12540,6 +12526,24 @@ snapshots:
     dependencies:
       react: 19.1.1
       react-native: 0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1)
+
+  react-native-worklets@0.4.1(@babel/core@7.28.0)(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))(react@19.1.1):
+    dependencies:
+      '@babel/core': 7.28.0
+      '@babel/plugin-transform-arrow-functions': 7.25.9(@babel/core@7.28.0)
+      '@babel/plugin-transform-class-properties': 7.25.9(@babel/core@7.28.0)
+      '@babel/plugin-transform-classes': 7.25.9(@babel/core@7.28.0)
+      '@babel/plugin-transform-nullish-coalescing-operator': 7.26.6(@babel/core@7.28.0)
+      '@babel/plugin-transform-optional-chaining': 7.25.9(@babel/core@7.28.0)
+      '@babel/plugin-transform-shorthand-properties': 7.25.9(@babel/core@7.28.0)
+      '@babel/plugin-transform-template-literals': 7.26.8(@babel/core@7.28.0)
+      '@babel/plugin-transform-unicode-regex': 7.25.9(@babel/core@7.28.0)
+      '@babel/preset-typescript': 7.27.0(@babel/core@7.28.0)
+      convert-source-map: 2.0.0
+      react: 19.1.1
+      react-native: 0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1)
+    transitivePeerDependencies:
+      - supports-color
 
   react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1):
     dependencies:
