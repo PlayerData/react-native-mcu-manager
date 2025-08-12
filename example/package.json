@@ -33,7 +33,7 @@
     "@babel/core": "7.28.0",
     "@babel/runtime": "7.28.2",
     "@types/lodash": "4.17.20",
-    "@types/react": "19.1.9",
+    "@types/react": "19.1.10",
     "metro-react-native-babel-preset": "0.77.0",
     "ts-node": "^10.9.2",
     "typescript": "5.9.2"
