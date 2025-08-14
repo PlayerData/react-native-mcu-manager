@@ -30,8 +30,8 @@
     "react-native-toast-message": "2.3.3"
   },
   "devDependencies": {
-    "@babel/core": "7.28.0",
-    "@babel/runtime": "7.28.2",
+    "@babel/core": "7.28.3",
+    "@babel/runtime": "7.28.3",
     "@types/lodash": "4.17.20",
     "@types/react": "19.1.10",
     "metro-react-native-babel-preset": "0.77.0",
