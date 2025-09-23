@@ -28,7 +28,7 @@
     "eslint-plugin-prettier": "5.5.4",
     "husky": "9.1.7",
     "prettier": "3.6.2",
-    "semantic-release": "24.2.7"
+    "semantic-release": "24.2.9"
   },
   "resolutions": {
     "expo": ">53.0.0",
