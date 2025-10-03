@@ -14,6 +14,7 @@
   "dependencies": {
     "@playerdata/react-native-mcu-manager": "workspace:*",
     "expo": "54.0.12",
+    "expo-build-properties": "0.13.2",
     "expo-constants": "~18.0.0",
     "expo-document-picker": "14.0.7",
     "expo-linking": "~8.0.0",
