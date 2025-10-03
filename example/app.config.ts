@@ -30,7 +30,15 @@ const config: ExpoConfig = {
   plugins: [
     ["expo-document-picker"],
     ["expo-router"],
-    ["./gradlePlugin.ts"]
+    ["./gradlePlugin.ts"],
+    [
+      'expo-build-properties',
+      {
+        android: {
+          minSdkVersion: 33,
+        },
+      },
+    ],
   ]
 };
 
