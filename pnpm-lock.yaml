@@ -56,7 +56,7 @@ importers:
         version: 1.0.9(expo@54.0.13)
       expo-constants:
         specifier: ~18.0.9
-        version: 18.0.9(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
+        version: 18.0.10(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
       expo-document-picker:
         specifier: 14.0.7
         version: 14.0.7(expo@54.0.13)
@@ -65,7 +65,7 @@ importers:
         version: 8.0.8(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))(react@19.2.0)
       expo-router:
         specifier: ~6.0.10
-        version: 6.0.13(0c0a75de2c554738fdd3c7d8a2edd5ec)
+        version: 6.0.13(fb2827aa100b71a12b93273f9c63ed8a)
       expo-splash-screen:
         specifier: 31.0.10
         version: 31.0.10(expo@54.0.13)
@@ -3290,8 +3290,8 @@ packages:
     peerDependencies:
       expo: '>= 54.0.0'
 
-  expo-constants@18.0.9:
-    resolution: {integrity: sha512-sqoXHAOGDcr+M9NlXzj1tGoZyd3zxYDy215W6E0Z0n8fgBaqce9FAYQE2bu5X4G629AYig5go7U6sQz7Pjcm8A==}
+  expo-constants@18.0.10:
+    resolution: {integrity: sha512-Rhtv+X974k0Cahmvx6p7ER5+pNhBC0XbP1lRviL2J1Xl4sT2FBaIuIxF/0I0CbhOsySf0ksqc5caFweAy9Ewiw==}
     peerDependencies:
       expo: '>= 54.0.0'
       react-native: '*'
@@ -7729,7 +7729,7 @@ snapshots:
       wrap-ansi: 7.0.0
       ws: 8.18.3
     optionalDependencies:
-      expo-router: 6.0.13(0c0a75de2c554738fdd3c7d8a2edd5ec)
+      expo-router: 6.0.13(fb2827aa100b71a12b93273f9c63ed8a)
       react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0)
     transitivePeerDependencies:
       - '@modelcontextprotocol/sdk'
@@ -10656,7 +10656,7 @@ snapshots:
     dependencies:
       '@expo/image-utils': 0.8.7
       expo: 54.0.13(@babel/core@7.28.4)(@expo/metro-runtime@5.0.5(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0)))(expo-router@6.0.13)(graphql@15.8.0)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))(react@19.2.0)
-      expo-constants: 18.0.9(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
+      expo-constants: 18.0.10(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
       react: 19.2.0
       react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0)
     transitivePeerDependencies:
@@ -10668,7 +10668,7 @@ snapshots:
       expo: 54.0.13(@babel/core@7.28.4)(@expo/metro-runtime@5.0.5(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0)))(expo-router@6.0.13)(graphql@15.8.0)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))(react@19.2.0)
       semver: 7.7.2
 
-  expo-constants@18.0.9(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0)):
+  expo-constants@18.0.10(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0)):
     dependencies:
       '@expo/config': 12.0.10
       '@expo/env': 2.0.7
@@ -10700,7 +10700,7 @@ snapshots:
 
   expo-linking@8.0.8(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))(react@19.2.0):
     dependencies:
-      expo-constants: 18.0.9(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
+      expo-constants: 18.0.10(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
       invariant: 2.2.4
       react: 19.2.0
       react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0)
@@ -10774,7 +10774,7 @@ snapshots:
       react: 19.2.0
       react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0)
 
-  expo-router@6.0.13(0c0a75de2c554738fdd3c7d8a2edd5ec):
+  expo-router@6.0.13(fb2827aa100b71a12b93273f9c63ed8a):
     dependencies:
       '@expo/metro-runtime': 5.0.5(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
       '@expo/schema-utils': 0.1.7
@@ -10787,7 +10787,7 @@ snapshots:
       debug: 4.4.3
       escape-string-regexp: 4.0.0
       expo: 54.0.13(@babel/core@7.28.4)(@expo/metro-runtime@5.0.5(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0)))(expo-router@6.0.13)(graphql@15.8.0)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))(react@19.2.0)
-      expo-constants: 18.0.9(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
+      expo-constants: 18.0.10(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
       expo-linking: 8.0.8(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))(react@19.2.0)
       expo-server: 1.0.2
       fast-deep-equal: 3.1.3
@@ -10848,7 +10848,7 @@ snapshots:
       '@ungap/structured-clone': 1.3.0
       babel-preset-expo: 54.0.4(@babel/core@7.28.4)(@babel/runtime@7.28.4)(expo@54.0.13)(react-refresh@0.14.2)
       expo-asset: 12.0.9(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))(react@19.2.0)
-      expo-constants: 18.0.9(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
+      expo-constants: 18.0.10(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
       expo-file-system: 19.0.17(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))
       expo-font: 14.0.9(expo@54.0.13)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.2.2)(react@19.2.0))(react@19.2.0)
       expo-keep-awake: 15.0.7(expo@54.0.13)(react@19.2.0)
