@@ -78,11 +78,23 @@ class ReactNativeMcuManagerModule() : Module() {
         throw ex;
       }
 
-      if (info.bootloader == MCUBOOT) {
-        val mcuMgrResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_MCUBOOT_QUERY_MODE)
+      try {
+        if (info.bootloader == MCUBOOT) {
+          val mcuMgrResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_MCUBOOT_QUERY_MODE)
 
-        info.mode = mcuMgrResult.mode
-        info.noDowngrade = mcuMgrResult.noDowngrade
+          info.mode = mcuMgrResult.mode
+          info.noDowngrade = mcuMgrResult.noDowngrade
+        }
+      } catch (ex: McuMgrErrorException) {
+        transport.release()
+
+        // For consistency with iOS, if the error code is 8 (MGMT_ERR_ENOTSUP), return null
+        if (ex.code == McuMgrErrorCode.NOT_SUPPORTED) {
+          promise.resolve(info)
+          return@AsyncFunction
+        }
+
+        throw ex;
       }
 
       transport.release()
