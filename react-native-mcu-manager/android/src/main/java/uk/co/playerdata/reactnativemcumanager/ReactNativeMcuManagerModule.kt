@@ -1,9 +1,10 @@
 package uk.co.playerdata.reactnativemcumanager
 
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.net.Uri
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.Log
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.CodedException
@@ -60,7 +61,7 @@ class ReactNativeMcuManagerModule() : Module() {
     try {
       block.invoke(transport)
     } finally {
-      transport.release()
+      transport.disconnect().await()
     }
   }
 

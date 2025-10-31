@@ -46,6 +46,10 @@ class DeviceUpgrade(
     private var unsafePromise: Promise? = null
     private var promiseComplete = false
 
+    init {
+        dfuManager.setCallbackOnUiThread(false)
+    }
+
     fun startUpgrade(promise: Promise) {
         unsafePromise = promise
         doUpdate(updateFileUri)
@@ -70,7 +74,7 @@ class DeviceUpgrade(
     }
 
     private fun disconnectDevice() {
-        transport.release()
+        transport.disconnect().await()
     }
 
     private fun uriToByteArray(uri: Uri): ByteArray? {
