@@ -47,6 +47,10 @@ class DeviceUpgrade(
     private var unsafePromise: Promise? = null
     private var promiseComplete = false
 
+    init {
+        dfuManager.setCallbackOnUiThread(false)
+    }
+
     fun startUpgrade(promise: Promise) {
         unsafePromise = promise
         doUpdate(updateFileUri)
