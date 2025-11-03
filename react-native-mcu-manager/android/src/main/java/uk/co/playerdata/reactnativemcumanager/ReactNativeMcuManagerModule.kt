@@ -75,17 +75,7 @@ class ReactNativeMcuManagerModule() : Module() {
         try {
           val nameResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_QUERY_BOOTLOADER)
           info.bootloader = nameResult.bootloader
-        } catch (ex: McuMgrErrorException) {
-          // For consistency with iOS, if the error code is 8 (MGMT_ERR_ENOTSUP), return null
-          if (ex.code == McuMgrErrorCode.NOT_SUPPORTED) {
-            promise.resolve(info)
-            return@withTransport
-          }
 
-          throw ex;
-        }
-
-        try {
           if (info.bootloader == MCUBOOT) {
             val mcuMgrResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_MCUBOOT_QUERY_MODE)
 
