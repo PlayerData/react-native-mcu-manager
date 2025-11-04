@@ -59,7 +59,7 @@ jobs:
           npx expo prebuild --platform android
 
           cd android
-          ./gradlew build
+          ./gradlew app:assembleRelease --no-daemon -Dorg.gradle.logging.level=warn
 
   ios-example:
       name: iOS example app
