@@ -44,82 +44,74 @@ class ReactNativeMcuManagerModule() : Module() {
   private val context
     get() = requireNotNull(appContext.reactContext) { "React Application Context is null" }
 
-  private fun getBluetoothDevice(macAddress: String?): BluetoothDevice {
+  private fun getTransport(macAddress: String): McuMgrBleTransport {
     val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-    val adapter = bluetoothManager?.adapter ?: throw Exception("No bluetooth adapter")
+    val adapter = bluetoothManager.adapter ?: throw Exception("No bluetooth adapter")
+    val device = adapter.getRemoteDevice(macAddress)
 
-    return adapter.getRemoteDevice(macAddress)
+    return McuMgrBleTransport(context, device)
+  }
+
+  private fun withTransport(macAddress: String, block: (transport: McuMgrBleTransport) -> Unit) {
+    val transport = getTransport(macAddress)
+
+    transport.connect(transport.bluetoothDevice).timeout(60000).await()
+
+    try {
+      block.invoke(transport)
+    } finally {
+      transport.release()
+    }
   }
 
   override fun definition() = ModuleDefinition {
     Name(MODULE_NAME)
 
-    AsyncFunction("bootloaderInfo") { macAddress: String?, promise: Promise ->
-      val device: BluetoothDevice = getBluetoothDevice(macAddress)
+    AsyncFunction("bootloaderInfo") { macAddress: String, promise: Promise ->
+      withTransport(macAddress) { transport ->
+        val manager = DefaultManager(transport)
+        val info = BootloaderInfo()
 
-      val transport = McuMgrBleTransport(context, device)
-      transport.connect(device).timeout(60000).await()
+        try {
+          val nameResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_QUERY_BOOTLOADER)
+          info.bootloader = nameResult.bootloader
 
-      val manager = DefaultManager(transport)
-      val info = BootloaderInfo()
+          if (info.bootloader == MCUBOOT) {
+            val mcuMgrResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_MCUBOOT_QUERY_MODE)
 
-      try {
-        val nameResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_QUERY_BOOTLOADER)
-        info.bootloader = nameResult.bootloader
-      } catch(ex: McuMgrErrorException) {
-        transport.release()
+            info.mode = mcuMgrResult.mode
+            info.noDowngrade = mcuMgrResult.noDowngrade
+          }
+        } catch (ex: McuMgrErrorException) {
+          // For consistency with iOS, if the error code is 8 (MGMT_ERR_ENOTSUP), return null
+          if (ex.code == McuMgrErrorCode.NOT_SUPPORTED) {
+            promise.resolve(info)
+            return@withTransport
+          }
 
-        // For consistency with iOS, if the error code is 8 (MGMT_ERR_ENOTSUP), return null
-        if (ex.code == McuMgrErrorCode.NOT_SUPPORTED) {
-          promise.resolve(info)
-          return@AsyncFunction
+          throw ex;
         }
 
-        throw ex;
+        promise.resolve(info)
       }
-
-      try {
-        if (info.bootloader == MCUBOOT) {
-          val mcuMgrResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_MCUBOOT_QUERY_MODE)
-
-          info.mode = mcuMgrResult.mode
-          info.noDowngrade = mcuMgrResult.noDowngrade
-        }
-      } catch (ex: McuMgrErrorException) {
-        transport.release()
-
-        // For consistency with iOS, if the error code is 8 (MGMT_ERR_ENOTSUP), return null
-        if (ex.code == McuMgrErrorCode.NOT_SUPPORTED) {
-          promise.resolve(info)
-          return@AsyncFunction
-        }
-
-        throw ex;
-      }
-
-      transport.release()
-      promise.resolve(info)
     }
 
-    AsyncFunction("eraseImage") { macAddress: String?, promise: Promise ->
-      try {
-        val device: BluetoothDevice = getBluetoothDevice(macAddress)
+    AsyncFunction("eraseImage") { macAddress: String, promise: Promise ->
+      withTransport(macAddress) { transport ->
+        try {
+          val imageManager = ImageManager(transport)
+          imageManager.erase()
 
-        val transport = McuMgrBleTransport(context, device)
-        transport.connect(device).timeout(60000).await()
-
-        val imageManager = ImageManager(transport)
-        imageManager.erase()
-
-        promise.resolve(null)
-      } catch (e: McuMgrException) {
-        promise.reject(ReactNativeMcuMgrException.fromMcuMgrException(e))
+          promise.resolve(null)
+        } catch (e: McuMgrException) {
+          promise.reject(ReactNativeMcuMgrException.fromMcuMgrException(e))
+        }
       }
     }
 
     Function("createUpgrade") {
         id: String,
-        macAddress: String?,
+        macAddress: String,
         updateFileUriString: String?,
         updateOptions: UpdateOptions,
         progressCallback: JavaScriptFunction<Unit>,
@@ -128,24 +120,24 @@ class ReactNativeMcuManagerModule() : Module() {
         throw Exception("Update ID already present")
       }
 
-      val device: BluetoothDevice = getBluetoothDevice(macAddress)
+      val transport = getTransport(macAddress)
       val updateFileUri = Uri.parse(updateFileUriString)
 
       val upgrade = DeviceUpgrade(
-          device,
-          context,
-          updateFileUri,
-          updateOptions,
-          { progress ->
-            appContext.executeOnJavaScriptThread {
-              progressCallback(id, progress)
-            }
-          },
-          { state ->
-            appContext.executeOnJavaScriptThread {
-              stateCallback(id, state)
-            }
+        transport,
+        context,
+        updateFileUri,
+        updateOptions,
+        { progress ->
+          appContext.executeOnJavaScriptThread {
+            progressCallback(id, progress)
           }
+        },
+        { state ->
+          appContext.executeOnJavaScriptThread {
+            stateCallback(id, state)
+          }
+        }
       )
       this@ReactNativeMcuManagerModule.upgrades[id] = upgrade
     }
@@ -185,26 +177,16 @@ class ReactNativeMcuManagerModule() : Module() {
     }
 
     AsyncFunction("resetDevice") { macAddress: String, promise: Promise ->
-      val device: BluetoothDevice = getBluetoothDevice(macAddress)
+      withTransport(macAddress) { transport ->
+        val manager = DefaultManager(transport)
 
-      val transport = McuMgrBleTransport(context, device)
-      transport.connect(device).timeout(60000).await()
-
-      val manager = DefaultManager(transport)
-
-      val callback = object: McuMgrCallback<McuMgrOsResponse> {
-        override fun onResponse(response: McuMgrOsResponse) {
-          transport.release()
+        try {
+          manager.reset()
           promise.resolve()
-        }
-
-        override fun onError(error: McuMgrException) {
-          transport.release()
+        } catch (error: McuMgrException) {
           promise.reject(CodedException("RESET_DEVICE_FAILED", "Failed to reset device", error))
         }
       }
-
-      manager.reset(callback)
     }
   }
 }

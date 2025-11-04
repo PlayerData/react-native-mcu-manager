@@ -1,6 +1,5 @@
 package uk.co.playerdata.reactnativemcumanager
 
-import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -35,7 +34,7 @@ val UpgradeFileTypes = mapOf(
 )
 
 class DeviceUpgrade(
-        device: BluetoothDevice,
+        private val transport: McuMgrBleTransport,
         private val context: Context,
         private val updateFileUri: Uri,
         private val updateOptions: UpdateOptions,
@@ -44,10 +43,13 @@ class DeviceUpgrade(
 ) : FirmwareUpgradeCallback<FirmwareUpgradeManager.State> {
     private val TAG = "DeviceUpdate"
     private var lastNotification = -1
-    private var transport = McuMgrBleTransport(context, device)
     private var dfuManager = FirmwareUpgradeManager(transport, this)
     private var unsafePromise: Promise? = null
     private var promiseComplete = false
+
+    init {
+        dfuManager.setCallbackOnUiThread(false)
+    }
 
     fun startUpgrade(promise: Promise) {
         unsafePromise = promise
