@@ -114,8 +114,8 @@ class ReactNativeMcuManagerModule() : Module() {
         macAddress: String,
         updateFileUriString: String?,
         updateOptions: UpdateOptions,
-        progressCallback: JavaScriptFunction<Unit>,
-        stateCallback: JavaScriptFunction<Unit> ->
+        progressCallback: JavaScriptFunction<Any?>,
+        stateCallback: JavaScriptFunction<Any?> ->
       if (upgrades.contains(id)) {
         throw Exception("Update ID already present")
       }
