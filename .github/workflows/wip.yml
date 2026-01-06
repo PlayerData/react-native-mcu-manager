@@ -1,0 +1,16 @@
+name: "WIP"
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  pull-requests: "read"
+  statuses: "write"
+
+jobs:
+  wip:
+    runs-on: "pd-runner-small"
+    steps:
+      - uses: "wip/action@b52086c74a72e1f699dc34e55cb7e4f84fea2a2c"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
