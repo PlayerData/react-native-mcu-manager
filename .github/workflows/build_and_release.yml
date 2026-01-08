@@ -95,8 +95,9 @@ jobs:
 
     permissions:
       contents: write
-      pull-requests: write
+      id-token: write
       issues: write
+      pull-requests: write
 
     steps:
     - name: Checkout
@@ -116,6 +117,5 @@ jobs:
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       working-directory: react-native-mcu-manager
       run: npx semantic-release
