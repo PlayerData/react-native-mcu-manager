@@ -31,7 +31,7 @@
     "semantic-release": "25.0.2"
   },
   "resolutions": {
-    "expo": ">= 54.0.0",
+    "expo": ">= 54.0.31",
     "eslint-plugin-react": ">=7.37.5"
   }
 }
