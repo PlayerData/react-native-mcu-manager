@@ -42,7 +42,7 @@ class DeviceUpgrade {
     self.stateHandler = stateHandler
 
     self.lastProgress = -1
-    self.logDelegate = UpdateLogDelegate()
+    self.logDelegate = RNMcuMgrLogDelegate()
   }
 
   func extractImageFrom(from url: URL, upgradeFileType: UpgradeFileType) throws -> [ImageManager.Image] {
@@ -163,16 +163,6 @@ class DeviceUpgrade {
     case .UPLOAD_ONLY:
       return FirmwareUpgradeMode.uploadOnly
     }
-  }
-}
-
-class UpdateLogDelegate: McuMgrLogDelegate {
-  func log(_ msg: String, ofCategory category: McuMgrLogCategory, atLevel level: McuMgrLogLevel) {
-    if level.rawValue < McuMgrLogLevel.info.rawValue {
-      return
-    }
-
-    print(msg)
   }
 }
 
