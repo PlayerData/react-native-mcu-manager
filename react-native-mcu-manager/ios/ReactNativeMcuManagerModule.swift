@@ -1,3 +1,4 @@
+import Combine
 import CoreBluetooth
 import ExpoModulesCore
 import iOSMcuManagerLibrary
@@ -6,86 +7,133 @@ import os
 private let MODULE_NAME = "ReactNativeMcuManager"
 private let TAG = "McuManagerModule"
 
+class DisconnectionObserver: ConnectionObserver {
+  private let connectionState = CurrentValueSubject<iOSMcuManagerLibrary.McuMgrTransportState, Never>(iOSMcuManagerLibrary.McuMgrTransportState.disconnected)
+
+  func transport(_ transport: any iOSMcuManagerLibrary.McuMgrTransport, didChangeStateTo state: iOSMcuManagerLibrary.McuMgrTransportState) {
+    connectionState.send(state)
+  }
+
+  func awaitDisconnect() async throws {
+    var stateSink: AnyCancellable?
+
+    defer {
+      stateSink?.cancel()
+    }
+
+    try await withCheckedThrowingContinuation { continuation in
+      stateSink = connectionState.sink { state in
+        if state == .disconnected {
+          continuation.resume()
+        }
+      }
+    }
+  }
+}
+
 public class ReactNativeMcuManagerModule: Module {
   private var upgrades: [String: DeviceUpgrade] = [:]
+
+  private func getTransport(bleId: String) throws -> McuMgrBleTransport {
+    guard let bleUuid = UUID(uuidString: bleId) else {
+      throw Exception(name: "UUIDParseError", description: "Failed to parse UUID")
+    }
+
+    return McuMgrBleTransport(bleUuid)
+  }
+
+  private func withTransport<T>(bleId: String, _ block: (McuMgrBleTransport) async throws -> T) async throws -> T {
+    let transport = try getTransport(bleId: bleId)
+
+    let disconnectObserver = DisconnectionObserver()
+    transport.addObserver(disconnectObserver)
+
+    do {
+      let result = try await block(transport)
+
+      transport.close()
+      try await disconnectObserver.awaitDisconnect()
+
+      return result
+    } catch let error {
+      transport.close()
+      try await disconnectObserver.awaitDisconnect()
+
+      throw error
+    }
+  }
 
   public func definition() -> ModuleDefinition {
     Name(MODULE_NAME)
 
-    AsyncFunction("bootloaderInfo") { (bleId: String, promise: Promise) in
-      guard let bleUuid = UUID(uuidString: bleId) else {
-        promise.reject(Exception(name: "UUIDParseError", description: "Failed to parse UUID"))
-        return
-      }
-
-      let bleTransport = McuMgrBleTransport(bleUuid)
-      let manager = DefaultManager(transport: bleTransport)
-
-      manager.bootloaderInfo(query: DefaultManager.BootloaderInfoQuery.name) { (nameResponse: BootloaderInfoResponse?, err: Error?) in
-        if err != nil {
-          bleTransport.close()
-          promise.reject(Exception(name: "BootloaderInfoError", description: err!.localizedDescription))
-          return
-        }
-
-        guard let nameResponse = nameResponse else {
-          bleTransport.close()
-          promise.reject(Exception(name: "BootloaderInfoError", description: "Bootloader name response null, but no error occurred?"))
-          return
-        }
+    AsyncFunction("bootloaderInfo") { (bleId: String) in
+      try await withTransport(bleId: bleId) { (transport: McuMgrBleTransport) in
+        let manager = DefaultManager(transport: transport)
 
         let info = BootloaderInfo()
+
+        let nameResponse: BootloaderInfoResponse = try await withCheckedThrowingContinuation { continuation in
+          manager.bootloaderInfo(query: DefaultManager.BootloaderInfoQuery.name) { (nameResponse: BootloaderInfoResponse?, err: Error?) in
+            if err != nil {
+              continuation.resume(throwing: Exception(name: "BootloaderInfoError", description: err!.localizedDescription))
+              return
+            }
+
+            guard let nameResponse = nameResponse else {
+              continuation.resume(throwing: Exception(name: "BootloaderInfoError", description: "Bootloader name response null, but no error occurred?"))
+              return
+            }
+
+            continuation.resume(returning: nameResponse)
+          }
+        }
+
         info.bootloader = nameResponse.bootloader?.description
 
         if nameResponse.bootloader != BootloaderInfoResponse.Bootloader.mcuboot {
           info.mode = nameResponse.mode?.rawValue
           info.noDowngrade = nameResponse.noDowngrade
 
-          bleTransport.close()
-          promise.resolve(info)
-          return
+          return info
         }
 
-        manager.bootloaderInfo(query: DefaultManager.BootloaderInfoQuery.mode) { (mcubootResponse: BootloaderInfoResponse?, err: Error?) in
-          bleTransport.close()
-
-          if err != nil {
-              promise.reject(Exception(name: "BootloaderInfoError", description: err!.localizedDescription))
+        let mcubootResponse: BootloaderInfoResponse = try await withCheckedThrowingContinuation { continuation in
+          manager.bootloaderInfo(query: DefaultManager.BootloaderInfoQuery.mode) { (mcubootResponse: BootloaderInfoResponse?, err: Error?) in
+            if err != nil {
+              continuation.resume(throwing: Exception(name: "BootloaderInfoError", description: err!.localizedDescription))
               return
-          }
+            }
 
-          guard let mcubootResponse = mcubootResponse else {
-              promise.reject(Exception(name: "BootloaderInfoError", description: "MCUboot response null, but no error occurred?"))
+            guard let mcubootResponse = mcubootResponse else {
+              continuation.resume(throwing: Exception(name: "BootloaderInfoError", description: "MCUboot response null, but no error occurred?"))
               return
+            }
+
+            continuation.resume(returning: mcubootResponse)
           }
-
-          info.mode = mcubootResponse.mode?.rawValue
-          info.noDowngrade = mcubootResponse.noDowngrade
-
-          promise.resolve(info)
         }
+
+        info.mode = mcubootResponse.mode?.rawValue
+        info.noDowngrade = mcubootResponse.noDowngrade
+
+        return info
       }
     }
 
-    AsyncFunction("eraseImage") { (bleId: String, promise: Promise) in
-      guard let bleUuid = UUID(uuidString: bleId) else {
-        promise.reject(Exception(name: "UUIDParseError", description: "Failed to parse UUID"))
-        return
-      }
+    AsyncFunction("eraseImage") { (bleId: String) in
+      try await withTransport(bleId: bleId) { (transport: McuMgrBleTransport) in
+        let imageManager = ImageManager(transport: transport)
 
-      let bleTransport = McuMgrBleTransport(bleUuid)
-      let imageManager = ImageManager(transport: bleTransport)
+        let _: Void = try await withCheckedThrowingContinuation { continuation in
+          imageManager.erase { (response: McuMgrResponse?, err: Error?) in
+            if err != nil {
+              continuation.resume(throwing: Exception(name: "EraseError", description: err!.localizedDescription))
+              return
+            }
 
-      imageManager.erase { (response: McuMgrResponse?, err: Error?) in
-        bleTransport.close()
-
-        if err != nil {
-          promise.reject(Exception(name: "EraseError", description: err!.localizedDescription))
-          return
+            continuation.resume()
+          }
         }
-
-        promise.resolve(nil)
-        return
       }
     }
 
@@ -150,30 +198,26 @@ public class ReactNativeMcuManagerModule: Module {
       self.upgrades[id] = nil
     }
 
-    AsyncFunction("resetDevice") { (bleId: String, promise: Promise) in
-      guard let bleUuid = UUID(uuidString: bleId) else {
-        promise.reject(Exception(name: "UUIDParseError", description: "Failed to parse UUID"))
-        return
-      }
+    AsyncFunction("resetDevice") { (bleId: String) in
+      try await withTransport(bleId: bleId) { (transport: McuMgrBleTransport) in
+        let manager = DefaultManager(transport: transport)
 
-      let bleTransport = McuMgrBleTransport(bleUuid)
-      let manager = DefaultManager(transport: bleTransport)
+        let _: Void = try await withCheckedThrowingContinuation { continuation in
+          manager.reset { (response: McuMgrResponse?, err: Error?) in
+            if err != nil {
+              continuation.resume(throwing: Exception(name: "ResetError", description: err!.localizedDescription))
+              return
+            }
 
-      manager.reset { (response: McuMgrResponse?, err: Error?) in
-        bleTransport.close()
+            let smpErr = response?.getError()
+            if (smpErr != nil) {
+              continuation.resume(throwing: Exception(name: "ResetError", description: smpErr!.localizedDescription))
+              return
+            }
 
-        if err != nil {
-          promise.reject(Exception(name: "ResetError", description: err!.localizedDescription))
-          return
+            continuation.resume()
+          }
         }
-
-        let smpErr = response?.getError()
-        if (smpErr != nil) {
-          promise.reject(Exception(name: "ResetError", description: smpErr!.localizedDescription))
-          return
-        }
-
-        promise.resolve()
       }
     }
   }

@@ -4,12 +4,15 @@
   "reviewers": ["team:device-engineering"],
   "packageRules": [
     {
+      "matchSourceUrls": ["https://github.com/expo/expo"],
+      "enabled": false
+    },
+    {
       "matchPackageNames": ["react-native"],
       "enabled": false
     },
     {
       "matchPackageNames": ["react"],
-      "matchUpdateTypes": ["major"],
       "enabled": false
     }
   ]
