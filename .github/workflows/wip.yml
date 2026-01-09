@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   wip:
-    runs-on: "pd-runner-small"
+    runs-on: "ubuntu-latest"
     steps:
       - uses: "wip/action@b52086c74a72e1f699dc34e55cb7e4f84fea2a2c"
         env:
