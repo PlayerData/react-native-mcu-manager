@@ -39,7 +39,12 @@ public class ReactNativeMcuManagerModule: Module {
       throw Exception(name: "UUIDParseError", description: "Failed to parse UUID")
     }
 
-    return McuMgrBleTransport(bleUuid)
+    let transport = McuMgrBleTransport(bleUuid)
+
+    let logDelegate = RNMcuMgrLogDelegate()
+    transport.logDelegate = logDelegate
+
+    return transport
   }
 
   private func withTransport<T>(bleId: String, _ block: (McuMgrBleTransport) async throws -> T) async throws -> T {
