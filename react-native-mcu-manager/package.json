@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/PlayerData/react-native-mcu-manager#readme",
   "devDependencies": {
-    "@types/react": "19.2.9",
+    "@types/react": "19.2.10",
     "expo-module-scripts": "5.0.8"
   },
   "peerDependencies": {
