@@ -28,6 +28,8 @@ Run `npx pod-install` after installing the pnpm package.
 
 ### Configure for Android
 
+For Android API 30+ location permission configuration, see the [package README](./react-native-mcu-manager/README.md#fixing-location-permission-issues-api-30) for detailed instructions.
+
 ## Usage
 
 ```ts
