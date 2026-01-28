@@ -5,5 +5,9 @@
   },
   "android": {
     "modules": ["uk.co.playerdata.reactnativemcumanager.ReactNativeMcuManagerModule"]
+  },
+  "plugin": {
+    "name": "@playerdata/react-native-mcu-manager",
+    "pluginFile": "app.plugin.js"
   }
 }
