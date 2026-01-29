@@ -28,6 +28,13 @@ Run `npx pod-install` after installing the pnpm package.
 
 ### Configure for Android
 
+## Android permissions
+
+This library does **not** declare any permissions in its Android manifest. Your app must declare and handle all permissions itself.
+
+For the **full list of required permissions**, runtime handling notes, and **Expo config (`app.json` / `app.config.*`) examples**, see the **Android permissions** section in the package README:  
+[`react-native-mcu-manager/README.md`](react-native-mcu-manager/README.md#android-permissions)
+
 ## Usage
 
 ```ts
