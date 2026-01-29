@@ -1,25 +1,23 @@
 package uk.co.playerdata.reactnativemcumanager
 
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.CodedException
+import expo.modules.kotlin.functions.Coroutine
 import expo.modules.kotlin.jni.JavaScriptFunction
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
-import io.runtime.mcumgr.McuMgrCallback
 import io.runtime.mcumgr.McuMgrErrorCode
 import io.runtime.mcumgr.ble.McuMgrBleTransport
 import io.runtime.mcumgr.exception.McuMgrErrorException
 import io.runtime.mcumgr.exception.McuMgrException
 import io.runtime.mcumgr.managers.DefaultManager
 import io.runtime.mcumgr.managers.ImageManager
-import io.runtime.mcumgr.response.dflt.McuMgrOsResponse
 
 private const val MODULE_NAME = "ReactNativeMcuManager"
 private val TAG = "McuManagerModule"
@@ -52,22 +50,22 @@ class ReactNativeMcuManagerModule() : Module() {
     return McuMgrBleTransport(context, device)
   }
 
-  private fun withTransport(macAddress: String, block: (transport: McuMgrBleTransport) -> Unit) {
+  private fun <R>withTransport(macAddress: String, block: (transport: McuMgrBleTransport) -> R): R {
     val transport = getTransport(macAddress)
 
     transport.connect(transport.bluetoothDevice).timeout(60000).await()
 
     try {
-      block.invoke(transport)
+      return block.invoke(transport)
     } finally {
-      transport.release()
+      transport.disconnect().await()
     }
   }
 
   override fun definition() = ModuleDefinition {
     Name(MODULE_NAME)
 
-    AsyncFunction("bootloaderInfo") { macAddress: String, promise: Promise ->
+    AsyncFunction("bootloaderInfo") Coroutine { macAddress: String ->
       withTransport(macAddress) { transport ->
         val manager = DefaultManager(transport)
         val info = BootloaderInfo()
@@ -85,26 +83,24 @@ class ReactNativeMcuManagerModule() : Module() {
         } catch (ex: McuMgrErrorException) {
           // For consistency with iOS, if the error code is 8 (MGMT_ERR_ENOTSUP), return null
           if (ex.code == McuMgrErrorCode.NOT_SUPPORTED) {
-            promise.resolve(info)
-            return@withTransport
+            return@withTransport info
           }
 
           throw ex;
         }
 
-        promise.resolve(info)
+        return@withTransport info
       }
     }
 
-    AsyncFunction("eraseImage") { macAddress: String, promise: Promise ->
+    AsyncFunction("eraseImage") Coroutine { macAddress: String ->
       withTransport(macAddress) { transport ->
         try {
           val imageManager = ImageManager(transport)
           imageManager.erase()
-
-          promise.resolve(null)
+          return@withTransport null
         } catch (e: McuMgrException) {
-          promise.reject(ReactNativeMcuMgrException.fromMcuMgrException(e))
+          throw ReactNativeMcuMgrException.fromMcuMgrException(e)
         }
       }
     }
@@ -146,8 +142,7 @@ class ReactNativeMcuManagerModule() : Module() {
       val upgrade = upgrades[id]
 
       if (upgrade == null) {
-        promise.reject(CodedException("UPGRADE_ID_MISSING", "Upgrade ID $id not present", null))
-        return@AsyncFunction
+        throw CodedException("UPGRADE_ID_MISSING", "Upgrade ID $id not present", null)
       }
 
       upgrade.startUpgrade(promise)
@@ -176,15 +171,15 @@ class ReactNativeMcuManagerModule() : Module() {
       upgrades.remove(id)
     }
 
-    AsyncFunction("resetDevice") { macAddress: String, promise: Promise ->
+    AsyncFunction("resetDevice") Coroutine { macAddress: String ->
       withTransport(macAddress) { transport ->
         val manager = DefaultManager(transport)
 
         try {
           manager.reset()
-          promise.resolve()
+          return@withTransport null
         } catch (error: McuMgrException) {
-          promise.reject(CodedException("RESET_DEVICE_FAILED", "Failed to reset device", error))
+          throw CodedException("RESET_DEVICE_FAILED", "Failed to reset device", error)
         }
       }
     }
