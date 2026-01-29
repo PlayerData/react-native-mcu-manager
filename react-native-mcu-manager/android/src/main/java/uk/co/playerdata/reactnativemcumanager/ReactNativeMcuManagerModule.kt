@@ -1,9 +1,11 @@
 package uk.co.playerdata.reactnativemcumanager
 
+import android.Manifest
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.CodedException
 import expo.modules.kotlin.functions.Coroutine
@@ -42,6 +44,13 @@ class ReactNativeMcuManagerModule() : Module() {
   private val context
     get() = requireNotNull(appContext.reactContext) { "React Application Context is null" }
 
+  /**
+   * Requires BLE-related permissions. API 31+: [Manifest.permission.BLUETOOTH_CONNECT].
+   * Below API 31: [Manifest.permission.ACCESS_FINE_LOCATION] and legacy Bluetooth
+   * (BLUETOOTH, BLUETOOTH_ADMIN). API 23 and below: also
+   * [Manifest.permission.ACCESS_COARSE_LOCATION]. Ensure your app declares and requests these as appropriate.
+   */
+  @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
   private fun getTransport(macAddress: String): McuMgrBleTransport {
     val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     val adapter = bluetoothManager.adapter ?: throw Exception("No bluetooth adapter")
@@ -50,6 +59,13 @@ class ReactNativeMcuManagerModule() : Module() {
     return McuMgrBleTransport(context, device)
   }
 
+  /**
+   * Requires BLE-related permissions. API 31+: [Manifest.permission.BLUETOOTH_CONNECT].
+   * Below API 31: [Manifest.permission.ACCESS_FINE_LOCATION] and legacy Bluetooth
+   * (BLUETOOTH, BLUETOOTH_ADMIN). API 23 and below: also
+   * [Manifest.permission.ACCESS_COARSE_LOCATION]. Ensure your app declares and requests these as appropriate.
+   */
+  @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
   private fun <R>withTransport(macAddress: String, block: (transport: McuMgrBleTransport) -> R): R {
     val transport = getTransport(macAddress)
 
@@ -152,7 +168,7 @@ class ReactNativeMcuManagerModule() : Module() {
       val upgrade = upgrades[id]
 
       if (upgrade == null) {
-        Log.w(TAG, "Can't cancel update ID ($id} not present")
+        Log.w(TAG, "Can't cancel update ID ($id) not present")
         return@Function
       }
 
@@ -163,7 +179,7 @@ class ReactNativeMcuManagerModule() : Module() {
       val upgrade = upgrades[id]
 
       if (upgrade == null) {
-        Log.w(TAG, "Can't destroy update ID ($id} not present")
+        Log.w(TAG, "Can't destroy update ID ($id) not present")
         return@Function
       }
 
