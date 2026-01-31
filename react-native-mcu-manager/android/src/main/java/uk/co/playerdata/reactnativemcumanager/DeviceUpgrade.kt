@@ -107,12 +107,18 @@ class DeviceUpgrade(
     }
 
     private fun doUpdate(updateBundleUri: Uri) {
+        val eraseAppSettings = updateOptions.eraseAppSettings
         val estimatedSwapTime = updateOptions.estimatedSwapTime * 1000
         val modeInt = updateOptions.upgradeMode ?: 1
+        val mcubootBufferCount = updateOptions.mcubootBufferCount
         val upgradeFileType = UpgradeFileTypes[updateOptions.upgradeFileType] ?: UpgradeFileType.BIN
         val upgradeMode = UpgradeModes[modeInt] ?: FirmwareUpgradeManager.Mode.TEST_AND_CONFIRM
 
-        val settings = Settings.Builder().setEstimatedSwapTime(estimatedSwapTime).build()
+        val settings = Settings.Builder()
+            .setEstimatedSwapTime(estimatedSwapTime)
+            .setEraseAppSettings(eraseAppSettings)
+            .setWindowCapacity(mcubootBufferCount)
+            .build()
 
         try {
             val images = extractImagesFrom(updateBundleUri, upgradeFileType)

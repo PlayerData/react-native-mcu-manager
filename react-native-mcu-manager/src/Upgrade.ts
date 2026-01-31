@@ -41,9 +41,25 @@ export enum UpgradeMode {
 
 export interface UpgradeOptions {
   /**
+   * If true, erase application settings during upgrade (if supported by firmware). Defaults to false.
+   */
+  eraseAppSettings?: boolean;
+
+  /**
    * The estimated time, in seconds, that it takes for the target device to swap to the updated image.
    */
   estimatedSwapTime: number;
+
+  /**
+   * This corresponds to the "pipelineDepth" in iOS and "windowCapacity" in Android parameters in
+   * the native libraries.
+   *
+   * It allows to send multiple packets concurrently, without the need to wait for a notification,
+   * which should speed up the upgrade process.
+   *
+   * We think this corresponds to CONFIG_MCUMGR_TRANSPORT_NETBUF_COUNT, but documentation is unclear.
+   */
+  mcubootBufferCount?: number;
 
   /**
    * The type of firmware update file.
@@ -57,11 +73,6 @@ export interface UpgradeOptions {
    * @see UpgradeMode
    */
   upgradeMode?: UpgradeMode;
-
-  /**
-   * If true, erase application settings during upgrade (if supported by firmware). Defaults to false.
-   */
-  eraseAppSettings?: boolean;
 }
 
 export type FirmwareUpgradeState =

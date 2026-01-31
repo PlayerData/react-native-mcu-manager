@@ -121,6 +121,25 @@ public class ReactNativeMcuManagerModule: Module {
         info.mode = mcubootResponse.mode?.rawValue
         info.noDowngrade = mcubootResponse.noDowngrade
 
+        let mcubootParams: McuMgrParametersResponse = try await withCheckedThrowingContinuation { continuation in
+          manager.params { (mcubootParams: McuMgrParametersResponse?, err: Error?) in
+            if err != nil {
+              continuation.resume(throwing: Exception(name: "BootloaderInfoError", description: err!.localizedDescription))
+              return
+            }
+
+            guard let mcubootParams = mcubootParams else {
+              continuation.resume(throwing: Exception(name: "BootloaderInfoError", description: "MCUboot params null, but no error occurred?"))
+              return
+            }
+
+            continuation.resume(returning: mcubootParams)
+          }
+        }
+
+        info.bufferCount = mcubootParams.bufferCount
+        info.bufferSize = mcubootParams.bufferSize
+
         return info
       }
     }
