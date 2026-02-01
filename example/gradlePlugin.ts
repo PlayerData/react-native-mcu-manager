@@ -1,13 +1,12 @@
-import {
-  withGradleProperties,
-  ConfigPlugin,
-} from '@expo/config-plugins';
+import ConfigPlugins from '@expo/config-plugins';
 import { ExpoConfig } from '@expo/config-types';
+
+const { withGradleProperties } = ConfigPlugin;
 
 /**
  * A Config Plugin to modify android/gradle.properties.
  */
-const withCustomGradleProps: ConfigPlugin<ExpoConfig> = (config) => {
+const withCustomGradleProps: ConfigPlugins.ConfigPlugin<ExpoConfig> = (config) => {
   return withGradleProperties(config, (config) => {
     const gradleProperties = config.modResults;
 
