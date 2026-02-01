@@ -1,7 +1,7 @@
 import ConfigPlugins from '@expo/config-plugins';
 import { ExpoConfig } from '@expo/config-types';
 
-const { withGradleProperties } = ConfigPlugin;
+const { withGradleProperties } = ConfigPlugins;
 
 /**
  * A Config Plugin to modify android/gradle.properties.
