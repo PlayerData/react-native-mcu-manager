@@ -6,9 +6,7 @@ const { withGradleProperties } = ConfigPlugins;
 /**
  * A Config Plugin to modify android/gradle.properties.
  */
-const withCustomGradleProps: ConfigPlugins.ConfigPlugin<ExpoConfig> = (
-  config
-) => {
+const withCustomGradleProps: ConfigPlugins.ConfigPlugin<ExpoConfig> = (config) => {
   return withGradleProperties(config, (config) => {
     const gradleProperties = config.modResults;
 
