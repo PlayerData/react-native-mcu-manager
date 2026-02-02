@@ -1,7 +1,9 @@
 name: "WIP"
 on:
-  pull_request_target:
+  pull_request: &pull_request
     types: [opened, synchronize, reopened, edited]
+  pull_request_target:
+    <<: *pull_request
 
 permissions:
   pull-requests: "read"
