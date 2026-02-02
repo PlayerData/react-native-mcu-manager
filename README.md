@@ -1,5 +1,7 @@
 # @playerdata/react-native-mcu-manager
 
+Adding some stuff, don't merge.
+
 React Native Wrappers for MCUMgr's Android / iOS client libraries
 
 # Getting started
