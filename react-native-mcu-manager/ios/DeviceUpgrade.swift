@@ -115,7 +115,8 @@ class DeviceUpgrade {
       let config = FirmwareUpgradeConfiguration(
         estimatedSwapTime: self.options.estimatedSwapTime,
         eraseAppSettings: self.options.eraseAppSettings,
-        upgradeMode: self.getMode()
+        pipelineDepth: self.options.mcubootBufferCount,
+        upgradeMode: self.getMode(),
       )
 
       self.dfuManager!.logDelegate = self.logDelegate

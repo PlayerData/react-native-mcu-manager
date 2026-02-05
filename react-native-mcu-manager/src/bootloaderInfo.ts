@@ -13,6 +13,8 @@ export enum MCUBootMode {
 
 export interface BootloaderInfo {
   bootloader: string | null;
+  bufferCount: number | null;
+  bufferSize: number | null;
   mode: MCUBootMode | null;
   noDowngrade: boolean;
 }
