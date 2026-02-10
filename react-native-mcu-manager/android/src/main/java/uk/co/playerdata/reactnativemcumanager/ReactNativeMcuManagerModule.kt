@@ -25,14 +25,17 @@ private const val MODULE_NAME = "ReactNativeMcuManager"
 private val TAG = "McuManagerModule"
 
 class UpdateOptions : Record {
+  @Field val eraseAppSettings: Boolean = false
   @Field val estimatedSwapTime: Int = 0
+  @Field val mcubootBufferCount: Int = 1
   @Field val upgradeFileType: Int = 0
   @Field val upgradeMode: Int? = null
-  @Field val eraseAppSettings: Boolean? = false
 }
 
 class BootloaderInfo : Record {
   @Field var bootloader: String? = null
+  @Field var bufferCount: Int? = null
+  @Field var bufferSize: Int? = null
   @Field var mode: Int? = null
   @Field var noDowngrade: Boolean = false
 }
@@ -92,7 +95,10 @@ class ReactNativeMcuManagerModule() : Module() {
 
           if (info.bootloader == MCUBOOT) {
             val mcuMgrResult = manager.bootloaderInfo(DefaultManager.BOOTLOADER_INFO_MCUBOOT_QUERY_MODE)
+            val mcuMgrParams = manager.params()
 
+            info.bufferCount = mcuMgrParams.bufCount
+            info.bufferSize = mcuMgrParams.bufSize
             info.mode = mcuMgrResult.mode
             info.noDowngrade = mcuMgrResult.noDowngrade
           }
