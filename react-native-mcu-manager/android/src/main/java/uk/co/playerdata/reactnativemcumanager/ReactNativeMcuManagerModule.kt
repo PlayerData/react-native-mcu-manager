@@ -117,7 +117,7 @@ class ReactNativeMcuManagerModule() : Module() {
 
     val transport = getTransport(macAddress)
 
-    transport.connect(transport.bluetoothDevice).timeout(60000).await()
+    transport.connect(transport.bluetoothDevice).retry(3, 300).timeout(60000).await()
 
     try {
       return block.invoke(transport)
