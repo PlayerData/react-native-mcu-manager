@@ -23,6 +23,8 @@ const useBluetoothDevices = () => {
 
           if (!scannedDevice) return;
 
+          if (scannedDevice.isConnectable === false) return;
+
           if (deviceIdRef.current.includes(scannedDevice.id)) return;
           deviceIdRef.current.push(scannedDevice.id);
 

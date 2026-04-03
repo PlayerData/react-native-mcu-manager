@@ -1,8 +1,12 @@
 package uk.co.playerdata.reactnativemcumanager
 
 import android.Manifest
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.RequiresPermission
@@ -20,6 +24,10 @@ import io.runtime.mcumgr.exception.McuMgrErrorException
 import io.runtime.mcumgr.exception.McuMgrException
 import io.runtime.mcumgr.managers.DefaultManager
 import io.runtime.mcumgr.managers.ImageManager
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeout
 
 private const val MODULE_NAME = "ReactNativeMcuManager"
 private val TAG = "McuManagerModule"
@@ -62,6 +70,41 @@ class ReactNativeMcuManagerModule() : Module() {
     return McuMgrBleTransport(context, device)
   }
 
+  private fun getAdapter(): BluetoothAdapter {
+    val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+    return bluetoothManager.adapter ?: throw Exception("No bluetooth adapter")
+  }
+
+  private fun adapterStateChanges() = callbackFlow {
+    val receiver = object : BroadcastReceiver() {
+      override fun onReceive(ctx: Context, intent: Intent) {
+        val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)
+        trySend(state)
+      }
+    }
+
+    context.registerReceiver(receiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+    awaitClose { context.unregisterReceiver(receiver) }
+  }
+
+  private suspend fun waitForAdapterReady(adapter: BluetoothAdapter) {
+    if (adapter.isEnabled) return
+
+    if (adapter.state != BluetoothAdapter.STATE_TURNING_ON) {
+      throw Exception("Bluetooth is disabled")
+    }
+
+    withTimeout(10_000L) {
+      adapterStateChanges().first { state ->
+        if (state == BluetoothAdapter.STATE_OFF || state == BluetoothAdapter.STATE_TURNING_OFF) {
+          throw Exception("Bluetooth was turned off")
+        }
+
+        state == BluetoothAdapter.STATE_ON
+      }
+    }
+  }
+
   /**
    * Requires BLE-related permissions. API 31+: [Manifest.permission.BLUETOOTH_CONNECT].
    * Below API 31: [Manifest.permission.ACCESS_FINE_LOCATION] and legacy Bluetooth
@@ -69,10 +112,12 @@ class ReactNativeMcuManagerModule() : Module() {
    * [Manifest.permission.ACCESS_COARSE_LOCATION]. Ensure your app declares and requests these as appropriate.
    */
   @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-  private fun <R>withTransport(macAddress: String, block: (transport: McuMgrBleTransport) -> R): R {
+  private suspend fun <R>withTransport(macAddress: String, block: (transport: McuMgrBleTransport) -> R): R {
+    waitForAdapterReady(getAdapter())
+
     val transport = getTransport(macAddress)
 
-    transport.connect(transport.bluetoothDevice).timeout(60000).await()
+    transport.connect(transport.bluetoothDevice).retry(3, 300).timeout(60000).await()
 
     try {
       return block.invoke(transport)
