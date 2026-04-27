@@ -38,6 +38,6 @@
     "metro-react-native-babel-preset": "0.77.0",
     "ts-node": "^10.9.2",
     "typescript": "6.0.2",
-    "webpack": "5.104.1"
+    "webpack": "5.106.1"
   }
 }
