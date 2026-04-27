@@ -8,7 +8,7 @@ private let MODULE_NAME = "ReactNativeMcuManager"
 private let TAG = "McuManagerModule"
 
 class DisconnectionObserver: ConnectionObserver {
-  private let connectionState = CurrentValueSubject<iOSMcuManagerLibrary.McuMgrTransportState, Never>(iOSMcuManagerLibrary.McuMgrTransportState.disconnected)
+  private let connectionState = PassthroughSubject<iOSMcuManagerLibrary.McuMgrTransportState, Never>()
 
   func transport(_ transport: any iOSMcuManagerLibrary.McuMgrTransport, didChangeStateTo state: iOSMcuManagerLibrary.McuMgrTransportState) {
     connectionState.send(state)
@@ -21,17 +21,19 @@ class DisconnectionObserver: ConnectionObserver {
       stateSink?.cancel()
     }
 
-    try await withCheckedThrowingContinuation { continuation in
+    try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+      var resumed = false
       stateSink = connectionState.sink { state in
-        if state == .disconnected {
-          continuation.resume()
-        }
+        guard !resumed, state == .disconnected else { return }
+        resumed = true
+        continuation.resume()
       }
     }
   }
 }
 
 public class ReactNativeMcuManagerModule: Module {
+  private static let logger = Logger(subsystem: MODULE_NAME, category: TAG)
   private var upgrades: [String: DeviceUpgrade] = [:]
 
   private func getTransport(bleId: String) throws -> McuMgrBleTransport {
@@ -155,6 +157,12 @@ public class ReactNativeMcuManagerModule: Module {
               return
             }
 
+            let smpErr = response?.getError()
+            if smpErr != nil {
+              continuation.resume(throwing: Exception(name: "EraseError", description: smpErr!.localizedDescription))
+              return
+            }
+
             continuation.resume()
           }
         }
@@ -180,7 +188,7 @@ public class ReactNativeMcuManagerModule: Module {
             do {
               let _ = try progressCallback.call(id, progress)
             } catch let err {
-              print("Failed to call progress callback: \(err.localizedDescription)")
+              Self.logger.error("Failed to call progress callback: \(err.localizedDescription, privacy: .public)")
             }
           }
         },
@@ -189,7 +197,7 @@ public class ReactNativeMcuManagerModule: Module {
             do {
               let _ = try stateCallback.call(id, state)
             } catch let err {
-              print("Failed to call state callback: \(err.localizedDescription)")
+              Self.logger.error("Failed to call state callback: \(err.localizedDescription, privacy: .public)")
             }
           }
         }

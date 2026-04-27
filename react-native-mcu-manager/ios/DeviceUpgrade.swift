@@ -1,5 +1,7 @@
 import ExpoModulesCore
+import Foundation
 import iOSMcuManagerLibrary
+import os
 
 enum JSUpgradeMode: Int {
   case TEST_AND_CONFIRM = 1
@@ -86,10 +88,6 @@ class DeviceUpgrade {
       return ImageManager.Image(manifestFile, hash: imageHash, data: imageData)
     }
 
-    try unzippedURLs.forEach { url in
-      try fileManager.removeItem(at: url)
-    }
-
     return images
   }
 
@@ -100,48 +98,60 @@ class DeviceUpgrade {
       return promise.reject(Exception(name: "UUIDParseError", description: "Failed to parse UUID"))
     }
 
-    guard let fileUrl = URL(string: self.fileURI) else {
+    let fileUrl: URL
+    if let parsed = URL(string: self.fileURI), parsed.scheme != nil {
+      fileUrl = parsed
+    } else {
+      fileUrl = URL(fileURLWithPath: self.fileURI)
+    }
+
+    guard let fileType = UpgradeFileType(rawValue: self.options.upgradeFileType) else {
       return promise.reject(
-        Exception(name: "URIParseError", description: "Failed to parse file URI"))
+        Exception(
+          name: "InvalidUpgradeFileType",
+          description: "Unknown upgradeFileType: \(self.options.upgradeFileType)"))
     }
 
     do {
-      let images = try extractImageFrom(
-        from: fileUrl, upgradeFileType: UpgradeFileType(rawValue: self.options.upgradeFileType)!
-      )
+      let images = try extractImageFrom(from: fileUrl, upgradeFileType: fileType)
 
-      self.bleTransport = McuMgrBleTransport(bleUuid)
-      self.dfuManager = FirmwareUpgradeManager(transport: self.bleTransport!, delegate: self)
+      let transport = McuMgrBleTransport(bleUuid)
+      self.bleTransport = transport
+      let manager = FirmwareUpgradeManager(transport: transport, delegate: self)
+      self.dfuManager = manager
       let config = FirmwareUpgradeConfiguration(
         estimatedSwapTime: self.options.estimatedSwapTime,
         eraseAppSettings: self.options.eraseAppSettings,
         pipelineDepth: self.options.mcubootBufferCount,
-        upgradeMode: self.getMode(),
+        upgradeMode: self.getMode()
       )
 
-      self.dfuManager!.logDelegate = self.logDelegate
+      manager.logDelegate = self.logDelegate
 
       DispatchQueue.main.async {
         do {
-          try self.dfuManager!.start(images: images, using: config)
+          try manager.start(images: images, using: config)
         } catch {
+          transport.close()
+          self.dfuManager = nil
+          self.bleTransport = nil
+          self.promise = nil
           promise.reject(UnexpectedException(error))
         }
       }
     } catch {
       promise.reject(UnexpectedException(error))
+      self.promise = nil
     }
   }
 
   func cancel() {
-    if let dfuManager = self.dfuManager {
-      DispatchQueue.main.async {
-        dfuManager.cancel()
-      }
-    }
+    let dfuManager = self.dfuManager
+    let transport = self.bleTransport
 
-    if let transport = self.bleTransport {
-      transport.close()
+    DispatchQueue.main.async {
+      dfuManager?.cancel()
+      transport?.close()
     }
   }
 
@@ -205,14 +215,15 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
       return "SUCCESS"
     case .requestMcuMgrParameters:
       return "REQUEST_MCU_MGR_PARAMETERS"
-    default:
+    @unknown default:
       return "UNKNOWN"
     }
   }
 
   /// Called when the firmware upgrade has succeeded.
   func upgradeDidComplete() {
-    self.promise!.resolve(nil)
+    self.promise?.resolve(nil)
+    self.promise = nil
   }
 
   /// Called when the firmware upgrade has failed.
@@ -220,7 +231,8 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
   /// - parameter state: The state in which the upgrade has failed.
   /// - parameter error: The error.
   func upgradeDidFail(inState state: FirmwareUpgradeState, with error: Error) {
-    self.promise!.reject(getFirmwareUpgradeException(error))
+    self.promise?.reject(getFirmwareUpgradeException(error))
+    self.promise = nil
   }
 
   private func getFirmwareUpgradeException(_ error: Error) -> Exception {
@@ -233,7 +245,8 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
   /// When the image is uploaded, the test and/or confirm commands will be
   /// sent depending on the mode.
   func upgradeDidCancel(state: FirmwareUpgradeState) {
-    self.promise!.reject(Exception(name: "UpgradeCancelled", description: "Upgrade cancelled"))
+    self.promise?.reject(Exception(name: "UpgradeCancelled", description: "Upgrade cancelled"))
+    self.promise = nil
   }
 
   /// Called when the upload progress has changed.
