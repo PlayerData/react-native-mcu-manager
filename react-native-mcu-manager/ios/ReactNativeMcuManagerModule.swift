@@ -1,4 +1,3 @@
-import Combine
 import CoreBluetooth
 import ExpoModulesCore
 import iOSMcuManagerLibrary
@@ -8,24 +7,36 @@ private let MODULE_NAME = "ReactNativeMcuManager"
 private let TAG = "McuManagerModule"
 
 class DisconnectionObserver: ConnectionObserver {
-  private let connectionState = PassthroughSubject<iOSMcuManagerLibrary.McuMgrTransportState, Never>()
+  private struct State {
+    var disconnected = false
+    var pendingContinuation: CheckedContinuation<Void, Error>?
+  }
 
-  func transport(_ transport: any iOSMcuManagerLibrary.McuMgrTransport, didChangeStateTo state: iOSMcuManagerLibrary.McuMgrTransportState) {
-    connectionState.send(state)
+  private let state = Mutex(State())
+
+  func transport(_ transport: any iOSMcuManagerLibrary.McuMgrTransport, didChangeStateTo newState: iOSMcuManagerLibrary.McuMgrTransportState) {
+    guard newState == .disconnected else { return }
+
+    let continuation = state.withLock { state -> CheckedContinuation<Void, Error>? in
+      guard !state.disconnected else { return nil }
+      state.disconnected = true
+      return state.pendingContinuation.take()
+    }
+
+    continuation?.resume()
   }
 
   func awaitDisconnect() async throws {
-    var stateSink: AnyCancellable?
-
-    defer {
-      stateSink?.cancel()
-    }
-
     try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-      var resumed = false
-      stateSink = connectionState.sink { state in
-        guard !resumed, state == .disconnected else { return }
-        resumed = true
+      let resumeNow = state.withLock { state -> Bool in
+        if state.disconnected {
+          return true
+        }
+        state.pendingContinuation = continuation
+        return false
+      }
+
+      if resumeNow {
         continuation.resume()
       }
     }

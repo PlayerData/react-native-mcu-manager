@@ -27,9 +27,38 @@ class DeviceUpgrade {
   private var lastProgress: Int
   private let logDelegate: McuMgrLogDelegate
 
-  private var dfuManager: FirmwareUpgradeManager?
-  private var bleTransport: McuMgrBleTransport?
-  private var promise: Promise?
+  private struct State {
+    var dfuManager: FirmwareUpgradeManager?
+    var bleTransport: McuMgrBleTransport?
+    var promise: Promise?
+  }
+
+  private let state = Mutex(State())
+
+  private enum UpgradeResult {
+    case success
+    case failure(Exception)
+  }
+
+  private func finish(_ result: UpgradeResult) {
+    let (promise, transport) = state.withLock { state -> (Promise?, McuMgrBleTransport?) in
+      let promise = state.promise.take()
+      let transport = state.bleTransport.take()
+      state.dfuManager = nil
+      return (promise, transport)
+    }
+
+    transport?.close()
+
+    guard let promise = promise else { return }
+
+    switch result {
+    case .success:
+      promise.resolve(nil)
+    case .failure(let exception):
+      promise.reject(exception)
+    }
+  }
 
   init(
     id: String, bleId: String, fileURI: String, options: UpdateOptions,
@@ -92,7 +121,7 @@ class DeviceUpgrade {
   }
 
   func startUpgrade(_ promise: Promise) {
-    self.promise = promise
+    state.withLock { $0.promise = promise }
 
     guard let bleUuid = UUID(uuidString: self.bleId) else {
       return promise.reject(Exception(name: "UUIDParseError", description: "Failed to parse UUID"))
@@ -116,9 +145,11 @@ class DeviceUpgrade {
       let images = try extractImageFrom(from: fileUrl, upgradeFileType: fileType)
 
       let transport = McuMgrBleTransport(bleUuid)
-      self.bleTransport = transport
       let manager = FirmwareUpgradeManager(transport: transport, delegate: self)
-      self.dfuManager = manager
+      state.withLock {
+        $0.bleTransport = transport
+        $0.dfuManager = manager
+      }
       let config = FirmwareUpgradeConfiguration(
         estimatedSwapTime: self.options.estimatedSwapTime,
         eraseAppSettings: self.options.eraseAppSettings,
@@ -132,26 +163,20 @@ class DeviceUpgrade {
         do {
           try manager.start(images: images, using: config)
         } catch {
-          transport.close()
-          self.dfuManager = nil
-          self.bleTransport = nil
-          self.promise = nil
-          promise.reject(UnexpectedException(error))
+          self.finish(.failure(UnexpectedException(error)))
         }
       }
     } catch {
-      promise.reject(UnexpectedException(error))
-      self.promise = nil
+      self.finish(.failure(UnexpectedException(error)))
     }
   }
 
   func cancel() {
-    let dfuManager = self.dfuManager
-    let transport = self.bleTransport
+    let dfuManager = state.withLock { $0.dfuManager }
 
     DispatchQueue.main.async {
       dfuManager?.cancel()
-      transport?.close()
+      self.finish(.failure(Exception(name: "UpgradeCancelled", description: "Upgrade cancelled")))
     }
   }
 
@@ -222,8 +247,7 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
 
   /// Called when the firmware upgrade has succeeded.
   func upgradeDidComplete() {
-    self.promise?.resolve(nil)
-    self.promise = nil
+    self.finish(.success)
   }
 
   /// Called when the firmware upgrade has failed.
@@ -231,8 +255,7 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
   /// - parameter state: The state in which the upgrade has failed.
   /// - parameter error: The error.
   func upgradeDidFail(inState state: FirmwareUpgradeState, with error: Error) {
-    self.promise?.reject(getFirmwareUpgradeException(error))
-    self.promise = nil
+    self.finish(.failure(getFirmwareUpgradeException(error)))
   }
 
   private func getFirmwareUpgradeException(_ error: Error) -> Exception {
@@ -245,8 +268,7 @@ extension DeviceUpgrade: FirmwareUpgradeDelegate {
   /// When the image is uploaded, the test and/or confirm commands will be
   /// sent depending on the mode.
   func upgradeDidCancel(state: FirmwareUpgradeState) {
-    self.promise?.reject(Exception(name: "UpgradeCancelled", description: "Upgrade cancelled"))
-    self.promise = nil
+    self.finish(.failure(Exception(name: "UpgradeCancelled", description: "Upgrade cancelled")))
   }
 
   /// Called when the upload progress has changed.
