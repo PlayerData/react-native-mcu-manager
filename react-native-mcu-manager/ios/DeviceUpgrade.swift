@@ -146,10 +146,18 @@ class DeviceUpgrade {
 
       let transport = McuMgrBleTransport(bleUuid)
       let manager = FirmwareUpgradeManager(transport: transport, delegate: self)
-      state.withLock {
-        $0.bleTransport = transport
-        $0.dfuManager = manager
+      let stillActive = state.withLock { state -> Bool in
+        guard state.promise != nil else { return false }
+        state.bleTransport = transport
+        state.dfuManager = manager
+        return true
       }
+
+      guard stillActive else {
+        transport.close()
+        return
+      }
+
       let config = FirmwareUpgradeConfiguration(
         estimatedSwapTime: self.options.estimatedSwapTime,
         eraseAppSettings: self.options.eraseAppSettings,
@@ -174,9 +182,13 @@ class DeviceUpgrade {
   func cancel() {
     let dfuManager = state.withLock { $0.dfuManager }
 
+    guard let dfuManager = dfuManager else {
+      finish(.failure(Exception(name: "UpgradeCancelled", description: "Upgrade cancelled")))
+      return
+    }
+
     DispatchQueue.main.async {
-      dfuManager?.cancel()
-      self.finish(.failure(Exception(name: "UpgradeCancelled", description: "Upgrade cancelled")))
+      dfuManager.cancel()
     }
   }
 

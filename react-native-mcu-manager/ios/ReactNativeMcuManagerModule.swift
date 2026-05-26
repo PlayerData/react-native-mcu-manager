@@ -9,7 +9,7 @@ private let TAG = "McuManagerModule"
 class DisconnectionObserver: ConnectionObserver {
   private struct State {
     var disconnected = false
-    var pendingContinuation: CheckedContinuation<Void, Error>?
+    var pendingContinuations: [CheckedContinuation<Void, Never>] = []
   }
 
   private let state = Mutex(State())
@@ -17,22 +17,26 @@ class DisconnectionObserver: ConnectionObserver {
   func transport(_ transport: any iOSMcuManagerLibrary.McuMgrTransport, didChangeStateTo newState: iOSMcuManagerLibrary.McuMgrTransportState) {
     guard newState == .disconnected else { return }
 
-    let continuation = state.withLock { state -> CheckedContinuation<Void, Error>? in
-      guard !state.disconnected else { return nil }
+    let continuations = state.withLock { state -> [CheckedContinuation<Void, Never>] in
+      guard !state.disconnected else { return [] }
       state.disconnected = true
-      return state.pendingContinuation.take()
+      let pending = state.pendingContinuations
+      state.pendingContinuations = []
+      return pending
     }
 
-    continuation?.resume()
+    for continuation in continuations {
+      continuation.resume()
+    }
   }
 
-  func awaitDisconnect() async throws {
-    try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+  func awaitDisconnect() async {
+    await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
       let resumeNow = state.withLock { state -> Bool in
         if state.disconnected {
           return true
         }
-        state.pendingContinuation = continuation
+        state.pendingContinuations.append(continuation)
         return false
       }
 
@@ -70,12 +74,12 @@ public class ReactNativeMcuManagerModule: Module {
       let result = try await block(transport)
 
       transport.close()
-      try await disconnectObserver.awaitDisconnect()
+      await disconnectObserver.awaitDisconnect()
 
       return result
     } catch let error {
       transport.close()
-      try await disconnectObserver.awaitDisconnect()
+      await disconnectObserver.awaitDisconnect()
 
       throw error
     }
