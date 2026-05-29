@@ -38,7 +38,7 @@ const Update = () => {
   );
 
   const { selectedFile, filePickerError, pickFile } = useFilePicker();
-  const { cancelUpdate, runUpdate, progress, state } = useFirmwareUpdate(
+  const { cancelUpdate, runUpdate, progress, state, error } = useFirmwareUpdate(
     selectedDevice?.deviceId || null,
     selectedFile?.uri || null,
     fileType,
@@ -115,6 +115,7 @@ const Update = () => {
           <Text>
             {state}: {progress}
           </Text>
+          {error && <Text>Error: {error}</Text>}
 
           <Button
             disabled={!selectedFile || !selectedDevice?.deviceId}

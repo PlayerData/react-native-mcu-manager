@@ -1,4 +1,3 @@
-import Combine
 import CoreBluetooth
 import ExpoModulesCore
 import iOSMcuManagerLibrary
@@ -8,24 +7,40 @@ private let MODULE_NAME = "ReactNativeMcuManager"
 private let TAG = "McuManagerModule"
 
 class DisconnectionObserver: ConnectionObserver {
-  private let connectionState = PassthroughSubject<iOSMcuManagerLibrary.McuMgrTransportState, Never>()
-
-  func transport(_ transport: any iOSMcuManagerLibrary.McuMgrTransport, didChangeStateTo state: iOSMcuManagerLibrary.McuMgrTransportState) {
-    connectionState.send(state)
+  private struct State {
+    var disconnected = false
+    var pendingContinuations: [CheckedContinuation<Void, Never>] = []
   }
 
-  func awaitDisconnect() async throws {
-    var stateSink: AnyCancellable?
+  private let state = Mutex(State())
 
-    defer {
-      stateSink?.cancel()
+  func transport(_ transport: any iOSMcuManagerLibrary.McuMgrTransport, didChangeStateTo newState: iOSMcuManagerLibrary.McuMgrTransportState) {
+    guard newState == .disconnected else { return }
+
+    let continuations = state.withLock { state -> [CheckedContinuation<Void, Never>] in
+      guard !state.disconnected else { return [] }
+      state.disconnected = true
+      let pending = state.pendingContinuations
+      state.pendingContinuations = []
+      return pending
     }
 
-    try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-      var resumed = false
-      stateSink = connectionState.sink { state in
-        guard !resumed, state == .disconnected else { return }
-        resumed = true
+    for continuation in continuations {
+      continuation.resume()
+    }
+  }
+
+  func awaitDisconnect() async {
+    await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+      let resumeNow = state.withLock { state -> Bool in
+        if state.disconnected {
+          return true
+        }
+        state.pendingContinuations.append(continuation)
+        return false
+      }
+
+      if resumeNow {
         continuation.resume()
       }
     }
@@ -59,12 +74,12 @@ public class ReactNativeMcuManagerModule: Module {
       let result = try await block(transport)
 
       transport.close()
-      try await disconnectObserver.awaitDisconnect()
+      await disconnectObserver.awaitDisconnect()
 
       return result
     } catch let error {
       transport.close()
-      try await disconnectObserver.awaitDisconnect()
+      await disconnectObserver.awaitDisconnect()
 
       throw error
     }

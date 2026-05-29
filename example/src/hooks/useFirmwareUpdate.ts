@@ -13,6 +13,7 @@ const useFirmwareUpdate = (
 ) => {
   const [progress, setProgress] = useState(0);
   const [state, setState] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const upgradeRef = useRef<Upgrade>(null);
 
   useEffect(() => {
@@ -41,6 +42,8 @@ const useFirmwareUpdate = (
   }, [bleId, upgradeFileType, updateFileUri, upgradeMode]);
 
   const runUpdate = async (): Promise<void> => {
+    setError(null);
+
     try {
       if (!upgradeRef.current) {
         throw new Error('No upgrade class - missing BleId or updateFileUri?');
@@ -49,7 +52,7 @@ const useFirmwareUpdate = (
       await upgradeRef.current.runUpgrade();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (ex: any) {
-      setState(ex.message);
+      setError(ex.message);
     }
   };
 
@@ -59,7 +62,7 @@ const useFirmwareUpdate = (
     upgradeRef.current.cancel();
   };
 
-  return { progress, runUpdate, state, cancelUpdate };
+  return { progress, runUpdate, state, error, cancelUpdate };
 };
 
 export default useFirmwareUpdate;
