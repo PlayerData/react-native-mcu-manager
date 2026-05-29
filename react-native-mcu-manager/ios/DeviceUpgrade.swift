@@ -182,14 +182,11 @@ class DeviceUpgrade {
   func cancel() {
     let dfuManager = state.withLock { $0.dfuManager }
 
-    guard let dfuManager = dfuManager else {
-      finish(.failure(Exception(name: "UpgradeCancelled", description: "Upgrade cancelled")))
-      return
+    DispatchQueue.main.async {
+      dfuManager?.cancel()
     }
 
-    DispatchQueue.main.async {
-      dfuManager.cancel()
-    }
+    finish(.failure(Exception(name: "UpgradeCancelled", description: "Upgrade cancelled")))
   }
 
   private func getMode() -> FirmwareUpgradeMode {
