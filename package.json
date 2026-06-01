@@ -33,5 +33,5 @@
   "resolutions": {
     "expo": ">= 54.0.31",
     "eslint-plugin-react": ">=7.37.5"
-  },
+  }
 }
