@@ -4,15 +4,19 @@
   "reviewers": ["team:device-engineering"],
   "packageRules": [
     {
+      "description": "Expo-managed dependencies are upgraded via the Expo SDK (expo install), not Renovate. Covers the expo monorepo plus third-party native modules pinned by bundledNativeModules.json.",
       "matchSourceUrls": ["https://github.com/expo/expo"],
       "enabled": false
     },
     {
-      "matchPackageNames": ["react-native"],
-      "enabled": false
-    },
-    {
-      "matchPackageNames": ["react"],
+      "description": "Expo-managed dependencies are upgraded via the Expo SDK (expo install), not Renovate.",
+      "matchPackageNames": [
+        "react",
+        "react-native",
+        "react-native-reanimated",
+        "react-native-safe-area-context",
+        "react-native-screens"
+      ],
       "enabled": false
     }
   ]
