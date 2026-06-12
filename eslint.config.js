@@ -10,8 +10,14 @@ module.exports = [
     languageOptions: {
       globals: globals.node,
     },
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
   },
   {
-    ignores: ['react-native-mcu-manager/build/**'],
+    ignores: [
+      'react-native-mcu-manager/build/**',
+      '**/.eslintrc.js',
+    ],
   },
 ];

@@ -119,8 +119,8 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
       webpack:
-        specifier: 5.107.1
-        version: 5.107.1
+        specifier: 5.107.2
+        version: 5.107.2
 
   react-native-mcu-manager:
     dependencies:
@@ -6429,8 +6429,8 @@ packages:
     resolution: {integrity: sha512-HPuy+uuoTCaaoEoI1LQ3JN9+vrPBvEesnnX1jADHy728cHSMlq4wUc4afYqahq2B1mhQVZxCXOkNTnXltr+2vQ==}
     engines: {node: '>=10.13.0'}
 
-  webpack@5.107.1:
-    resolution: {integrity: sha512-mvdIWxj/H6QsfgDdH9djne3a5dYcmEmtsXGESkypaGN5jXjF/b+9KDlmTDQ2TKlFUeA2fI9Y65kihD30JOdB+Q==}
+  webpack@5.107.2:
+    resolution: {integrity: sha512-v7RhXaJbpMlV0D7hC7lb2EbnxkoeUqf9qhKr6lozx3Q48pmFrqqNRmZFUEGmi7pSwm6fCQ2H1IjvCkHqdpVdjQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -14557,13 +14557,13 @@ snapshots:
       ansi-escapes: 4.3.2
       supports-hyperlinks: 2.3.0
 
-  terser-webpack-plugin@5.6.1(webpack@5.107.1):
+  terser-webpack-plugin@5.6.1(webpack@5.107.2):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.48.0
-      webpack: 5.107.1
+      webpack: 5.107.2
 
   terser@5.48.0:
     dependencies:
@@ -14917,7 +14917,7 @@ snapshots:
 
   webpack-sources@3.5.0: {}
 
-  webpack@5.107.1:
+  webpack@5.107.2:
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -14939,7 +14939,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.3
-      terser-webpack-plugin: 5.6.1(webpack@5.107.1)
+      terser-webpack-plugin: 5.6.1(webpack@5.107.2)
       watchpack: 2.5.1
       webpack-sources: 3.5.0
     transitivePeerDependencies:
