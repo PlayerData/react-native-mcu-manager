@@ -51,6 +51,29 @@ public class ReactNativeMcuManagerModule: Module {
   private static let logger = Logger(subsystem: MODULE_NAME, category: TAG)
   private var upgrades: [String: DeviceUpgrade] = [:]
 
+  // Expo SDK 56 (the JSI Swift rewrite) made `JavaScriptFunction` a non-generic
+  // `~Copyable` struct that can no longer be a function argument; callbacks now
+  // arrive as `JavaScriptValue` and are invoked via `getFunction().call(arguments:)`.
+  // `ExpoModulesJSI` is the package introduced by that rewrite, so its presence
+  // distinguishes SDK 56+ from the older Objective-C++ JSI layer (SDK 54 and below).
+  // Only the callback type and its invocation differ, so we confine the split to a
+  // typealias and one helper and share the `createUpgrade` definition below.
+  #if canImport(ExpoModulesJSI)
+  private typealias UpgradeCallback = JavaScriptValue
+
+  private func invokeUpgradeCallback(
+    _ callback: UpgradeCallback, _ first: some JavaScriptRepresentable, _ second: some JavaScriptRepresentable
+  ) throws {
+    try callback.getFunction().call(arguments: first, second)
+  }
+  #else
+  private typealias UpgradeCallback = JavaScriptFunction<ExpressibleByNilLiteral>
+
+  private func invokeUpgradeCallback(_ callback: UpgradeCallback, _ first: Any, _ second: Any) throws {
+    _ = try callback.call(first, second)
+  }
+  #endif
+
   private func getTransport(bleId: String) throws -> McuMgrBleTransport {
     guard let bleUuid = UUID(uuidString: bleId) else {
       throw Exception(name: "UUIDParseError", description: "Failed to parse UUID")
@@ -190,8 +213,8 @@ public class ReactNativeMcuManagerModule: Module {
         bleId: String,
         updateFileUriString: String,
         updateOptions: UpdateOptions,
-        progressCallback: JavaScriptFunction<ExpressibleByNilLiteral>,
-        stateCallback: JavaScriptFunction<ExpressibleByNilLiteral>
+        progressCallback: UpgradeCallback,
+        stateCallback: UpgradeCallback
       ) in
       upgrades[id] = DeviceUpgrade(
         id: id,
@@ -201,7 +224,7 @@ public class ReactNativeMcuManagerModule: Module {
         progressHandler: { progress in
           self.appContext?.executeOnJavaScriptThread {
             do {
-              let _ = try progressCallback.call(id, progress)
+              try self.invokeUpgradeCallback(progressCallback, id, progress)
             } catch let err {
               Self.logger.error("Failed to call progress callback: \(err.localizedDescription, privacy: .public)")
             }
@@ -210,7 +233,7 @@ public class ReactNativeMcuManagerModule: Module {
         stateHandler: { state in
           self.appContext?.executeOnJavaScriptThread {
             do {
-              let _ = try stateCallback.call(id, state)
+              try self.invokeUpgradeCallback(stateCallback, id, state)
             } catch let err {
               Self.logger.error("Failed to call state callback: \(err.localizedDescription, privacy: .public)")
             }
