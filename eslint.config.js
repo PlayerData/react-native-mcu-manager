@@ -17,6 +17,7 @@ module.exports = [
   {
     ignores: [
       'react-native-mcu-manager/build/**',
+      '**/.expo/**',
       '**/.eslintrc.js',
     ],
   },

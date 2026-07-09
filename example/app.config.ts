@@ -9,10 +9,6 @@ const config: ExpoConfig = {
   platforms: ["ios", "android"],
   scheme: "rnmcumgr",
   version: "1.0.0",
-  splash: {
-    image: ".assets/images/pd.png",
-    backgroundColor: "#FFFFFF",
-  },
   ios: {
     supportsTablet: true,
     bundleIdentifier: "uk.co.playerdata.reactnativemcumanager.example",
@@ -31,6 +27,13 @@ const config: ExpoConfig = {
     ["expo-document-picker"],
     ["expo-router"],
     ["./gradlePlugin.ts"],
+    [
+      "expo-splash-screen",
+      {
+        image: "./.assets/images/pd.png",
+        backgroundColor: "#FFFFFF",
+      },
+    ],
     [
       'expo-build-properties',
       {
