@@ -184,6 +184,48 @@ public class ReactNativeMcuManagerModule: Module {
       }
     }
 
+    AsyncFunction("readImageState") { (bleId: String) in
+      try await withTransport(bleId: bleId) { (transport: McuMgrBleTransport) in
+        let imageManager = ImageManager(transport: transport)
+
+        let response: McuMgrImageStateResponse = try await withCheckedThrowingContinuation { continuation in
+          imageManager.list { (response: McuMgrImageStateResponse?, err: Error?) in
+            if err != nil {
+              continuation.resume(throwing: Exception(name: "ReadImageStateError", description: err!.localizedDescription))
+              return
+            }
+
+            let smpErr = response?.getError()
+            if smpErr != nil {
+              continuation.resume(throwing: Exception(name: "ReadImageStateError", description: smpErr!.localizedDescription))
+              return
+            }
+
+            guard let response = response else {
+              continuation.resume(throwing: Exception(name: "ReadImageStateError", description: "Image state response null, but no error occurred?"))
+              return
+            }
+
+            continuation.resume(returning: response)
+          }
+        }
+
+        return (response.images ?? []).map { slot -> ImageSlotState in
+          let state = ImageSlotState()
+          state.image = slot.image
+          state.slot = slot.slot
+          state.version = slot.version
+          state.hash = slot.hash.map { String(format: "%02x", $0) }.joined()
+          state.bootable = slot.bootable
+          state.pending = slot.pending
+          state.confirmed = slot.confirmed
+          state.active = slot.active
+          state.permanent = slot.permanent
+          return state
+        }
+      }
+    }
+
     AsyncFunction("eraseImage") { (bleId: String) in
       try await withTransport(bleId: bleId) { (transport: McuMgrBleTransport) in
         let imageManager = ImageManager(transport: transport)
