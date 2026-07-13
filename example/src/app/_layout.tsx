@@ -20,6 +20,10 @@ const RootLayout = () => {
           name="bootloader_info"
           options={{ title: 'Bootloader Info' }}
         />
+        <Tabs.Screen
+          name="read_image_state"
+          options={{ title: 'Image State' }}
+        />
         <Tabs.Screen name="update" options={{ title: 'Update' }} />
       </Tabs>
     </SelectedDeviceProvider>

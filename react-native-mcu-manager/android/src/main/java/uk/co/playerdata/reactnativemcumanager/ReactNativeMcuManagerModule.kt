@@ -48,6 +48,18 @@ class BootloaderInfo : Record {
   @Field var noDowngrade: Boolean = false
 }
 
+class ImageSlotState : Record {
+  @Field var image: Int = 0
+  @Field var slot: Int = 0
+  @Field var version: String? = null
+  @Field var hash: String? = null
+  @Field var bootable: Boolean = false
+  @Field var pending: Boolean = false
+  @Field var confirmed: Boolean = false
+  @Field var active: Boolean = false
+  @Field var permanent: Boolean = false
+}
+
 class ReactNativeMcuManagerModule() : Module() {
   private val MCUBOOT = "MCUboot"
 
@@ -157,6 +169,31 @@ class ReactNativeMcuManagerModule() : Module() {
         }
 
         return@withTransport info
+      }
+    }
+
+    AsyncFunction("readImageState") Coroutine { macAddress: String ->
+      withTransport(macAddress) { transport ->
+        try {
+          val imageManager = ImageManager(transport)
+          val response = imageManager.list()
+
+          (response.images ?: emptyArray()).map { imageSlot ->
+            ImageSlotState().apply {
+              image = imageSlot.image
+              slot = imageSlot.slot
+              version = imageSlot.version
+              hash = imageSlot.hash?.joinToString("") { byte -> "%02x".format(byte) }
+              bootable = imageSlot.bootable
+              pending = imageSlot.pending
+              confirmed = imageSlot.confirmed
+              active = imageSlot.active
+              permanent = imageSlot.permanent
+            }
+          }
+        } catch (e: McuMgrException) {
+          throw ReactNativeMcuMgrException.fromMcuMgrException(e)
+        }
       }
     }
 

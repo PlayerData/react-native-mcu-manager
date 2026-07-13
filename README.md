@@ -64,6 +64,43 @@ McuManager.updateDevice(
 );
 ```
 
+## Reading image state
+
+`readImageState(bleId)` exposes the SMP image state read, returning one entry
+per slot with `image`, `slot`, `version`, `hash` (lowercase hex) and the
+`bootable` / `pending` / `confirmed` / `active` / `permanent` flags.
+
+We recommend using it to verify upgrades: the underlying Nordic libraries can
+report a `TEST_AND_CONFIRM` upgrade as successful while the image is not
+durably confirmed (for example when the confirm did not persist, or when the
+device rebooted and reverted before the confirm was sent), in which case
+MCUboot boots the previous firmware on the device's next reboot. After an
+upgrade in a confirming mode resolves, read the image state and only trust the
+update once:
+
+- the primary slot (`image: 0, slot: 0`) reports `active && confirmed` and not
+  `pending` — the one state that survives a reboot in swap-with-revert
+  bootloaders, and
+- no other slot for the same image is `pending` or `permanent` — a staged
+  secondary slot means the device is still running the old firmware and will
+  only swap on a future boot.
+
+If verification fails, retry the upgrade from the start.
+
+```ts
+import { readImageState } from '@playerdata/react-native-mcu-manager';
+
+const slots = await readImageState(bluetoothId);
+
+const primary = slots.find((slot) => slot.image === 0 && slot.slot === 0);
+const staged = slots.some(
+  (slot) => slot.slot !== 0 && (slot.pending || slot.permanent)
+);
+
+const durablyConfirmed =
+  primary?.active && primary.confirmed && !primary.pending && !staged;
+```
+
 # Contributing
 
 Contributions are very welcome!
