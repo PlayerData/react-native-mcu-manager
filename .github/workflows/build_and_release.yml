@@ -62,6 +62,23 @@ jobs:
           npx expo prebuild --platform android
 
           cd android
+
+          # Pre-fetch the Gradle distribution with retries so a transient
+          # services.gradle.org outage (e.g. HTTP 504) doesn't fail the build.
+          # Only the network bootstrap is retried; the build itself runs once,
+          # so genuine build failures are never masked.
+          for attempt in 1 2 3; do
+            if ./gradlew --version; then
+              break
+            elif [ "$attempt" -eq 3 ]; then
+              echo "Gradle wrapper download failed after 3 attempts"
+              exit 1
+            else
+              echo "Gradle bootstrap attempt $attempt failed; retrying in 15s"
+              sleep 15
+            fi
+          done
+
           ./gradlew app:assembleRelease --no-daemon -Dorg.gradle.logging.level=warn
 
   ios-example:

@@ -18,6 +18,14 @@
         "react-native-screens"
       ],
       "enabled": false
+    },
+    {
+      "description": "mcumgr 2.8.0+ is built with Kotlin 2.3+ (2.9.0 also needs compileSdk 37 / AGP 9.2). Expo 57 / RN 0.86 pins Kotlin 2.1.20 and AGP 8.12, which cannot read that metadata or compile against API 37. Hold at 2.7.x until a future Expo SDK ships a newer Kotlin and AGP 9.",
+      "matchPackageNames": [
+        "no.nordicsemi.android:mcumgr-ble",
+        "no.nordicsemi.android:mcumgr-core"
+      ],
+      "allowedVersions": "<2.8.0"
     }
   ]
 }
