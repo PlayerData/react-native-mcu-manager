@@ -20,7 +20,7 @@ jobs:
       - name: Setup PNPM
         uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
         with:
-          version: 11.9.0
+          version: 11.10.0
           run_install: true
 
       - name: Lint
