@@ -25,7 +25,7 @@ jobs:
       - name: Setup PNPM
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
-          version: 11.16.0
+          version: 11.22.0
           run_install: true
 
       - name: Build
@@ -53,7 +53,7 @@ jobs:
       - name: Setup PNPM
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
-          version: 11.16.0
+          version: 11.22.0
           run_install: true
 
       - name: Making sure the android example app builds
@@ -97,7 +97,7 @@ jobs:
       - name: Setup PNPM
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
-          version: 11.16.0
+          version: 11.22.0
           run_install: true
 
       - name: Making sure the ios example app builds
@@ -131,7 +131,7 @@ jobs:
     - name: Setup PNPM
       uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       with:
-        version: 11.16.0
+        version: 11.22.0
         run_install: true
 
     - name: Release
