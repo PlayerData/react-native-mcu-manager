@@ -1,0 +1,26 @@
+name: Install Expo in the example app
+description: Install an exact expo version in the example app and align its other dependencies with it.
+
+inputs:
+  expo-version:
+    description: The exact expo version to install, e.g. 58.0.23.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install Expo ${{ inputs.expo-version }}
+      shell: bash
+      working-directory: ./example
+      env:
+        EXPO_VERSION: ${{ inputs.expo-version }}
+      run: |
+        installed_expo_version() { node -p "require('expo/package.json').version"; }
+
+        if [ "$(installed_expo_version)" != "$EXPO_VERSION" ]; then
+          npx expo install "expo@$EXPO_VERSION"
+          # Offline, --fix aligns dependencies with the installed expo instead of bumping expo to the SDK's latest patch.
+          EXPO_OFFLINE=1 npx expo install --fix
+        fi
+
+        test "$(installed_expo_version)" = "$EXPO_VERSION"
