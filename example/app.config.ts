@@ -26,6 +26,7 @@ const config: ExpoConfig = {
   plugins: [
     ["expo-document-picker"],
     ["expo-router"],
+    ["expo-status-bar"],
     ["./gradlePlugin.ts"],
     [
       "expo-splash-screen",
