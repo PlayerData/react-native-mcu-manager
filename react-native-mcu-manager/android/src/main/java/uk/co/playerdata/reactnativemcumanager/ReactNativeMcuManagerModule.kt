@@ -230,12 +230,12 @@ class ReactNativeMcuManagerModule() : Module() {
         updateOptions,
         { progress ->
           appContext.executeOnJavaScriptThread {
-            progressCallback(id, progress)
+            progressCallback.invokeWithContext(appContext, id, progress)
           }
         },
         { state ->
           appContext.executeOnJavaScriptThread {
-            stateCallback(id, state)
+            stateCallback.invokeWithContext(appContext, id, state)
           }
         }
       )
