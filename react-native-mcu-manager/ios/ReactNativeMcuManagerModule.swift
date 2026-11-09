@@ -47,18 +47,42 @@ class DisconnectionObserver: ConnectionObserver {
   }
 }
 
+// `@ExpoModule` ignores `@JS` members inside `#if`, so each path declares its own class body.
+#if MCU_MANAGER_JS_CLOSURE_ARGS
+@ExpoModule("ReactNativeMcuManager")
 public class ReactNativeMcuManagerModule: Module {
-  private static let logger = Logger(subsystem: MODULE_NAME, category: TAG)
   private var upgrades: [String: DeviceUpgrade] = [:]
 
-  // Expo SDK 56 (the JSI Swift rewrite) made `JavaScriptFunction` a non-generic
-  // `~Copyable` struct that can no longer be a function argument; callbacks now
-  // arrive as `JavaScriptValue` and are invoked via `getFunction().call(arguments:)`.
-  // `ExpoModulesJSI` is the package introduced by that rewrite, so its presence
-  // distinguishes SDK 56+ from the older Objective-C++ JSI layer (SDK 54 and below).
-  // Only the callback type and its invocation differ, so we confine the split to a
-  // typealias and one helper and share the `createUpgrade` definition below.
-  #if canImport(ExpoModulesJSI)
+  @JS
+  func createUpgrade(
+    id: String,
+    bleId: String,
+    updateFileUriString: String,
+    updateOptions: UpdateOptions,
+    progressCallback: @escaping @Sendable (String, Int) -> Void,
+    stateCallback: @escaping @Sendable (String, String) -> Void
+  ) {
+    registerUpgrade(
+      id: id,
+      bleId: bleId,
+      fileURI: updateFileUriString,
+      options: updateOptions,
+      progressHandler: { @Sendable progress in progressCallback(id, progress) },
+      stateHandler: { @Sendable state in stateCallback(id, state) }
+    )
+  }
+}
+#else
+public class ReactNativeMcuManagerModule: Module {
+  private var upgrades: [String: DeviceUpgrade] = [:]
+}
+#endif
+
+extension ReactNativeMcuManagerModule {
+  private static let logger = Logger(subsystem: MODULE_NAME, category: TAG)
+
+  // `ExpoModulesJSI` exists from Expo SDK 56, where callbacks arrive as `JavaScriptValue`.
+  #if !MCU_MANAGER_JS_CLOSURE_ARGS && canImport(ExpoModulesJSI)
   private typealias UpgradeCallback = JavaScriptValue
 
   private func invokeUpgradeCallback(
@@ -66,13 +90,31 @@ public class ReactNativeMcuManagerModule: Module {
   ) throws {
     try callback.getFunction().call(arguments: first, second)
   }
-  #else
+  #elseif !MCU_MANAGER_JS_CLOSURE_ARGS
   private typealias UpgradeCallback = JavaScriptFunction<ExpressibleByNilLiteral>
 
   private func invokeUpgradeCallback(_ callback: UpgradeCallback, _ first: Any, _ second: Any) throws {
     _ = try callback.call(first, second)
   }
   #endif
+
+  private func registerUpgrade(
+    id: String,
+    bleId: String,
+    fileURI: String,
+    options: UpdateOptions,
+    progressHandler: @escaping (Int) -> Void,
+    stateHandler: @escaping (String) -> Void
+  ) {
+    upgrades[id] = DeviceUpgrade(
+      id: id,
+      bleId: bleId,
+      fileURI: fileURI,
+      options: options,
+      progressHandler: progressHandler,
+      stateHandler: stateHandler
+    )
+  }
 
   private func getTransport(bleId: String) throws -> McuMgrBleTransport {
     guard let bleUuid = UUID(uuidString: bleId) else {
@@ -108,6 +150,7 @@ public class ReactNativeMcuManagerModule: Module {
     }
   }
 
+  @ModuleDefinitionBuilder
   public func definition() -> ModuleDefinition {
     Name(MODULE_NAME)
 
@@ -249,6 +292,7 @@ public class ReactNativeMcuManagerModule: Module {
       }
     }
 
+    #if !MCU_MANAGER_JS_CLOSURE_ARGS
     Function("createUpgrade") {
       (
         id: String,
@@ -258,7 +302,7 @@ public class ReactNativeMcuManagerModule: Module {
         progressCallback: UpgradeCallback,
         stateCallback: UpgradeCallback
       ) in
-      upgrades[id] = DeviceUpgrade(
+      self.registerUpgrade(
         id: id,
         bleId: bleId,
         fileURI: updateFileUriString,
@@ -283,6 +327,7 @@ public class ReactNativeMcuManagerModule: Module {
         }
       )
     }
+    #endif
 
     AsyncFunction("runUpgrade") { (id: String, promise: Promise) in
       guard let upgrade = self.upgrades[id] else {

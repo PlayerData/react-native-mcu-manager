@@ -32,8 +32,18 @@ if (useManagedAndroidSdkVersions) {
   }
 }
 
+def expoModulesCorePackage = new File(project(":expo-modules-core").projectDir, "../package.json")
+def expoModulesCoreMajor = new groovy.json.JsonSlurper().parse(expoModulesCorePackage).version.tokenize(".")[0] as int
+
 android {
   namespace "uk.co.playerdata.reactnativemcumanager"
+
+  sourceSets {
+    main {
+      // expo-modules-core 58 requires a ConverterContext to invoke a JavaScriptFunction; 57 takes an AppContext.
+      java.srcDirs += expoModulesCoreMajor >= 58 ? "src/expo58/java" : "src/expo57/java"
+    }
+  }
 
   defaultConfig {
     versionName "<%- project.version %>"
