@@ -32,8 +32,8 @@
     "react-native-worklets": "0.10.2"
   },
   "devDependencies": {
-    "@babel/core": "7.29.7",
-    "@babel/runtime": "7.29.10",
+    "@babel/core": "7.29.13",
+    "@babel/runtime": "7.29.14",
     "@types/lodash": "4.17.27",
     "@types/react": "19.3.0",
     "metro-react-native-babel-preset": "0.77.0",
